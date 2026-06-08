@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Familia Mundial 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      body { margin: 0; min-height: 100vh; background: #0a0e1a; color: #e8eaf0; font-family: 'DM Sans', sans-serif; }
+      #root { min-height: 100vh; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      const ALL_TEAMS = [
+        { name: "Mexico", flag: "🇲🇽", group: "A" },
+        { name: "South Africa", flag: "🇿🇦", group: "A" },
+        { name: "South Korea", flag: "🇰🇷", group: "A" },
+        { name: "Czechia", flag: "🇨🇿", group: "A" },
+        { name: "Canada", flag: "🇨🇦", group: "B" },
+        { name: "Bosnia & Herz.", flag: "🇧🇦", group: "B" },
+        { name: "Qatar", flag: "🇶🇦", group: "B" },
+        { name: "Switzerland", flag: "🇨🇭", group: "B" },
+        { name: "Brazil", flag: "🇧🇷", group: "C" },
+        { name: "Morocco", flag: "🇲🇦", group: "C" },
+        { name: "Haiti", flag: "🇭🇹", group: "C" },
+        { name: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", group: "C" },
+        { name: "USA", flag: "🇺🇸", group: "D" },
+        { name: "Paraguay", flag: "🇵🇾", group: "D" },
+        { name: "Australia", flag: "🇦🇺", group: "D" },
+        { name: "Turkey", flag: "🇹🇷", group: "D" },
+        { name: "Germany", flag: "🇩🇪", group: "E" },
+        { name: "Ivory Coast", flag: "🇨🇮", group: "E" },
+        { name: "Curaçao", flag: "🇨🇼", group: "E" },
+        { name: "Ecuador", flag: "🇪🇨", group: "E" },
+        { name: "Netherlands", flag: "🇳🇱", group: "F" },
+        { name: "Japan", flag: "🇯🇵", group: "F" },
+        { name: "Sweden", flag: "🇸🇪", group: "F" },
+        { name: "Tunisia", flag: "🇹🇳", group: "F" },
+        { name: "Belgium", flag: "🇧🇪", group: "G" },
+        { name: "Egypt", flag: "🇪🇬", group: "G" },
+        { name: "Iran", flag: "🇮🇷", group: "G" },
+        { name: "New Zealand", flag: "🇳🇿", group: "G" },
+        { name: "Spain", flag: "🇪🇸", group: "H" },
+        { name: "Cape Verde", flag: "🇨🇻", group: "H" },
+        { name: "Saudi Arabia", flag: "🇸🇦", group: "H" },
+        { name: "Uruguay", flag: "🇺🇾", group: "H" },
+        { name: "France", flag: "🇫🇷", group: "I" },
+        { name: "Senegal", flag: "🇸🇳", group: "I" },
+        { name: "Iraq", flag: "🇮🇶", group: "I" },
+        { name: "Norway", flag: "🇳🇴", group: "I" },
+        { name: "Argentina", flag: "🇦🇷", group: "J" },
+        { name: "Algeria", flag: "🇩🇿", group: "J" },
+        { name: "Austria", flag: "🇦🇹", group: "J" },
+        { name: "Jordan", flag: "🇯🇴", group: "J" },
+        { name: "Portugal", flag: "🇵🇹", group: "K" },
+        { name: "DR Congo", flag: "🇨🇩", group: "K" },
+        { name: "Uzbekistan", flag: "🇺🇿", group: "K" },
+        { name: "Colombia", flag: "🇨🇴", group: "K" },
+        { name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", group: "L" },
+        { name: "Croatia", flag: "🇭🇷", group: "L" },
+        { name: "Ghana", flag: "🇬🇭", group: "L" },
+        { name: "Panama", flag: "🇵🇦", group: "L" },
+      ];
+
+      const INITIAL_MEMBERS = [
+        { id: 1,  name: "Socorro",       emoji: "👑", teams: ["Colombia", "Portugal", "Egypt"] },
+        { id: 2,  name: "Mayra",         emoji: "🌟", teams: ["Czechia", "Switzerland", "Curaçao"] },
+        { id: 3,  name: "Fifiz",         emoji: "🔥", teams: ["South Korea", "Bosnia & Herz.", "Morocco"] },
+        { id: 4,  name: "Crystal",       emoji: "💎", teams: ["Iraq", "Australia", "Algeria"] },
+        { id: 5,  name: "Carmen",        emoji: "🌈", teams: ["Haiti", "Japan", "Belgium"] },
+        { id: 6,  name: "Evelyn",        emoji: "🦅", teams: ["DR Congo", "England", "Argentina"] },
+        { id: 7,  name: "Yvette",        emoji: "🍀", teams: ["Mexico", "South Africa", "Ecuador"] },
+        { id: 8,  name: "Chilo (Tio)",   emoji: "🚀", teams: ["Ivory Coast", "Uzbekistan", "Canada"] },
+        { id: 9,  name: "Ivy",           emoji: "🌺", teams: ["Jordan", "Senegal", "Cape Verde"] },
+        { id: 10, name: "José De Concha",emoji: "🦁", teams: ["Germany", "Iran", "France"] },
+        { id: 11, name: "Grampa",        emoji: "🏅", teams: ["Scotland", "New Zealand", "Saudi Arabia"] },
+        { id: 12, name: "Chapetes",      emoji: "⚡", teams: ["Norway", "Spain", "Netherlands"] },
+        { id: 13, name: "Pedro",         emoji: "🐯", teams: ["Croatia", "Ghana", "Qatar"] },
+        { id: 14, name: "Checha",        emoji: "💪", teams: ["Austria", "Sweden", "Uruguay"] },
+        { id: 15, name: "Justin",        emoji: "🎯", teams: ["Panama", "Paraguay", "Brazil"] },
+        { id: 16, name: "Andrew",        emoji: "🦊", teams: ["USA", "Turkey", "Tunisia"] },
+      ];
+
+      const EMOJIS = ["👑","⚡","🔥","🌟","💎","🚀","🦁","🐯","🦅","🏆","💪","🎯","🌈","🍀","🦊","🌺","🏅","🎪","🎸","🌊"];
+      const POINTS = { groupStageWin: 3, groupStageDraw: 1, roundOf32: 5, quarterFinal: 10, semiFinal: 20, runnerUp: 35, champion: 50 };
+      const PRIZES = { 1: "$100", 2: "$40", 3: "$20" };
+      const PRIZE_COLORS = { 1: "#ffd700", 2: "#c0c0c0", 3: "#cd7f32" };
+
+      const styles = `
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { margin: 0; min-height: 100vh; background: #0a0e1a; color: #e8eaf0; font-family: 'DM Sans', sans-serif; }
+        .app { min-height: 100vh; background: radial-gradient(ellipse at 20% 0%, #1a2744 0%, #0a0e1a 60%), radial-gradient(ellipse at 80% 100%, #1a1a3a 0%, transparent 50%); }
+        .header { position: relative; padding: 22px 28px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
+        .header::before { content: ''; position: absolute; top: -60px; left: -60px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,215,0,0.08) 0%, transparent 70%); pointer-events: none; }
+        .header-title { font-family: 'Bebas Neue', cursive; font-size: clamp(20px, 4vw, 34px); letter-spacing: 2px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #ff4500 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+        .header-sub { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 3px; text-transform: uppercase; margin-top: 3px; }
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+        .header-badge { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #0a0e1a; font-family: 'Bebas Neue', cursive; font-size: 13px; letter-spacing: 1px; padding: 5px 12px; border-radius: 20px; }
+        .prize-badges { display: flex; gap: 6px; }
+        .prize-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+        .tabs { display: flex; gap: 2px; padding: 14px 28px 0; border-bottom: 1px solid rgba(255,255,255,0.06); overflow-x: auto; }
+        .tab { padding: 9px 16px; border-radius: 8px 8px 0 0; background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.5px; transition: all 0.2s; white-space: nowrap; }
+        .tab:hover { color: rgba(255,255,255,0.7); }
+        .tab.active { background: rgba(255,215,0,0.1); color: #ffd700; border-bottom: 2px solid #ffd700; }
+        .content { padding: 24px 28px; max-width: 1200px; margin: 0 auto; }
+        .prize-banner { display: flex; gap: 10px; margin-bottom: 20px; }
+        .prize-card { flex: 1; border-radius: 12px; padding: 14px 16px; text-align: center; border: 1px solid; }
+        .prize-card-place { font-family: 'Bebas Neue', cursive; font-size: 22px; letter-spacing: 1px; }
+        .prize-card-amount { font-size: 20px; font-weight: 700; margin-top: 2px; }
+        .prize-card-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; margin-top: 2px; }
+        .lb-grid { display: flex; flex-direction: column; gap: 10px; }
+        .lb-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 15px 20px; display: flex; align-items: center; gap: 14px; transition: all 0.25s; }
+        .lb-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,215,0,0.2); transform: translateX(3px); }
+        .lb-card.rank-1 { border-color: rgba(255,215,0,0.35); background: rgba(255,215,0,0.05); }
+        .lb-card.rank-2 { border-color: rgba(192,192,192,0.25); }
+        .lb-card.rank-3 { border-color: rgba(205,127,50,0.25); }
+        .lb-rank { font-family: 'Bebas Neue', cursive; font-size: 26px; width: 32px; text-align: center; flex-shrink: 0; color: rgba(255,255,255,0.2); }
+        .lb-rank.rank-1 { color: #ffd700; }
+        .lb-rank.rank-2 { color: #c0c0c0; }
+        .lb-rank.rank-3 { color: #cd7f32; }
+        .lb-emoji { font-size: 26px; flex-shrink: 0; }
+        .lb-info { flex: 1; min-width: 0; }
+        .lb-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; }
+        .prize-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; letter-spacing: 0.5px; }
+        .team-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+        .team-pill { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2px 9px; font-size: 11px; display: flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.65); }
+        .team-pill.eliminated { opacity: 0.3; text-decoration: line-through; }
+        .team-pill.advancing { border-color: rgba(100,255,100,0.3); color: #7fff7f; }
+        .team-pill.champion { border-color: rgba(255,215,0,0.5); color: #ffd700; background: rgba(255,215,0,0.1); }
+        .lb-score { font-family: 'Bebas Neue', cursive; font-size: 30px; color: #ffd700; flex-shrink: 0; }
+        .lb-pts { font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 1px; text-transform: uppercase; text-align: right; }
+        .pts-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+        .pts-chip { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 9px; font-size: 11px; color: rgba(255,255,255,0.5); }
+        .pts-chip span { color: #ffd700; font-weight: 600; }
+        .setup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+        .member-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; }
+        .member-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .member-emoji-btn { font-size: 22px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 5px 9px; cursor: pointer; transition: background 0.2s; }
+        .member-emoji-btn:hover { background: rgba(255,255,255,0.12); }
+        .member-name-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 11px; color: #e8eaf0; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; outline: none; transition: border-color 0.2s; }
+        .member-name-input:focus { border-color: rgba(255,215,0,0.4); }
+        .member-team-count { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 8px; letter-spacing: 0.5px; }
+        .team-select-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; max-height: 190px; overflow-y: auto; }
+        .team-select-grid::-webkit-scrollbar { width: 3px; }
+        .team-select-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+        .team-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 7px; color: rgba(255,255,255,0.6); font-family: 'DM Sans', sans-serif; font-size: 10px; cursor: pointer; transition: all 0.15s; text-align: left; display: flex; align-items: center; gap: 4px; }
+        .team-btn:hover:not(:disabled) { background: rgba(255,255,255,0.09); color: #e8eaf0; }
+        .team-btn.selected { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.35); color: #ffd700; }
+        .team-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+        .delete-member { background: rgba(255,60,60,0.1); border: 1px solid rgba(255,60,60,0.2); border-radius: 6px; color: rgba(255,100,100,0.7); padding: 4px 7px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .delete-member:hover { background: rgba(255,60,60,0.2); color: #ff6464; }
+        .add-member-btn { background: rgba(255,215,0,0.07); border: 1px dashed rgba(255,215,0,0.25); border-radius: 14px; padding: 18px; color: rgba(255,215,0,0.5); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
+        .add-member-btn:hover { background: rgba(255,215,0,0.12); color: #ffd700; }
+        .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+        .group-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; }
+        .group-label { font-family: 'Bebas Neue', cursive; font-size: 18px; color: #ffd700; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,215,0,0.12); padding-bottom: 6px; }
+        .group-team { display: flex; align-items: center; gap: 7px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+        .group-team:last-child { border-bottom: none; }
+        .group-team-owner { margin-left: auto; font-size: 9px; background: rgba(255,255,255,0.08); border-radius: 10px; padding: 2px 6px; color: rgba(255,255,255,0.5); white-space: nowrap; }
+        .progress-member { margin-bottom: 18px; }
+        .progress-member-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: rgba(255,255,255,0.7); }
+        .progress-team-row { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 9px; padding: 10px 14px; margin-bottom: 6px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .stage-btn { padding: 3px 9px; border-radius: 5px; font-size: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+        .counter-btn { padding: 3px 8px; border-radius: 5px; font-size: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+        .trash-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+        @media (max-width: 600px) { .trash-section { grid-template-columns: 1fr; } }
+        .trash-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; }
+        .trash-title { font-family: 'Bebas Neue', cursive; font-size: 16px; color: #ffd700; letter-spacing: 1px; margin-bottom: 12px; }
+        .trash-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .trash-select { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 7px 10px; color: #e8eaf0; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; }
+        .trash-select option { background: #1a2030; }
+        .trash-text-input { flex: 2; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 7px 10px; color: #e8eaf0; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; }
+        .trash-text-input:focus, .trash-select:focus { border-color: rgba(255,215,0,0.3); }
+        .trash-send-btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; border-radius: 7px; padding: 7px 14px; color: #0a0e1a; font-weight: 700; font-size: 12px; cursor: pointer; }
+        .trash-messages { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .trash-messages::-webkit-scrollbar { width: 3px; }
+        .trash-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+        .trash-msg { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 8px 11px; font-size: 12px; }
+        .trash-msg-author { font-weight: 600; color: #ffd700; font-size: 11px; margin-bottom: 3px; }
+        .trash-msg-text { color: rgba(255,255,255,0.75); line-height: 1.5; }
+        .trash-msg-time { font-size: 9px; color: rgba(255,255,255,0.25); margin-top: 3px; }
+        .trash-empty { font-size: 12px; color: rgba(255,255,255,0.25); text-align: center; padding: 20px 0; }
+        .section-title { font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: 2px; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+        .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+        @media (max-width: 600px) {
+          .header { padding: 16px; }
+          .tabs { padding: 10px 16px 0; }
+          .content { padding: 16px; }
+          .setup-grid { grid-template-columns: 1fr; }
+          .groups-grid { grid-template-columns: 1fr 1fr; }
+          .prize-banner { gap: 6px; }
+          .prize-card-amount { font-size: 16px; }
+        }
+      `;
+
+      function calcScore(member, teamStatuses) {
+        let pts = 0;
+        member.teams.forEach(teamName => {
+          const s = teamStatuses[teamName] || {};
+          pts += (s.groupWins || 0) * POINTS.groupStageWin;
+          pts += (s.groupDraws || 0) * POINTS.groupStageDraw;
+          if (s.roundOf32) pts += POINTS.roundOf32;
+          if (s.quarterFinal) pts += POINTS.quarterFinal;
+          if (s.semiFinal) pts += POINTS.semiFinal;
+          if (s.runnerUp) pts += POINTS.runnerUp;
+          if (s.champion) pts += POINTS.champion;
+        });
+        return pts;
+      }
+
+      function getTeamStage(teamName, teamStatuses) {
+        const s = teamStatuses[teamName] || {};
+        if (s.champion) return 'champion';
+        if (s.runnerUp || s.semiFinal || s.quarterFinal || s.roundOf32) return 'advancing';
+        if (s.eliminated) return 'eliminated';
+        return 'active';
+      }
+
+      function fmt(d) {
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function App() {
+        const [tab, setTab] = useState('leaderboard');
+        const [members, setMembers] = useState(INITIAL_MEMBERS);
+        const [teamStatuses, setTeamStatuses] = useState({});
+        const [emojiPicker, setEmojiPicker] = useState(null);
+        const [trashMessages, setTrashMessages] = useState([
+          { id: 1, author: 'Chapetes ⚡', text: "Spain + Netherlands + Norway?? I'm basically ALREADY spending that $100 🤑", time: new Date() },
+          { id: 2, author: 'Justin 🎯', text: 'Brazil alone is worth more than your whole lineup lol', time: new Date() },
+        ]);
+        const [trashAuthor, setTrashAuthor] = useState('');
+        const [trashText, setTrashText] = useState('');
+
+        const leaderboard = [...members]
+          .map(m => ({ ...m, score: calcScore(m, teamStatuses) }))
+          .sort((a, b) => b.score - a.score);
+
+        const assignedTeams = members.flatMap(m => m.teams);
+
+        const updateMember = (id, patch) => setMembers(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
+        const addMember = () => {
+          const id = Date.now();
+          setMembers(prev => [...prev, { id, name: `Player ${prev.length + 1}`, emoji: EMOJIS[prev.length % EMOJIS.length], teams: [] }]);
+        };
+        const deleteMember = id => setMembers(prev => prev.filter(m => m.id !== id));
+        const toggleTeam = (memberId, teamName) => {
+          setMembers(prev => prev.map(m => {
+            if (m.id !== memberId) return m;
+            const has = m.teams.includes(teamName);
+            if (!has && m.teams.length >= 3) return m;
+            return { ...m, teams: has ? m.teams.filter(t => t !== teamName) : [...m.teams, teamName] };
+          }));
+        };
+        const toggleStatus = (teamName, field) => {
+          setTeamStatuses(prev => {
+            const cur = prev[teamName] || {};
+            return { ...prev, [teamName]: { ...cur, [field]: !cur[field] } };
+          });
+        };
+
+        const sendTrash = () => {
+          if (!trashAuthor || !trashText.trim()) return;
+          setTrashMessages(prev => [...prev, { id: Date.now(), author: trashAuthor, text: trashText.trim(), time: new Date() }]);
+          setTrashText('');
+        };
+
+        return (
+          <>
+            <style>{styles}</style>
+            <div className="app" onClick={() => emojiPicker && setEmojiPicker(null)}>
+              <div className="header">
+                <div>
+                  <div className="header-title">⚽ Familia Mundial 2026</div>
+                  <div className="header-sub">Family Competition · $10 Buy-in</div>
+                </div>
+                <div className="header-right">
+                  <div className="header-badge">USA · MEX · CAN</div>
+                  <div className="prize-badges">
+                    {[["🥇","$100","#ffd700","rgba(255,215,0,0.15)"],["🥈","$40","#c0c0c0","rgba(192,192,192,0.1)"],["🥉","$20","#cd7f32","rgba(205,127,50,0.1)"]].map(([icon, amt, col, bg]) => (
+                      <div key={amt} className="prize-badge" style={{ background: bg, border: `1px solid ${col}40`, color: col }}>{icon} {amt}</div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="tabs">
+                {[["leaderboard","🏆 Standings"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"],["trash","💬 Trash Talk"]].map(([key,label]) => (
+                  <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
+                ))}
+              </div>
+
+              <div className="content">
+
+                {/* LEADERBOARD */}
+                {tab === 'leaderboard' && (
+                  <>
+                    <div className="prize-banner">
+                      {[[1,"🥇","#ffd700","rgba(255,215,0,0.08)","rgba(255,215,0,0.3)"],[2,"🥈","#c0c0c0","rgba(192,192,192,0.05)","rgba(192,192,192,0.2)"],[3,"🥉","#cd7f32","rgba(205,127,50,0.05)","rgba(205,127,50,0.2)"]].map(([place,icon,col,bg,border]) => (
+                        <div key={place} className="prize-card" style={{ background: bg, borderColor: border }}>
+                          <div className="prize-card-place" style={{ color: col }}>{icon} {place === 1 ? '1st' : place === 2 ? '2nd' : '3rd'}</div>
+                          <div className="prize-card-amount" style={{ color: col }}>{PRIZES[place]}</div>
+                          <div className="prize-card-label" style={{ color: col }}>{leaderboard[place - 1] ? leaderboard[place - 1].name : 'TBD'}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pts-legend">
+                      <div className="pts-chip">Win <span>+3</span></div>
+                      <div className="pts-chip">Draw <span>+1</span></div>
+                      <div className="pts-chip">R32 <span>+5</span></div>
+                      <div className="pts-chip">QF <span>+10</span></div>
+                      <div className="pts-chip">SF <span>+20</span></div>
+                      <div className="pts-chip">Runner-up <span>+35</span></div>
+                      <div className="pts-chip">🏆 Champion <span>+50</span></div>
+                    </div>
+                    <div className="lb-grid">
+                      {leaderboard.map((m, i) => (
+                        <div key={m.id} className={`lb-card ${i < 3 ? `rank-${i+1}` : ''}`}>
+                          <div className={`lb-rank ${i < 3 ? `rank-${i+1}` : ''}`}>{i + 1}</div>
+                          <div className="lb-emoji">{m.emoji}</div>
+                          <div className="lb-info">
+                            <div className="lb-name">
+                              {m.name}
+                              {i < 3 && <span className="prize-tag" style={{ background: `${PRIZE_COLORS[i+1]}20`, border: `1px solid ${PRIZE_COLORS[i+1]}50`, color: PRIZE_COLORS[i+1] }}>{PRIZES[i+1]}</span>}
+                            </div>
+                            <div className="team-pills">
+                              {m.teams.length === 0 && <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)' }}>No teams</span>}
+                              {m.teams.map(t => {
+                                const team = ALL_TEAMS.find(x => x.name === t);
+                                const stage = getTeamStage(t, teamStatuses);
+                                return <span key={t} className={`team-pill ${stage}`}>{team?.flag} {t}</span>;
+                              })}
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <div className="lb-score">{m.score}</div>
+                            <div className="lb-pts">pts</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* PLAYERS */}
+                {tab === 'setup' && (
+                  <>
+                    <div className="row"><div className="section-title">MANAGE PLAYERS</div></div>
+                    <div className="setup-grid">
+                      {members.map(m => (
+                        <div key={m.id} className="member-card">
+                          <div className="member-header">
+                            <div style={{ position: 'relative' }}>
+                              <button className="member-emoji-btn" onClick={e => { e.stopPropagation(); setEmojiPicker(emojiPicker === m.id ? null : m.id); }}>{m.emoji}</button>
+                              {emojiPicker === m.id && (
+                                <div onClick={e => e.stopPropagation()} style={{ position: 'absolute', top: '40px', left: 0, zIndex: 100, background: '#1a2030', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '10px', padding: '8px', display: 'flex', flexWrap: 'wrap', gap: '5px', width: '150px' }}>
+                                  {EMOJIS.map(e => (
+                                    <button key={e} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '17px', padding: '2px' }} onClick={() => { updateMember(m.id, { emoji: e }); setEmojiPicker(null); }}>{e}</button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            <input className="member-name-input" value={m.name} onChange={e => updateMember(m.id, { name: e.target.value })} />
+                            <button className="delete-member" onClick={() => deleteMember(m.id)}>✕</button>
+                          </div>
+                          <div className="member-team-count">{m.teams.length}/3 teams selected</div>
+                          <div className="team-select-grid">
+                            {ALL_TEAMS.map(t => {
+                              const owned = m.teams.includes(t.name);
+                              const takenByOther = !owned && assignedTeams.includes(t.name);
+                              return (
+                                <button key={t.name} className={`team-btn ${owned ? 'selected' : ''}`} disabled={takenByOther || (!owned && m.teams.length >= 3)} onClick={() => toggleTeam(m.id, t.name)}>
+                                  {t.flag} {t.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                      <button className="add-member-btn" onClick={addMember}>+ Add Player</button>
+                    </div>
+                  </>
+                )}
+
+                {/* GROUPS */}
+                {tab === 'groups' && (
+                  <>
+                    <div className="section-title" style={{ marginBottom: 14 }}>ALL 12 GROUPS</div>
+                    <div className="groups-grid">
+                      {'ABCDEFGHIJKL'.split('').map(g => (
+                        <div key={g} className="group-card">
+                          <div className="group-label">Group {g}</div>
+                          {ALL_TEAMS.filter(t => t.group === g).map(t => {
+                            const owner = members.find(m => m.teams.includes(t.name));
+                            return (
+                              <div key={t.name} className="group-team">
+                                <span>{t.flag}</span>
+                                <span>{t.name}</span>
+                                {owner && <span className="group-team-owner">{owner.emoji} {owner.name.split(' ')[0]}</span>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* PROGRESS */}
+                {tab === 'progress' && (
+                  <>
+                    <div className="row">
+                      <div className="section-title">TEAM PROGRESS</div>
+                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>Update as matches happen</span>
+                    </div>
+                    {members.map(m => m.teams.length > 0 && (
+                      <div key={m.id} className="progress-member">
+                        <div className="progress-member-title">{m.emoji} {m.name}</div>
+                        {m.teams.map(teamName => {
+                          const team = ALL_TEAMS.find(t => t.name === teamName);
+                          const s = teamStatuses[teamName] || {};
+                          return (
+                            <div key={teamName} className="progress-team-row">
+                              <span style={{ minWidth: 110, fontSize: 12 }}>{team?.flag} {teamName}</span>
+                              <button className="counter-btn" onClick={() => setTeamStatuses(prev => ({ ...prev, [teamName]: { ...(prev[teamName] || {}), groupWins: ((prev[teamName]?.groupWins || 0) + 1) % 4 } }))} style={{ background: 'rgba(100,200,100,0.1)', border: '1px solid rgba(100,200,100,0.2)', color: 'rgba(100,255,100,0.8)' }}>W:{s.groupWins || 0}</button>
+                              <button className="counter-btn" onClick={() => setTeamStatuses(prev => ({ ...prev, [teamName]: { ...(prev[teamName] || {}), groupDraws: ((prev[teamName]?.groupDraws || 0) + 1) % 4 } }))} style={{ background: 'rgba(200,200,80,0.1)', border: '1px solid rgba(200,200,80,0.2)', color: 'rgba(240,240,100,0.8)' }}>D:{s.groupDraws || 0}</button>
+                              {[['eliminated','❌ Out'],['roundOf32','R32'],['quarterFinal','QF'],['semiFinal','SF'],['runnerUp','🥈'],['champion','🏆']].map(([field,label]) => (
+                                <button key={field} className="stage-btn" onClick={() => toggleStatus(teamName, field)} style={{ background: s[field] ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.05)', border: s[field] ? '1px solid rgba(255,215,0,0.4)' : '1px solid rgba(255,255,255,0.1)', color: s[field] ? '#ffd700' : 'rgba(255,255,255,0.45)' }}>{label}</button>
+                              ))}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ))}
+                    {members.every(m => m.teams.length === 0) && (
+                      <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.25)', padding: '40px 0' }}>Assign teams in the Players tab first!</div>
+                    )}
+                  </>
+                )}
+
+                {/* TRASH TALK */}
+                {tab === 'trash' && (
+                  <>
+                    <div className="section-title">💬 TRASH TALK BOARD</div>
+                    <div className="trash-section">
+                      <div className="trash-card">
+                        <div className="trash-title">DROP YOUR HEAT 🔥</div>
+                        <div className="trash-input-row">
+                          <select className="trash-select" value={trashAuthor} onChange={e => setTrashAuthor(e.target.value)}>
+                            <option value="">Who are you?</option>
+                            {members.map(m => <option key={m.id} value={`${m.name} ${m.emoji}`}>{m.emoji} {m.name}</option>)}
+                          </select>
+                        </div>
+                        <div className="trash-input-row">
+                          <input
+                            className="trash-text-input"
+                            placeholder="Type your trash talk..."
+                            value={trashText}
+                            onChange={e => setTrashText(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && sendTrash()}
+                            style={{ flex: 1 }}
+                          />
+                          <button className="trash-send-btn" onClick={sendTrash}>Send 🔥</button>
+                        </div>
+                      </div>
+                      <div className="trash-card">
+                        <div className="trash-title">THE FEED 📣</div>
+                        <div className="trash-messages">
+                          {trashMessages.length === 0
+                            ? <div className="trash-empty">No trash talk yet... someone start it!</div>
+                            : [...trashMessages].reverse().map(msg => (
+                              <div key={msg.id} className="trash-msg">
+                                <div className="trash-msg-author">{msg.author}</div>
+                                <div className="trash-msg-text">{msg.text}</div>
+                                <div className="trash-msg-time">{fmt(msg.time)}</div>
+                              </div>
+                            ))
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+              </div>
+            </div>
+          </>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>
