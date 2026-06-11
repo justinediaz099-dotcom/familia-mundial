@@ -233,6 +233,7 @@
 
       function App() {
         const [tab, setTab] = useState('leaderboard');
+        const [bracketGroup, setBracketGroup] = useState('A');
         const [members, setMembers] = useState(INITIAL_MEMBERS);
         const [teamStatuses, setTeamStatuses] = useState({ "Mexico": { groupWins: 1 } });
         const [emojiPicker, setEmojiPicker] = useState(null);
@@ -352,7 +353,6 @@
                     </div>
                   </>
                 )}
-
                 {/* BRACKET */}
                 {tab === 'bracket' && (() => {
                   const MATCHES = [
@@ -394,7 +394,6 @@
                     { group: 'L', md: 1, date: 'Jun 19', home: 'Ghana', hscore: null, away: 'Panama', ascore: null, played: false },
                   ];
                   const groups = ['A','B','C','D','E','F','G','H','I','J','K','L'];
-                  const [bracketGroup, setBracketGroup] = React.useState('A');
                   const groupMatches = MATCHES.filter(m => m.group === bracketGroup);
                   const getFlag = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
                   const getOwner = name => members.find(m => m.teams.includes(name));
@@ -450,6 +449,7 @@
                     </>
                   );
                 })()}
+
 
                 {/* PLAYERS */}
                 {tab === 'setup' && (
