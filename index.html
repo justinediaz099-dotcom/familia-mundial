@@ -296,7 +296,7 @@
               </div>
 
               <div className="tabs">
-                {[["leaderboard","🏆 Standings"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"],["trash","💬 Trash Talk"]].map(([key,label]) => (
+                {[["leaderboard","🏆 Standings"],["bracket","⚽ Bracket"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"],["trash","💬 Trash Talk"]].map(([key,label]) => (
                   <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
                 ))}
               </div>
@@ -352,6 +352,104 @@
                     </div>
                   </>
                 )}
+
+                {/* BRACKET */}
+                {tab === 'bracket' && (() => {
+                  const MATCHES = [
+                    { group: 'A', md: 1, date: 'Jun 11', home: 'Mexico', hscore: 2, away: 'South Africa', ascore: 0, played: true },
+                    { group: 'A', md: 1, date: 'Jun 11', home: 'South Korea', hscore: null, away: 'Czechia', ascore: null, played: false },
+                    { group: 'A', md: 2, date: 'Jun 18', home: 'Czechia', hscore: null, away: 'South Africa', ascore: null, played: false },
+                    { group: 'A', md: 2, date: 'Jun 18', home: 'Mexico', hscore: null, away: 'South Korea', ascore: null, played: false },
+                    { group: 'A', md: 3, date: 'Jun 24', home: 'Czechia', hscore: null, away: 'Mexico', ascore: null, played: false },
+                    { group: 'A', md: 3, date: 'Jun 24', home: 'South Africa', hscore: null, away: 'South Korea', ascore: null, played: false },
+                    { group: 'B', md: 1, date: 'Jun 12', home: 'Canada', hscore: null, away: 'Bosnia & Herz.', ascore: null, played: false },
+                    { group: 'B', md: 1, date: 'Jun 12', home: 'Qatar', hscore: null, away: 'Switzerland', ascore: null, played: false },
+                    { group: 'B', md: 2, date: 'Jun 19', home: 'Switzerland', hscore: null, away: 'Canada', ascore: null, played: false },
+                    { group: 'B', md: 2, date: 'Jun 19', home: 'Bosnia & Herz.', hscore: null, away: 'Qatar', ascore: null, played: false },
+                    { group: 'B', md: 3, date: 'Jun 25', home: 'Canada', hscore: null, away: 'Qatar', ascore: null, played: false },
+                    { group: 'B', md: 3, date: 'Jun 25', home: 'Switzerland', hscore: null, away: 'Bosnia & Herz.', ascore: null, played: false },
+                    { group: 'C', md: 1, date: 'Jun 12', home: 'Brazil', hscore: null, away: 'Morocco', ascore: null, played: false },
+                    { group: 'C', md: 1, date: 'Jun 13', home: 'Haiti', hscore: null, away: 'Scotland', ascore: null, played: false },
+                    { group: 'C', md: 2, date: 'Jun 19', home: 'Morocco', hscore: null, away: 'Haiti', ascore: null, played: false },
+                    { group: 'C', md: 2, date: 'Jun 20', home: 'Scotland', hscore: null, away: 'Brazil', ascore: null, played: false },
+                    { group: 'C', md: 3, date: 'Jun 26', home: 'Brazil', hscore: null, away: 'Haiti', ascore: null, played: false },
+                    { group: 'C', md: 3, date: 'Jun 26', home: 'Morocco', hscore: null, away: 'Scotland', ascore: null, played: false },
+                    { group: 'D', md: 1, date: 'Jun 13', home: 'USA', hscore: null, away: 'Paraguay', ascore: null, played: false },
+                    { group: 'D', md: 1, date: 'Jun 13', home: 'Australia', hscore: null, away: 'Turkey', ascore: null, played: false },
+                    { group: 'E', md: 1, date: 'Jun 14', home: 'Germany', hscore: null, away: 'Ivory Coast', ascore: null, played: false },
+                    { group: 'E', md: 1, date: 'Jun 14', home: 'Curaçao', hscore: null, away: 'Ecuador', ascore: null, played: false },
+                    { group: 'F', md: 1, date: 'Jun 14', home: 'Netherlands', hscore: null, away: 'Japan', ascore: null, played: false },
+                    { group: 'F', md: 1, date: 'Jun 15', home: 'Sweden', hscore: null, away: 'Tunisia', ascore: null, played: false },
+                    { group: 'G', md: 1, date: 'Jun 15', home: 'Belgium', hscore: null, away: 'Egypt', ascore: null, played: false },
+                    { group: 'G', md: 1, date: 'Jun 15', home: 'Iran', hscore: null, away: 'New Zealand', ascore: null, played: false },
+                    { group: 'H', md: 1, date: 'Jun 16', home: 'Spain', hscore: null, away: 'Cape Verde', ascore: null, played: false },
+                    { group: 'H', md: 1, date: 'Jun 16', home: 'Saudi Arabia', hscore: null, away: 'Uruguay', ascore: null, played: false },
+                    { group: 'I', md: 1, date: 'Jun 16', home: 'France', hscore: null, away: 'Senegal', ascore: null, played: false },
+                    { group: 'I', md: 1, date: 'Jun 17', home: 'Iraq', hscore: null, away: 'Norway', ascore: null, played: false },
+                    { group: 'J', md: 1, date: 'Jun 17', home: 'Argentina', hscore: null, away: 'Algeria', ascore: null, played: false },
+                    { group: 'J', md: 1, date: 'Jun 17', home: 'Austria', hscore: null, away: 'Jordan', ascore: null, played: false },
+                    { group: 'K', md: 1, date: 'Jun 18', home: 'Portugal', hscore: null, away: 'DR Congo', ascore: null, played: false },
+                    { group: 'K', md: 1, date: 'Jun 18', home: 'Uzbekistan', hscore: null, away: 'Colombia', ascore: null, played: false },
+                    { group: 'L', md: 1, date: 'Jun 18', home: 'England', hscore: null, away: 'Croatia', ascore: null, played: false },
+                    { group: 'L', md: 1, date: 'Jun 19', home: 'Ghana', hscore: null, away: 'Panama', ascore: null, played: false },
+                  ];
+                  const groups = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+                  const [bracketGroup, setBracketGroup] = React.useState('A');
+                  const groupMatches = MATCHES.filter(m => m.group === bracketGroup);
+                  const getFlag = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
+                  const getOwner = name => members.find(m => m.teams.includes(name));
+                  return (
+                    <>
+                      <div className="section-title" style={{ marginBottom: 14 }}>⚽ BRACKET & SCORES</div>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 20 }}>
+                        {groups.map(g => (
+                          <button key={g} onClick={() => setBracketGroup(g)} style={{ padding: '5px 13px', borderRadius: 7, border: bracketGroup === g ? '1px solid rgba(255,215,0,0.6)' : '1px solid rgba(255,255,255,0.1)', background: bracketGroup === g ? 'rgba(255,215,0,0.12)' : 'rgba(255,255,255,0.04)', color: bracketGroup === g ? '#ffd700' : 'rgba(255,255,255,0.5)', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600 }}>Group {g}</button>
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {[1,2,3].map(md => {
+                          const mdMatches = groupMatches.filter(m => m.md === md);
+                          if (!mdMatches.length) return null;
+                          return (
+                            <div key={md}>
+                              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Matchday {md}</div>
+                              {mdMatches.map((m, i) => {
+                                const homeOwner = getOwner(m.home);
+                                const awayOwner = getOwner(m.away);
+                                const isWinHome = m.played && m.hscore > m.ascore;
+                                const isWinAway = m.played && m.ascore > m.hscore;
+                                return (
+                                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '12px 18px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }}>
+                                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', minWidth: 44 }}>{m.date}</div>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+                                      <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.home)} {m.home}</div>
+                                        {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name.split(' ')[0]}</div>}
+                                      </div>
+                                    </div>
+                                    <div style={{ textAlign: 'center', minWidth: 60 }}>
+                                      {m.played
+                                        ? <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ffd700' }}>{m.hscore} : {m.ascore}</div>
+                                        : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>vs</div>
+                                      }
+                                      {m.played && <div style={{ fontSize: 9, color: 'rgba(100,255,100,0.6)', letterSpacing: 1 }}>FT</div>}
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6 }}>
+                                      <div style={{ textAlign: 'left' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.away)} {m.away}</div>
+                                        {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name.split(' ')[0]}</div>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+                })()}
 
                 {/* PLAYERS */}
                 {tab === 'setup' && (
