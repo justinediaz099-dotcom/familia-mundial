@@ -297,7 +297,7 @@
               </div>
 
               <div className="tabs">
-                {[["leaderboard","🏆 Standings"],["bracket","📅 Schedule"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"],["trash","💬 Trash Talk"]].map(([key,label]) => (
+                {[["leaderboard","🏆 Standings"],["bracket","📅 Schedule"],["knockout","🏅 Bracket"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"],["trash","💬 Trash Talk"]].map(([key,label]) => (
                   <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
                 ))}
               </div>
@@ -498,7 +498,242 @@
                   );
                 })()}
 
-                {/* PLAYERS */}
+
+                {/* KNOCKOUT BRACKET */}
+                {tab === 'knockout' && (() => {
+                  // R32 slots — 32 teams, top 2 each group + 8 best 3rd place
+                  const R32 = [
+                    // Left half
+                    { id: 'r32-1',  label: '2A', sub: 'Runner-up Group A' },
+                    { id: 'r32-2',  label: '2B', sub: 'Runner-up Group B' },
+                    { id: 'r32-3',  label: '1E', sub: 'Winner Group E' },
+                    { id: 'r32-4',  label: '3ABCDF', sub: 'Best 3rd A/B/C/D/F' },
+                    { id: 'r32-5',  label: '1F', sub: 'Winner Group F' },
+                    { id: 'r32-6',  label: '2C', sub: 'Runner-up Group C' },
+                    { id: 'r32-7',  label: '1C', sub: 'Winner Group C' },
+                    { id: 'r32-8',  label: '2F', sub: 'Runner-up Group F' },
+                    // Right half
+                    { id: 'r32-9',  label: '1I', sub: 'Winner Group I' },
+                    { id: 'r32-10', label: '3CDFGH', sub: 'Best 3rd C/D/F/G/H' },
+                    { id: 'r32-11', label: '2E', sub: 'Runner-up Group E' },
+                    { id: 'r32-12', label: '2I', sub: 'Runner-up Group I' },
+                    { id: 'r32-13', label: '1A', sub: 'Winner Group A' },
+                    { id: 'r32-14', label: '3ABCD', sub: 'Best 3rd A/B/C/D' },
+                    { id: 'r32-15', label: '1D', sub: 'Winner Group D' },
+                    { id: 'r32-16', label: '2D', sub: 'Runner-up Group D' },
+                    { id: 'r32-17', label: '1B', sub: 'Winner Group B' },
+                    { id: 'r32-18', label: '3EFGHIJ', sub: 'Best 3rd E/F/G/H/I/J' },
+                    { id: 'r32-19', label: '2G', sub: 'Runner-up Group G' },
+                    { id: 'r32-20', label: '2J', sub: 'Runner-up Group J' },
+                    { id: 'r32-21', label: '1G', sub: 'Winner Group G' },
+                    { id: 'r32-22', label: '3GHIJK', sub: 'Best 3rd G/H/I/J/K' },
+                    { id: 'r32-23', label: '2H', sub: 'Runner-up Group H' },
+                    { id: 'r32-24', label: '2K', sub: 'Runner-up Group K' },
+                    { id: 'r32-25', label: '1H', sub: 'Winner Group H' },
+                    { id: 'r32-26', label: '3IJKL', sub: 'Best 3rd I/J/K/L' },
+                    { id: 'r32-27', label: '2L', sub: 'Runner-up Group L' },
+                    { id: 'r32-28', label: '1J', sub: 'Winner Group J' },
+                    { id: 'r32-29', label: '1K', sub: 'Winner Group K' },
+                    { id: 'r32-30', label: '3ABCEFG', sub: 'Best 3rd A/B/C/E/F/G' },
+                    { id: 'r32-31', label: '1L', sub: 'Winner Group L' },
+                    { id: 'r32-32', label: '2L', sub: 'Runner-up Group L' },
+                  ];
+
+                  const rounds = [
+                    { key: 'r32',  label: 'Round of 32',   pts: '+2/team',  slots: 32, matchCount: 16 },
+                    { key: 'r16',  label: 'Round of 16',   pts: '+3/team',  slots: 16, matchCount: 8 },
+                    { key: 'qf',   label: 'Quarter-Finals', pts: '+5/team', slots: 8,  matchCount: 4 },
+                    { key: 'sf',   label: 'Semi-Finals',    pts: '+8/team', slots: 4,  matchCount: 2 },
+                    { key: 'f',    label: 'Final',          pts: '+12/team', slots: 2, matchCount: 1 },
+                  ];
+
+                  const SlotCard = ({ label, sub, locked = true }) => (
+                    <div style={{
+                      background: locked ? 'rgba(255,255,255,0.03)' : 'rgba(255,215,0,0.07)',
+                      border: `1px solid ${locked ? 'rgba(255,255,255,0.08)' : 'rgba(255,215,0,0.3)'}`,
+                      borderRadius: 8,
+                      padding: '7px 10px',
+                      minWidth: 130,
+                      maxWidth: 150,
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <div style={{
+                          width: 22, height: 22, borderRadius: '50%',
+                          background: locked ? 'rgba(255,255,255,0.06)' : 'rgba(255,215,0,0.15)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 10, color: locked ? 'rgba(255,255,255,0.3)' : '#ffd700',
+                          flexShrink: 0,
+                        }}>
+                          {locked ? '🔒' : '⚽'}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: locked ? 'rgba(255,255,255,0.55)' : '#ffd700', whiteSpace: 'nowrap' }}>{label}</div>
+                          {sub && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', marginTop: 1 }}>{sub}</div>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+
+                  const MatchPair = ({ topLabel, topSub, botLabel, botSub }) => (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                      <SlotCard label={topLabel} sub={topSub} />
+                      <SlotCard label={botLabel} sub={botSub} />
+                    </div>
+                  );
+
+                  const WinnerSlot = ({ label, sub }) => (
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <SlotCard label={label} sub={sub} locked={false} />
+                    </div>
+                  );
+
+                  // Build R32 match pairs (16 matches)
+                  const r32Pairs = [];
+                  for (let i = 0; i < R32.length; i += 2) {
+                    r32Pairs.push([R32[i], R32[i + 1]]);
+                  }
+
+                  // Placeholder downstream slots
+                  const mkSlots = (count, prefix) =>
+                    Array.from({ length: count }, (_, i) => ({
+                      label: `W ${prefix}-${i + 1}`,
+                      sub: `W ${prefix}-${i + 1}`,
+                    }));
+
+                  const r16Slots  = mkSlots(16, 'r32');
+                  const qfSlots   = mkSlots(8,  'r16');
+                  const sfSlots   = mkSlots(4,  'qf');
+                  const fSlots    = mkSlots(2,  'sf');
+
+                  const ColHeader = ({ label, pts }) => (
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.7)', letterSpacing: 0.5 }}>{label}</div>
+                      <div style={{ fontSize: 10, color: '#ffd700', letterSpacing: 1 }}>{pts}</div>
+                    </div>
+                  );
+
+                  const Connector = () => (
+                    <div style={{ display: 'flex', alignItems: 'center', alignSelf: 'stretch' }}>
+                      <div style={{ width: 18, height: 2, background: 'rgba(255,255,255,0.1)' }} />
+                    </div>
+                  );
+
+                  return (
+                    <>
+                      <div style={{ marginBottom: 14 }}>
+                        <div className="section-title">🏅 KNOCKOUT BRACKET</div>
+                        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 4 }}>
+                          Bracket locks in after group stage ends · Top 2 per group + 8 best 3rd-place teams advance
+                        </div>
+                      </div>
+
+                      {/* Locked banner */}
+                      <div style={{ background: 'rgba(255,165,0,0.08)', border: '1px solid rgba(255,165,0,0.2)', borderRadius: 10, padding: '10px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontSize: 18 }}>🔒</span>
+                        <div>
+                          <div style={{ fontSize: 12, fontWeight: 600, color: 'rgba(255,200,80,0.9)' }}>BRACKET FORMS AFTER GROUP STAGE</div>
+                          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>Round of 32 slots fill automatically · 1/72 groups final</div>
+                        </div>
+                        <div style={{ marginLeft: 'auto', fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>1 / 72 GROUPS FINAL</div>
+                      </div>
+
+                      {/* Bracket scroll area */}
+                      <div style={{ overflowX: 'auto', paddingBottom: 16 }}>
+                        <div style={{ display: 'flex', gap: 0, minWidth: 900 }}>
+
+                          {/* R32 */}
+                          <div style={{ minWidth: 170 }}>
+                            <ColHeader label="ROUND OF 32" pts="+2/TEAM" />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                              {r32Pairs.map((pair, i) => (
+                                <MatchPair key={i}
+                                  topLabel={pair[0].label} topSub={pair[0].sub}
+                                  botLabel={pair[1].label} botSub={pair[1].sub}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* R16 */}
+                          <div style={{ minWidth: 170 }}>
+                            <ColHeader label="ROUND OF 16" pts="+3/TEAM" />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 31 }}>
+                              {Array.from({ length: 8 }, (_, i) => (
+                                <MatchPair key={i}
+                                  topLabel={r16Slots[i * 2].label}     topSub={r16Slots[i * 2].sub}
+                                  botLabel={r16Slots[i * 2 + 1].label} botSub={r16Slots[i * 2 + 1].sub}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* QF */}
+                          <div style={{ minWidth: 170 }}>
+                            <ColHeader label="QUARTER-FINALS" pts="+5/TEAM" />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 95 }}>
+                              {Array.from({ length: 4 }, (_, i) => (
+                                <MatchPair key={i}
+                                  topLabel={qfSlots[i * 2].label}     topSub={qfSlots[i * 2].sub}
+                                  botLabel={qfSlots[i * 2 + 1].label} botSub={qfSlots[i * 2 + 1].sub}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* SF */}
+                          <div style={{ minWidth: 170 }}>
+                            <ColHeader label="SEMI-FINALS" pts="+8/TEAM" />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 255 }}>
+                              {Array.from({ length: 2 }, (_, i) => (
+                                <MatchPair key={i}
+                                  topLabel={sfSlots[i * 2].label}     topSub={sfSlots[i * 2].sub}
+                                  botLabel={sfSlots[i * 2 + 1].label} botSub={sfSlots[i * 2 + 1].sub}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* FINAL */}
+                          <div style={{ minWidth: 170 }}>
+                            <ColHeader label="FINAL" pts="+12/TEAM" />
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 600, paddingTop: 0 }}>
+                              <MatchPair
+                                topLabel={fSlots[0].label} topSub={fSlots[0].sub}
+                                botLabel={fSlots[1].label} botSub={fSlots[1].sub}
+                              />
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* CHAMPION */}
+                          <div style={{ minWidth: 160, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', paddingTop: 30 }}>
+                            <ColHeader label="🏆 CHAMPION" pts="+20/TEAM" />
+                            <div style={{
+                              background: 'rgba(255,215,0,0.07)',
+                              border: '1px solid rgba(255,215,0,0.3)',
+                              borderRadius: 10, padding: '12px 14px',
+                            }}>
+                              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginBottom: 4 }}>🏆 CHAMPION</div>
+                              <div style={{ fontSize: 13, fontWeight: 700, color: '#ffd700' }}>TBD</div>
+                              <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', marginTop: 3 }}>Winner of the Final</div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+
                 {tab === 'setup' && (
                   <>
                     <div className="row"><div className="section-title">MANAGE PLAYERS</div></div>
