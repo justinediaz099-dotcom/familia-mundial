@@ -201,6 +201,10 @@
           .prize-banner { gap: 6px; }
           .prize-card-amount { font-size: 16px; }
         }
+        @keyframes livePulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.3; transform: scale(0.7); }
+        }
       `;
 
       function calcScore(member, teamStatuses) {
@@ -357,7 +361,7 @@
                   const MATCHES = [
                     // GROUP A
                     { group: 'A', md: 1, date: 'Jun 11', home: 'Mexico', hscore: 2, away: 'South Africa', ascore: 0, played: true },
-                    { group: 'A', md: 1, date: 'Jun 11', home: 'South Korea', hscore: null, away: 'Czechia', ascore: null, played: false },
+                    { group: 'A', md: 1, date: 'Jun 11', home: 'South Korea', hscore: 0, away: 'Czechia', ascore: 0, played: false, live: true },
                     { group: 'A', md: 2, date: 'Jun 18', home: 'Czechia', hscore: null, away: 'South Africa', ascore: null, played: false },
                     { group: 'A', md: 2, date: 'Jun 18', home: 'Mexico', hscore: null, away: 'South Korea', ascore: null, played: false },
                     { group: 'A', md: 3, date: 'Jun 24', home: 'Czechia', hscore: null, away: 'Mexico', ascore: null, played: false },
@@ -472,15 +476,20 @@
                                         <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.home)} {m.home}</div>
                                         {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name.split(' ')[0]}</div>}
                                       </div>
-                                    </div>
                                     <div style={{ textAlign: 'center', minWidth: 60 }}>
-                                      {m.played
-                                        ? <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ffd700' }}>{m.hscore} : {m.ascore}</div>
-                                        : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>vs</div>
+                                      {m.live
+                                        ? <>
+                                            <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#fff' }}>{m.hscore} : {m.ascore}</div>
+                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(220,0,0,0.85)', borderRadius: 4, padding: '2px 6px', marginTop: 3 }}>
+                                              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'livePulse 1s ease-in-out infinite' }} />
+                                              <span style={{ fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: 1.5 }}>LIVE</span>
+                                            </div>
+                                          </>
+                                        : m.played
+                                          ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ffd700' }}>{m.hscore} : {m.ascore}</div><div style={{ fontSize: 9, color: 'rgba(100,255,100,0.6)', letterSpacing: 1 }}>FT</div></>
+                                          : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>vs</div>
                                       }
-                                      {m.played && <div style={{ fontSize: 9, color: 'rgba(100,255,100,0.6)', letterSpacing: 1 }}>FT</div>}
                                     </div>
-                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6 }}>
                                       <div style={{ textAlign: 'left' }}>
                                         <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.away)} {m.away}</div>
                                         {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name.split(' ')[0]}</div>}
