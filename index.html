@@ -357,6 +357,7 @@
                   </>
                 )}
                 {/* SCHEDULE */}
+                {tab === 'bracket' && (() => {
                   const MATCHES = [
                     // GROUP A
                     { group: 'A', md: 1, date: 'Jun 11', home: 'Mexico', hscore: 2, away: 'South Africa', ascore: 0, played: true },
@@ -470,14 +471,12 @@
                                 return (
                                   <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: m.live ? '1px solid rgba(220,0,0,0.35)' : '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '12px 18px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }}>
                                     <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', minWidth: 44 }}>{m.date}</div>
-                                    {/* HOME TEAM */}
                                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
                                       <div style={{ textAlign: 'right' }}>
                                         <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.home)} {m.home}</div>
                                         {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name.split(' ')[0]}</div>}
                                       </div>
                                     </div>
-                                    {/* SCORE / STATUS - CENTER */}
                                     <div style={{ textAlign: 'center', minWidth: 72, flexShrink: 0 }}>
                                       {m.live
                                         ? <>
@@ -492,7 +491,6 @@
                                           : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>VS</div>
                                       }
                                     </div>
-                                    {/* AWAY TEAM */}
                                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6 }}>
                                       <div style={{ textAlign: 'left' }}>
                                         <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.away)} {m.away}</div>
