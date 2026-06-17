@@ -24,7 +24,23 @@
 
     </style>
 
-  </head>
+    <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrKB5M4T5FVN41HyC9warU3frRBgC7hOs",
+      authDomain: "familia-mundial-2026.firebaseapp.com",
+      databaseURL: "https://familia-mundial-2026-default-rtdb.firebaseio.com",
+      projectId: "familia-mundial-2026",
+      storageBucket: "familia-mundial-2026.firebasestorage.app",
+      messagingSenderId: "403248586493",
+      appId: "1:403248586493:web:f556aca5a0c08915f8a894"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+</head>
 
   <body>
 
@@ -484,17 +500,33 @@
 
         const [emojiPicker, setEmojiPicker] = useState(null);
 
-        const [trashMessages, setTrashMessages] = useState([
+        const [trashMessages, setTrashMessages] = React.useState([]);
 
-          { id: 1, author: 'Chapetes ⚡', text: "Spain + Netherlands + Norway?? I'm basically ALREADY spending that $100 🤑", time: new Date() },
+        // Firebase: listen for trash talk messages in real-time
+        React.useEffect(() => {
+          const ref = db.ref('trashTalk');
+          ref.on('value', snapshot => {
+            const data = snapshot.val();
+            if (data) {
+              const msgs = Object.entries(data).map(([id, val]) => ({
+                id,
+                author: val.author,
+                text: val.text,
+                time: new Date(val.time)
+              }));
+              msgs.sort((a, b) => new Date(a.time) - new Date(b.time));
+              setTrashMessages(msgs);
+            } else {
+              setTrashMessages([]);
+            }
+          });
+          return () => ref.off();
+        }, []);
 
-          { id: 2, author: 'Justin 🎯', text: 'Brazil alone is worth more than your whole lineup lol', time: new Date() },
 
-        ]);
+        const [trashAuthor, setTrashAuthor] = React.useState('');
 
-        const [trashAuthor, setTrashAuthor] = useState('');
-
-        const [trashText, setTrashText] = useState('');
+        const [trashText, setTrashText] = React.useState('');
 
 
 
@@ -553,11 +585,12 @@
 
 
         const sendTrash = () => {
-
           if (!trashAuthor || !trashText.trim()) return;
-
-          setTrashMessages(prev => [...prev, { id: Date.now(), author: trashAuthor, text: trashText.trim(), time: new Date() }]);
-
+          db.ref('trashTalk').push({
+            author: trashAuthor,
+            text: trashText.trim(),
+            time: new Date().toISOString()
+          });
           setTrashText('');
 
         };
