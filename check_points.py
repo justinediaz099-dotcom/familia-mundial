@@ -32,7 +32,7 @@ roster = [
     ('Evelyn',      ['DR Congo', 'England', 'Argentina']),
     ('Yvette',      ['Mexico', 'South Africa', 'Ecuador']),
     ('Chilo (Tio)', ['Ivory Coast', 'Uzbekistan', 'Canada']),
-    ('Ivy',         ['Jordan', 'Senegal', 'Cape Verde']),
+    ('Ivy',         ['Jordan', 'Senegal', 'Cabo Verde']),
     ('Jose',        ['France', 'Iran', 'Germany']),
     ('Grampa',      ['Scotland', 'New Zealand', 'Saudi Arabia']),
     ('Chapetes',    ['Norway', 'Spain', 'Netherlands']),
