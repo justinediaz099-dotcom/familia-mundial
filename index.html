@@ -122,7 +122,7 @@
 
         { name: "Spain", flag: "🇪🇸", group: "H" },
 
-        { name: "Cape Verde", flag: "🇨🇻", group: "H" },
+        { name: "Cabo Verde", flag: "🇨🇻", group: "H" },
 
         { name: "Saudi Arabia", flag: "🇸🇦", group: "H" },
 
@@ -182,7 +182,7 @@
 
         { id: 8,  name: "Chilo (Tio)",   emoji: "🚀", teams: ["Ivory Coast", "Uzbekistan", "Canada"] },
 
-        { id: 9,  name: "Ivy",           emoji: "🦋", teams: ["Jordan", "Senegal", "Cape Verde"] },
+        { id: 9,  name: "Ivy",           emoji: "🦋", teams: ["Jordan", "Senegal", "Cabo Verde"] },
 
         { id: 10, name: "Jose",          emoji: "⚽", teams: ["France", "Iran", "Germany"] },
 
@@ -496,7 +496,7 @@
 
         const [members, setMembers] = useState(INITIAL_MEMBERS);
 
-        const [teamStatuses, setTeamStatuses] = useState({ "Mexico": { groupWins: 2 }, "South Korea": { groupWins: 1 }, "Czechia": { groupDraws: 1 }, "South Africa": { groupDraws: 1 }, "Canada": { groupWins: 1, groupDraws: 1 }, "Bosnia & Herz.": { groupDraws: 1 }, "Qatar": { groupDraws: 1 }, "Switzerland": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 1, groupDraws: 1 }, "Morocco": { groupWins: 1, groupDraws: 1 }, "Scotland": { groupWins: 1 }, "USA": { groupWins: 2 }, "Australia": { groupWins: 1 }, "Germany": { groupWins: 2 }, "Ivory Coast": { groupWins: 1 }, "Ecuador": { groupDraws: 1 }, "Netherlands": { groupWins: 1, groupDraws: 1 }, "Japan": { groupWins: 1, groupDraws: 1 }, "Sweden": { groupWins: 1 }, "Belgium": { groupDraws: 2 }, "Egypt": { groupDraws: 1 }, "Iran": { groupDraws: 2 }, "New Zealand": { groupDraws: 1 }, "Spain": { groupWins: 1, groupDraws: 1 }, "Cape Verde": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 1 }, "Uruguay": { groupDraws: 1 }, "France": { groupWins: 1 }, "Norway": { groupWins: 1 }, "Argentina": { groupWins: 1 }, "Austria": { groupWins: 1 }, "Portugal": { groupDraws: 1 }, "Paraguay": { groupWins: 1 }, "Curaçao": { groupDraws: 1 }, "DR Congo": { groupDraws: 1 }, "Colombia": { groupWins: 1 }, "England": { groupWins: 1 }, "Ghana": { groupWins: 1 } });
+        const [teamStatuses, setTeamStatuses] = useState({ "Mexico": { groupWins: 2 }, "South Korea": { groupWins: 1 }, "Czechia": { groupDraws: 1 }, "South Africa": { groupDraws: 1 }, "Canada": { groupWins: 1, groupDraws: 1 }, "Bosnia & Herz.": { groupDraws: 1 }, "Qatar": { groupDraws: 1 }, "Switzerland": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 1, groupDraws: 1 }, "Morocco": { groupWins: 1, groupDraws: 1 }, "Scotland": { groupWins: 1 }, "USA": { groupWins: 2 }, "Australia": { groupWins: 1 }, "Germany": { groupWins: 2 }, "Ivory Coast": { groupWins: 1 }, "Ecuador": { groupDraws: 1 }, "Netherlands": { groupWins: 1, groupDraws: 1 }, "Japan": { groupWins: 1, groupDraws: 1 }, "Sweden": { groupWins: 1 }, "Belgium": { groupDraws: 2 }, "Egypt": { groupDraws: 1 }, "Iran": { groupDraws: 2 }, "New Zealand": { groupDraws: 1 }, "Spain": { groupWins: 1, groupDraws: 1 }, "Cabo Verde": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 1 }, "Uruguay": { groupDraws: 1 }, "France": { groupWins: 1 }, "Norway": { groupWins: 1 }, "Argentina": { groupWins: 1 }, "Austria": { groupWins: 1 }, "Portugal": { groupDraws: 1 }, "Paraguay": { groupWins: 1 }, "Curaçao": { groupDraws: 1 }, "DR Congo": { groupDraws: 1 }, "Colombia": { groupWins: 1 }, "England": { groupWins: 1 }, "Ghana": { groupWins: 1 } });
 
         const [emojiPicker, setEmojiPicker] = useState(null);
 
@@ -855,13 +855,13 @@
 
                     // GROUP H
 
-                    { group: 'H', md: 1, date: 'Jun 15', home: 'Spain', hscore: 0, away: 'Cape Verde', ascore: 0, played: true },
+                    { group: 'H', md: 1, date: 'Jun 15', home: 'Spain', hscore: 0, away: 'Cabo Verde', ascore: 0, played: true },
 
                     { group: 'H', md: 1, date: 'Jun 15', home: 'Saudi Arabia', hscore: 1, away: 'Uruguay', ascore: 1, played: true },
 
                     { group: 'H', md: 2, date: 'Jun 21', home: 'Spain', hscore: 4, away: 'Saudi Arabia', ascore: 0, played: true },
 
-                    { group: 'H', md: 2, date: 'Jun 21', home: 'Uruguay', hscore: null, away: 'Cabo Verde', ascore: null, played: false },
+                    { group: 'H', md: 2, date: 'Jun 21', home: 'Uruguay', hscore: 0, away: 'Cabo Verde', ascore: 1, played: false, live: true },
 
                     { group: 'H', md: 3, date: 'Jun 26', home: 'Cabo Verde', hscore: null, away: 'Saudi Arabia', ascore: null, played: false },
 
