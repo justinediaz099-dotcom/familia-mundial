@@ -496,7 +496,7 @@
 
         const [members, setMembers] = useState(INITIAL_MEMBERS);
 
-        const [teamStatuses, setTeamStatuses] = useState({ "Argentina": { groupWins: 2 }, "Australia": { groupWins: 1 }, "Austria": { groupWins: 1 }, "Belgium": { groupDraws: 2 }, "Bosnia & Herz.": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 2, groupDraws: 1 }, "Cabo Verde": { groupDraws: 2 }, "Canada": { groupWins: 1, groupDraws: 1 }, "Colombia": { groupWins: 2 }, "Croatia": { groupWins: 1 }, "Curaçao": { groupDraws: 1 }, "Czechia": { groupDraws: 1 }, "DR Congo": { groupDraws: 1 }, "Ecuador": { groupDraws: 1 }, "Egypt": { groupWins: 1, groupDraws: 1 }, "England": { groupWins: 1, groupDraws: 1 }, "France": { groupWins: 2 }, "Germany": { groupWins: 2 }, "Ghana": { groupWins: 1, groupDraws: 1 }, "Iran": { groupDraws: 2 }, "Ivory Coast": { groupWins: 1 }, "Japan": { groupWins: 1, groupDraws: 1 }, "Mexico": { groupWins: 3 }, "Morocco": { groupWins: 2, groupDraws: 1 }, "Netherlands": { groupWins: 1, groupDraws: 1 }, "New Zealand": { groupDraws: 1 }, "Norway": { groupWins: 2 }, "Paraguay": { groupWins: 1 }, "Portugal": { groupWins: 1, groupDraws: 1 }, "Qatar": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 1 }, "Scotland": { groupWins: 1 }, "South Africa": { groupWins: 1, groupDraws: 1 }, "South Korea": { groupWins: 1 }, "Spain": { groupWins: 1, groupDraws: 1 }, "Sweden": { groupWins: 1 }, "Switzerland": { groupWins: 2, groupDraws: 1 }, "USA": { groupWins: 2 }, "Uruguay": { groupDraws: 2 } });
+        const [teamStatuses, setTeamStatuses] = useState({ "Argentina": { groupWins: 2 }, "Australia": { groupWins: 1 }, "Austria": { groupWins: 1 }, "Belgium": { groupDraws: 2 }, "Bosnia & Herz.": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 2, groupDraws: 1 }, "Cabo Verde": { groupDraws: 2 }, "Canada": { groupWins: 1, groupDraws: 1 }, "Colombia": { groupWins: 2 }, "Croatia": { groupWins: 1 }, "Curaçao": { groupDraws: 1 }, "Czechia": { groupDraws: 1 }, "DR Congo": { groupDraws: 1 }, "Ecuador": { groupWins: 1, groupDraws: 1 }, "Egypt": { groupWins: 1, groupDraws: 1 }, "England": { groupWins: 1, groupDraws: 1 }, "France": { groupWins: 2 }, "Germany": { groupWins: 2 }, "Ghana": { groupWins: 1, groupDraws: 1 }, "Iran": { groupDraws: 2 }, "Ivory Coast": { groupWins: 2 }, "Japan": { groupWins: 1, groupDraws: 1 }, "Mexico": { groupWins: 3 }, "Morocco": { groupWins: 2, groupDraws: 1 }, "Netherlands": { groupWins: 1, groupDraws: 1 }, "New Zealand": { groupDraws: 1 }, "Norway": { groupWins: 2 }, "Paraguay": { groupWins: 1 }, "Portugal": { groupWins: 1, groupDraws: 1 }, "Qatar": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 1 }, "Scotland": { groupWins: 1 }, "South Africa": { groupWins: 1, groupDraws: 1 }, "South Korea": { groupWins: 1 }, "Spain": { groupWins: 1, groupDraws: 1 }, "Sweden": { groupWins: 1 }, "Switzerland": { groupWins: 2, groupDraws: 1 }, "USA": { groupWins: 2 }, "Uruguay": { groupDraws: 2 } });
 
         const [emojiPicker, setEmojiPicker] = useState(null);
 
@@ -821,9 +821,9 @@
 
                     { group: 'E', md: 2, date: 'Jun 20', home: 'Ecuador', hscore: 0, away: 'Curaçao', ascore: 0, played: true },
 
-                    { group: 'E', md: 3, date: 'Jun 25', home: 'Curaçao', hscore: null, away: 'Ivory Coast', ascore: null, played: false },
+                    { group: 'E', md: 3, date: 'Jun 25', home: 'Curaçao', hscore: 0, away: 'Ivory Coast', ascore: 2, played: true },
 
-                    { group: 'E', md: 3, date: 'Jun 25', home: 'Ecuador', hscore: null, away: 'Germany', ascore: null, played: false },
+                    { group: 'E', md: 3, date: 'Jun 25', home: 'Ecuador', hscore: 2, away: 'Germany', ascore: 1, played: true },
 
                     // GROUP F
 
@@ -835,9 +835,9 @@
 
                     { group: 'F', md: 2, date: 'Jun 20', home: 'Tunisia', hscore: 0, away: 'Japan', ascore: 4, played: true },
 
-                    { group: 'F', md: 3, date: 'Jun 25', home: 'Tunisia', hscore: null, away: 'Netherlands', ascore: null, played: false },
+                    { group: 'F', md: 3, date: 'Jun 25', home: 'Tunisia', hscore: 0, away: 'Netherlands', ascore: 2, played: false, live: true },
 
-                    { group: 'F', md: 3, date: 'Jun 25', home: 'Japan', hscore: null, away: 'Sweden', ascore: null, played: false },
+                    { group: 'F', md: 3, date: 'Jun 25', home: 'Japan', hscore: 0, away: 'Sweden', ascore: 0, played: false, live: true },
 
                     // GROUP G
 
