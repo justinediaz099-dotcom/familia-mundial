@@ -2,6 +2,7 @@
 """
 familia-mundial auto-updater
 Polls ESPN scoreboard, detects score/status changes vs index.html, patches and pushes.
+teamStatuses is rebuilt from scratch after every update (never incremented) to stay in sync.
 """
 
 import json, re, subprocess, urllib.request
@@ -17,6 +18,7 @@ ESPN_NAME_MAP = {
     'Bosnia-Herzegovina':     'Bosnia & Herz.',
     'Curacao':                'Cura\u00e7ao',
     'DR Congo':               'DR Congo',
+    'Congo DR':               'DR Congo',
     'Cape Verde':             'Cabo Verde',
     'Cape Verde Islands':     'Cabo Verde',
 }
@@ -68,31 +70,44 @@ def build_replacement(group, md, date, home, hscore, away, ascore, completed, li
             group, md, date, home, hscore, away, ascore)
     return None
 
-def update_team_status(content, team, add_win=False, add_draw=False):
-    pattern = re.compile(r'"' + re.escape(team) + r'": \{ ([^}]+) \}')
-    m = pattern.search(content)
-    if m:
-        existing = m.group(1)
-        wins  = int(re.search(r'groupWins: (\d+)',  existing).group(1)) if 'groupWins'  in existing else 0
-        draws = int(re.search(r'groupDraws: (\d+)', existing).group(1)) if 'groupDraws' in existing else 0
-    else:
-        wins, draws = 0, 0
+def rebuild_team_statuses(content):
+    """
+    Derive teamStatuses entirely from played: true match data.
+    Replaces the entire useState({ ... }) block — no incrementing, always in sync.
+    """
+    wins, draws = {}, {}
+    for line in content.split('\n'):
+        if 'played: true' not in line:
+            continue
+        m = re.search(r"home: '([^']+)', hscore: ([0-9]+), away: '([^']+)', ascore: ([0-9]+)", line)
+        if not m:
+            continue
+        h, hs, a, as_ = m.group(1), int(m.group(2)), m.group(3), int(m.group(4))
+        if hs > as_:
+            wins[h] = wins.get(h, 0) + 1
+        elif hs < as_:
+            wins[a] = wins.get(a, 0) + 1
+        else:
+            draws[h] = draws.get(h, 0) + 1
+            draws[a] = draws.get(a, 0) + 1
 
-    if add_win:  wins  += 1
-    if add_draw: draws += 1
+    # Build new teamStatuses object entries
+    all_teams = sorted(set(wins) | set(draws))
+    entries = []
+    for team in all_teams:
+        w = wins.get(team, 0)
+        d = draws.get(team, 0)
+        parts = []
+        if w: parts.append('groupWins: %d' % w)
+        if d: parts.append('groupDraws: %d' % d)
+        entries.append('"%s": { %s }' % (team, ', '.join(parts)))
 
-    if wins == 0 and draws == 0:
-        return content  # nothing to record
+    new_ts_body = ', '.join(entries)
+    new_ts = 'useState({ %s })' % new_ts_body
 
-    parts = []
-    if wins:  parts.append('groupWins: %d'  % wins)
-    if draws: parts.append('groupDraws: %d' % draws)
-    new_entry = '"%s": { %s }' % (team, ', '.join(parts))
-
-    if m:
-        return content.replace(m.group(0), new_entry, 1)
-    else:
-        return content.replace('useState({ ', 'useState({ %s, ' % new_entry, 1)
+    # Replace the existing useState({ ... }) block
+    updated = re.sub(r'useState\(\{ .+? \}\)', new_ts, content)
+    return updated, wins, draws
 
 def run(dry_run=False):
     log = []
@@ -120,14 +135,12 @@ def run(dry_run=False):
 
         # Find exact match by home+away pair
         m = find_game_line(content, home, away)
-        flipped = False
         if not m:
             # Try flipped (ESPN sometimes uses different home/away)
             m = find_game_line(content, away, home)
             if m:
                 home, away = away, home
                 hscore, ascore = ascore, hscore
-                flipped = True
 
         if not m:
             log.append('NOT FOUND: %s vs %s' % (home, away))
@@ -153,19 +166,11 @@ def run(dry_run=False):
         if not dry_run:
             content = content[:m.start(1)] + new_line + content[m.end(1):]
 
-            if completed:
-                if hscore > ascore:
-                    content = update_team_status(content, home, add_win=True)
-                    log.append('  +W: %s' % home)
-                elif ascore > hscore:
-                    content = update_team_status(content, away, add_win=True)
-                    log.append('  +W: %s' % away)
-                else:
-                    content = update_team_status(content, home, add_draw=True)
-                    content = update_team_status(content, away, add_draw=True)
-                    log.append('  +D: %s, %s' % (home, away))
-
     if changes and not dry_run:
+        # Rebuild teamStatuses from scratch after all match updates
+        content, wins, draws = rebuild_team_statuses(content)
+        log.append('teamStatuses rebuilt from %d played games.' % sum(wins.values()) + sum(draws.values()))
+
         open(INDEX, 'w', encoding='utf-8').write(content)
         msg = 'auto: ' + ' | '.join(changes)
         subprocess.run(['git', 'add', 'index.html'], cwd=REPO_DIR)
