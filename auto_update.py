@@ -12,7 +12,6 @@ ESPN_URL = 'https://site.web.api.espn.com/apis/site/v2/sports/soccer/fifa.world/
 INDEX    = 'C:/Users/diazjuso/Desktop/familia-mundial/index.html'
 REPO_DIR = 'C:/Users/diazjuso/Desktop/familia-mundial'
 
-# ESPN displayName → index.html team name mapping
 ESPN_NAME_MAP = {
     'Bosnia and Herzegovina': 'Bosnia & Herz.',
     'Bosnia-Herzegovina':     'Bosnia & Herz.',
@@ -21,6 +20,9 @@ ESPN_NAME_MAP = {
     'Congo DR':               'DR Congo',
     'Cape Verde':             'Cabo Verde',
     'Cape Verde Islands':     'Cabo Verde',
+    'T\u00fcrkiye':           'Turkey',
+    'Turkiye':                'Turkey',
+    'United States':          'USA',
 }
 
 def espn_to_index_name(name):
@@ -53,7 +55,6 @@ def parse_espn(data):
     return games
 
 def find_game_line(content, home, away):
-    """Find the exact line for home vs away, return match object or None."""
     pattern = re.compile(
         r"(\{ group: '([A-Z])', md: (\d+), date: '([^']+)', home: '" +
         re.escape(home) + r"', hscore: [^,]+, away: '" +
@@ -91,7 +92,6 @@ def rebuild_team_statuses(content):
             draws[h] = draws.get(h, 0) + 1
             draws[a] = draws.get(a, 0) + 1
 
-    # Build new teamStatuses object entries
     all_teams = sorted(set(wins) | set(draws))
     entries = []
     for team in all_teams:
@@ -104,8 +104,6 @@ def rebuild_team_statuses(content):
 
     new_ts_body = ', '.join(entries)
     new_ts = 'useState({ %s })' % new_ts_body
-
-    # Replace the existing useState({ ... }) block
     updated = re.sub(r'useState\(\{ .+? \}\)', new_ts, content)
     return updated, wins, draws
 
@@ -126,20 +124,18 @@ def run(dry_run=False):
     changes = []
 
     for g in games:
-        home, away     = g['home'], g['away']
-        hscore, ascore = g['hscore'], g['ascore']
+        home, away      = g['home'], g['away']
+        hscore, ascore  = g['hscore'], g['ascore']
         completed, live = g['completed'], g['live']
 
         if hscore is None or ascore is None:
             continue
 
-        # Find exact match by home+away pair
         m = find_game_line(content, home, away)
         if not m:
-            # Try flipped (ESPN sometimes uses different home/away)
             m = find_game_line(content, away, home)
             if m:
-                home, away = away, home
+                home, away     = away, home
                 hscore, ascore = ascore, hscore
 
         if not m:
@@ -167,9 +163,9 @@ def run(dry_run=False):
             content = content[:m.start(1)] + new_line + content[m.end(1):]
 
     if changes and not dry_run:
-        # Rebuild teamStatuses from scratch after all match updates
         content, wins, draws = rebuild_team_statuses(content)
-        log.append('teamStatuses rebuilt from %d played games.' % sum(wins.values()) + sum(draws.values()))
+        total_games = sum(wins.values()) + sum(draws.values())
+        log.append('teamStatuses rebuilt from %d played games.' % total_games)
 
         open(INDEX, 'w', encoding='utf-8').write(content)
         msg = 'auto: ' + ' | '.join(changes)
