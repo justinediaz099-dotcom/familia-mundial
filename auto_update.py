@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """
-familia-mundial auto-updater v5.0
+familia-mundial auto-updater v5.1
 Polls ESPN scoreboard, detects score/status changes vs index.html, patches and pushes.
 Handles both group stage (group/md) and knockout round (round) line formats.
 teamStatuses is rebuilt from scratch after every update (never incremented).
 
 v5.0: Auto-advancement flags
   - When a knockout match flips to played:true with a clear winner (hscore != ascore),
-    automatically sets roundOf32/roundOf16/quarterFinal/semiFinal flag on the winning team
-    in teamStatuses (useState block).
-  - Tied scores (extra time / penalties) → logs a NEEDS_WINNER_CONFIRM warning,
-    does NOT set any flag. Justin manually resolves with "X won on pens".
+    automatically sets roundOf32/roundOf16/quarterFinal/semiFinal flag on the winning team.
+  - Tied scores (extra time / penalties) → logs NEEDS_WINNER_CONFIRM warning, waits for manual input.
+
+v5.1: Mirror sync fix
+  - KO match updates now sync ALL three arrays: KO_MATCHES, r32All (r32schedule tab), and
+    the matchId bracket array. Previously the r32schedule sync used a broken offset search,
+    and the matchId array was never touched at all.
+  - New sync_all_ko_mirrors() function handles all three with full-content regex — no offsets.
 """
 
 import json, re, subprocess, urllib.request
@@ -26,8 +30,7 @@ ROUND_FLAG_MAP = {
     'r16': 'roundOf16',
     'qf':  'quarterFinal',
     'sf':  'semiFinal',
-    # Final: winner = champion, loser = runnerUp — handled separately
-    'final': None,
+    'final': None,  # handled separately: champion + runnerUp
 }
 
 ESPN_NAME_MAP = {
@@ -47,7 +50,7 @@ def espn_to_index_name(name):
     return ESPN_NAME_MAP.get(name, name)
 
 def fetch_espn():
-    """Fetch today + next 2 days to catch games in all timezones."""
+    """Fetch today ±2 days to catch games in all timezones."""
     pdt = timezone(timedelta(hours=-7))
     today = datetime.now(pdt)
     all_games = []
@@ -90,7 +93,7 @@ def parse_espn(events):
         })
     return games
 
-# ── Line finders — one for each format ───────────────────────────────────────
+# ── Line finders ──────────────────────────────────────────────────────────────
 
 def find_group_line(content, home, away):
     pattern = re.compile(
@@ -101,6 +104,7 @@ def find_group_line(content, home, away):
     return pattern.search(content)
 
 def find_knockout_line(content, home, away):
+    """Matches KO lines with or without matchId field."""
     pattern = re.compile(
         r"(\{ round: '([^']+)',(?:\s*matchId: \d+,)? date: '([^']+)', home: '" +
         re.escape(home) + r"', hscore: [^,]+, away: '" +
@@ -135,18 +139,83 @@ def build_knockout_replacement(round_name, date, home, hscore, away, ascore, com
             round_name, date, home, hscore, away, ascore)
     return None
 
+# ── Mirror sync: update ALL KO arrays in one pass ────────────────────────────
+
+def sync_all_ko_mirrors(content, home, away, round_name, date, hscore, ascore, completed, live, log):
+    """
+    Sync every KO array in index.html for this match:
+      1. KO_MATCHES (main array) — already patched by caller, skip re-patching
+      2. r32All array (r32schedule tab) — no matchId field
+      3. bracket matchId array (knockout tab) — has matchId field, different spacing
+
+    Uses full-content regex for each pattern — no substring offsets, no missed arrays.
+    """
+    base_line = build_knockout_replacement(round_name, date, home, hscore, away, ascore, completed, live)
+    if not base_line:
+        return content
+
+    synced = []
+
+    # ── Mirror 2: r32All — tight spacing, no matchId ─────────────────────────
+    # Pattern: { round: 'r32', date:'Jun 28', home:'South Africa', hscore:0, away:'Canada', ascore:X, played:... },
+    r32all_pattern = re.compile(
+        r"\{ round: '" + re.escape(round_name) + r"', date:'" + re.escape(date) + r"', home:'" +
+        re.escape(home) + r"', hscore:[^,]+, away:'" + re.escape(away) +
+        r"', ascore:[^,]+, played:(?:true|false)(?:, live:true)? \},"
+    )
+    # Build replacement preserving tight spacing style
+    if completed:
+        r32all_new = "{ round: '%s', date:'%s', home:'%s', hscore:%d, away:'%s', ascore:%d, played:true }," % (
+            round_name, date, home, hscore, away, ascore)
+    elif live:
+        r32all_new = "{ round: '%s', date:'%s', home:'%s', hscore:%d, away:'%s', ascore:%d, played:false, live:true }," % (
+            round_name, date, home, hscore, away, ascore)
+    else:
+        r32all_new = None
+
+    if r32all_new:
+        new_content, n = r32all_pattern.subn(r32all_new, content)
+        if n > 0:
+            content = new_content
+            synced.append('r32All (%d occurrence(s))' % n)
+        else:
+            log.append('MIRROR WARN: r32All pattern not matched for %s vs %s' % (home, away))
+
+    # ── Mirror 3: matchId bracket array — has matchId field, wide spacing ────
+    # Pattern: { round: 'r32', matchId: 0,  date:'Jun 28', home:'South Africa', hscore:0,    away:'Canada',         ascore:X,    played:... },
+    matchid_pattern = re.compile(
+        r"\{ round: '" + re.escape(round_name) + r"', matchId: (\d+),\s+date:'[^']+',\s+home:'" +
+        re.escape(home) + r"',\s+hscore:[^,]+,\s+away:'" + re.escape(away) +
+        r"',\s+ascore:[^,]+,\s+played:(?:true|false)(?:, live:true)? \},"
+    )
+    match = matchid_pattern.search(content)
+    if match:
+        mid = match.group(1)
+        if completed:
+            matchid_new = "{ round: '%s', matchId: %s,  date:'%s', home:'%s', hscore:%d,    away:'%s',         ascore:%d,    played:true }," % (
+                round_name, mid, date, home, hscore, away, ascore)
+        elif live:
+            matchid_new = "{ round: '%s', matchId: %s,  date:'%s', home:'%s', hscore:%d,    away:'%s',         ascore:%d,    played:false, live:true }," % (
+                round_name, mid, date, home, hscore, away, ascore)
+        else:
+            matchid_new = None
+
+        if matchid_new:
+            content = content[:match.start()] + matchid_new + content[match.end():]
+            synced.append('matchId bracket array (matchId=%s)' % mid)
+    else:
+        log.append('MIRROR WARN: matchId pattern not matched for %s vs %s' % (home, away))
+
+    if synced:
+        log.append('SYNCED mirrors: %s — %s vs %s' % (', '.join(synced), home, away))
+
+    return content
+
 # ── Auto-advancement: set winner's flag in teamStatuses ──────────────────────
 
 def apply_advancement_flag(content, winner, round_name, log):
-    """
-    Sets the appropriate advancement flag on `winner` in the useState block.
-    round_name: 'r32', 'r16', 'qf', 'sf', 'final'
-    Final round: winner gets champion: true, logic handled by caller.
-    Returns updated content.
-    """
     flag = ROUND_FLAG_MAP.get(round_name)
     if flag is None:
-        # Final round — handled separately
         return content
 
     existing = re.search(r'useState\(\{ (.+?) \}\)', content)
@@ -155,20 +224,16 @@ def apply_advancement_flag(content, winner, round_name, log):
         return content
 
     ts_str = existing.group(1)
-
-    # Check if flag already set for this team
     team_match = re.search(r'"%s":\s*\{([^}]+)\}' % re.escape(winner), ts_str)
     if team_match and flag + ': true' in team_match.group(1):
         log.append('FLAG ALREADY SET: %s %s: true (skipping)' % (winner, flag))
         return content
 
     if team_match:
-        # Team exists in useState — append flag to their entry
         old_entry = team_match.group(0)
         new_entry = old_entry.rstrip('}').rstrip() + ', %s: true }' % flag
         ts_str = ts_str[:team_match.start()] + new_entry + ts_str[team_match.end():]
     else:
-        # Team not yet in useState (0 group wins/draws) — add new entry
         ts_str = ts_str + ', "%s": { %s: true }' % (winner, flag)
 
     new_useState = 'useState({ %s })' % ts_str
@@ -177,7 +242,6 @@ def apply_advancement_flag(content, winner, round_name, log):
     return content
 
 def apply_final_flags(content, champion, runner_up, log):
-    """Sets champion: true on winner and runnerUp: true on loser."""
     for team, flag in [(champion, 'champion'), (runner_up, 'runnerUp')]:
         existing = re.search(r'useState\(\{ (.+?) \}\)', content)
         if not existing:
@@ -200,12 +264,7 @@ def apply_final_flags(content, champion, runner_up, log):
 # ── teamStatuses rebuild ──────────────────────────────────────────────────────
 
 def rebuild_team_statuses(content):
-    """
-    Recompute groupWins/groupDraws from all played:true GROUP STAGE lines.
-    Knockout advancement flags are preserved from existing useState.
-    """
     wins, draws = {}, {}
-
     for line in content.split('\n'):
         if 'played: true' not in line:
             continue
@@ -236,7 +295,7 @@ def rebuild_team_statuses(content):
     new_ts_body = ', '.join(entries)
     new_ts = 'useState({ %s })' % new_ts_body
 
-    # Preserve knockout flags from existing useState
+    # Preserve KO flags from existing useState
     existing = re.search(r'useState\(\{ (.+?) \}\)', content)
     if existing:
         existing_str = existing.group(1)
@@ -247,10 +306,7 @@ def rebuild_team_statuses(content):
             has_ko = any(f in tdata for f in ko_flags)
             if not has_ko:
                 continue
-            ko_parts = []
-            for flag in ko_flags:
-                if flag + ': true' in tdata:
-                    ko_parts.append('%s: true' % flag)
+            ko_parts = [f + ': true' for f in ko_flags if f + ': true' in tdata]
             if ko_parts:
                 team_pattern = re.compile(r'"%s": \{ ([^}]*) \}' % re.escape(tname))
                 m2 = team_pattern.search(new_ts)
@@ -269,7 +325,7 @@ def rebuild_team_statuses(content):
 def run(dry_run=False):
     log = []
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
-    log.append('=== ESPN auto-update v5.0: %s ===' % now)
+    log.append('=== ESPN auto-update v5.1: %s ===' % now)
 
     try:
         events = fetch_espn()
@@ -307,7 +363,7 @@ def run(dry_run=False):
             md    = int(m.group(3))
             date  = m.group(4)
             new_line = build_group_replacement(group, md, date, home, hscore, away, ascore, completed, live)
-        else:  # knockout
+        else:
             round_name = m.group(2)
             date       = m.group(3)
             new_line   = build_knockout_replacement(round_name, date, home, hscore, away, ascore, completed, live)
@@ -325,23 +381,19 @@ def run(dry_run=False):
         changes.append(label)
 
         if not dry_run:
+            # Patch the primary KO_MATCHES line
             content = content[:m.start(1)] + new_line + content[m.end(1):]
 
-            # Sync r32schedule tab mirror
+            # Sync ALL mirror arrays for knockout matches
             if fmt == 'knockout':
-                r32sched_line = re.sub(r',?\s*matchId: \d+', '', new_line)
-                m2, _ = find_game_line(content[content.find("tab === 'r32schedule'"):], home, away)
-                if m2:
-                    tab_offset = content.find("tab === 'r32schedule'")
-                    abs_start = tab_offset + m2.start(1)
-                    abs_end   = tab_offset + m2.end(1)
-                    content = content[:abs_start] + r32sched_line + content[abs_end:]
-                    log.append('SYNCED r32schedule: %s vs %s' % (home, away))
+                content = sync_all_ko_mirrors(
+                    content, home, away, round_name, date,
+                    hscore, ascore, completed, live, log
+                )
 
-            # ── Auto-advancement on completion ────────────────────────────────
+            # Auto-advancement on completion
             if fmt == 'knockout' and completed:
                 if hscore != ascore:
-                    # Clear winner — auto-set advancement flag
                     winner = home if hscore > ascore else away
                     if round_name == 'final':
                         loser = away if hscore > ascore else home
@@ -349,7 +401,6 @@ def run(dry_run=False):
                     else:
                         content = apply_advancement_flag(content, winner, round_name, log)
                 else:
-                    # Tied at full time — could be pens, wait for manual confirm
                     log.append('NEEDS_WINNER_CONFIRM: %s %d-%d %s — tied at FT, set winner manually' % (
                         home, hscore, ascore, away))
 
