@@ -1330,27 +1330,39 @@
                     return ownerColors[members.findIndex(m => m.id === owner.id) % ownerColors.length];
                   };
 
-                  // SlotCard — flag + team name + owner badge
-                  const SlotCard = ({ label }) => {
+                  // SlotCard — flag + team name + owner badge + elim/winner state
+                  const SlotCard = ({ label, isWinner, isElim }) => {
                     const isTBD = !label || label === 'TBD';
                     const isReal = !isTBD && ALL_TEAMS.some(t => t.name === label);
                     const flag = isReal ? getFlag3(label) : '';
                     const owner = isReal ? getOwner3(label) : null;
                     const ownerColor = isReal ? getOwnerColor(label) : 'rgba(255,255,255,0.15)';
+                    const borderColor = isWinner
+                      ? 'rgba(100,220,100,0.8)'
+                      : isTBD ? 'rgba(255,255,255,0.05)' : ownerColor;
                     return (
                       <div style={{
-                        background: isTBD ? 'rgba(255,255,255,0.015)' : 'rgba(255,255,255,0.06)',
-                        border: isTBD ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(255,255,255,0.14)',
-                        borderLeft: isTBD ? '3px solid rgba(255,255,255,0.05)' : ('3px solid ' + ownerColor),
+                        background: isWinner
+                          ? 'rgba(100,220,100,0.08)'
+                          : isTBD ? 'rgba(255,255,255,0.015)' : 'rgba(255,255,255,0.06)',
+                        border: isWinner
+                          ? '1px solid rgba(100,220,100,0.4)'
+                          : isTBD ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(255,255,255,0.14)',
+                        borderLeft: '3px solid ' + borderColor,
                         borderRadius: 8, padding: '6px 10px', minWidth: 150, maxWidth: 165,
+                        opacity: isElim ? 0.35 : 1,
+                        boxShadow: isWinner ? '0 0 8px rgba(100,220,100,0.3)' : 'none',
                       }}>
                         <div style={{ display:'flex', alignItems:'center', gap:7 }}>
-                          <span style={{ fontSize:18, lineHeight:1, flexShrink:0 }}>{isTBD ? '⏳' : flag}</span>
+                          <span style={{ fontSize:18, lineHeight:1, flexShrink:0 }}>
+                            {isWinner ? '✅' : isElim ? '❌' : isTBD ? '⏳' : flag}
+                          </span>
                           <div style={{ overflow:'hidden' }}>
                             <div style={{
                               fontSize:12, fontWeight:700,
-                              color: isTBD ? 'rgba(255,255,255,0.2)' : '#fff',
+                              color: isWinner ? 'rgba(100,220,100,0.95)' : isTBD ? 'rgba(255,255,255,0.2)' : '#fff',
                               whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
+                              textDecoration: isElim ? 'line-through' : 'none',
                             }}>{isTBD ? 'TBD' : label}</div>
                             {isReal && owner && (
                               <div style={{ fontSize:9, color:ownerColor, marginTop:1, fontWeight:600 }}>
@@ -1363,19 +1375,30 @@
                     );
                   };
 
-                  // MatchPair card — two SlotCards with divider
-                  const MatchPair = ({ top, bot }) => (
-                    <div style={{
-                      display:'flex', flexDirection:'column', gap:2,
-                      background: 'rgba(255,255,255,0.025)',
-                      border:'1px solid rgba(255,255,255,0.07)',
-                      borderRadius:10, padding:'5px 5px',
-                    }}>
-                      <SlotCard label={top} />
-                      <div style={{ height:1, background: 'rgba(255,255,255,0.06)', margin:'2px 4px' }} />
-                      <SlotCard label={bot} />
-                    </div>
-                  );
+                  // MatchPair card — two SlotCards with divider + winner/elim awareness
+                  const MatchPair = ({ top, bot, matchData }) => {
+                    // matchData is the KO_MATCHES entry for this pair (optional — only for played r32 matches)
+                    const played = matchData && matchData.played && matchData.hscore !== null && matchData.ascore !== null;
+                    const winnerTeam = played
+                      ? (matchData.hscore > matchData.ascore ? matchData.home : matchData.ascore > matchData.hscore ? matchData.away : null)
+                      : null;
+                    const topWin = winnerTeam === top;
+                    const botWin = winnerTeam === bot;
+                    const topElim = played && !topWin && !!winnerTeam && top !== 'TBD';
+                    const botElim = played && !botWin && !!winnerTeam && bot !== 'TBD';
+                    return (
+                      <div style={{
+                        display:'flex', flexDirection:'column', gap:2,
+                        background: 'rgba(255,255,255,0.025)',
+                        border:'1px solid rgba(255,255,255,0.07)',
+                        borderRadius:10, padding:'5px 5px',
+                      }}>
+                        <SlotCard label={top} isWinner={topWin} isElim={topElim} />
+                        <div style={{ height:1, background: 'rgba(255,255,255,0.06)', margin:'2px 4px' }} />
+                        <SlotCard label={bot} isWinner={botWin} isElim={botElim} />
+                      </div>
+                    );
+                  };
 
                   const ColHeader = ({ label, pts }) => (
                     <div style={{ marginBottom:10, paddingLeft:4 }}>
@@ -1393,7 +1416,7 @@
                   // Build pair arrays
                   const r32Pairs = Array.from({length:16}, (_,i) => {
                     const m = KO_MATCHES.find(x => x.round === 'r32' && x.matchId === i);
-                    return { top: m.home, bot: m.away };
+                    return { top: m.home, bot: m.away, matchData: m };
                   });
                   const r16Pairs = Array.from({length:8}, (_,i) => ({ top: r32W(i*2)||'TBD', bot: r32W(i*2+1)||'TBD' }));
                   const qfPairs  = Array.from({length:4}, (_,i) => ({ top: r16W(i*2)||'TBD', bot: r16W(i*2+1)||'TBD' }));
@@ -1425,7 +1448,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="ROUND OF 32" pts="+5/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                              {r32Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {r32Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
                             </div>
                           </div>
 
