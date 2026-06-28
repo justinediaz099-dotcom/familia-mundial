@@ -611,7 +611,46 @@
 
         const leaderboard = [...members]
 
-          .map(m => ({ ...m, score: calcScore(m, teamStatuses) }))
+          .map(m
+
+        const KO_MATCHES = [
+                    // R32 (matchId 0-15)
+          { round: 'r32', matchId: 0,  date:'Jun 28', home:'South Africa', hscore:0,    away:'Canada',         ascore:1,    played:true },
+          { round: 'r32', matchId: 1,  date:'Jun 29', home:'Brazil',        hscore:null, away:'Japan',          ascore:null, played:false },
+          { round: 'r32', matchId: 2,  date:'Jun 29', home:'Germany',       hscore:null, away:'Paraguay',       ascore:null, played:false },
+          { round: 'r32', matchId: 3,  date:'Jun 29', home:'Netherlands',   hscore:null, away:'Morocco',        ascore:null, played:false },
+          { round: 'r32', matchId: 4,  date:'Jun 30', home:'Ivory Coast',   hscore:null, away:'Norway',         ascore:null, played:false },
+          { round: 'r32', matchId: 5,  date:'Jun 30', home:'France',        hscore:null, away:'Sweden',         ascore:null, played:false },
+          { round: 'r32', matchId: 6,  date:'Jun 30', home:'Mexico',        hscore:null, away:'Ecuador',        ascore:null, played:false },
+          { round: 'r32', matchId: 7,  date:'Jul 1',  home:'England',       hscore:null, away:'DR Congo',       ascore:null, played:false },
+          { round: 'r32', matchId: 8,  date:'Jul 1',  home:'Belgium',       hscore:null, away:'Senegal',        ascore:null, played:false },
+          { round: 'r32', matchId: 9,  date:'Jul 1',  home:'USA',           hscore:null, away:'Bosnia & Herz.', ascore:null, played:false },
+          { round: 'r32', matchId: 10, date:'Jul 2',  home:'Spain',         hscore:null, away:'Austria',        ascore:null, played:false },
+          { round: 'r32', matchId: 11, date:'Jul 2',  home:'Portugal',      hscore:null, away:'Croatia',        ascore:null, played:false },
+          { round: 'r32', matchId: 12, date:'Jul 2',  home:'Switzerland',   hscore:null, away:'Algeria',        ascore:null, played:false },
+          { round: 'r32', matchId: 13, date:'Jul 3',  home:'Australia',     hscore:null, away:'Egypt',          ascore:null, played:false },
+          { round: 'r32', matchId: 14, date:'Jul 3',  home:'Argentina',     hscore:null, away:'Cabo Verde',     ascore:null, played:false },
+          { round: 'r32', matchId: 15, date:'Jul 3',  home:'Colombia',      hscore:null, away:'Ghana',          ascore:null, played:false },
+                    // R16 (matchId 0-7) — fill home/away manually if scores not derivable
+          { round: 'r16', matchId: 0, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'r16', matchId: 1, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'r16', matchId: 2, date:'Jul 6',  home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'r16', matchId: 3, date:'Jul 6',  home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'r16', matchId: 4, date:'Jul 7',  home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'r16', matchId: 5, date:'Jul 7',  home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'r16', matchId: 6, date:'Jul 8',  home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'r16', matchId: 7, date:'Jul 8',  home:null, hscore:null, away:null, ascore:null, played:false },
+                    // QF (matchId 0-3)
+          { round: 'qf', matchId: 0, date:'Jul 11', home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'qf', matchId: 1, date:'Jul 11', home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'qf', matchId: 2, date:'Jul 12', home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'qf', matchId: 3, date:'Jul 12', home:null, hscore:null, away:null, ascore:null, played:false },
+                    // SF (matchId 0-1)
+          { round: 'sf', matchId: 0, date:'Jul 15', home:null, hscore:null, away:null, ascore:null, played:false },
+          { round: 'sf', matchId: 1, date:'Jul 15', home:null, hscore:null, away:null, ascore:null, played:false },
+                    // Final
+          { round: 'f',  matchId: 0, date:'Jul 19', home:null, hscore:null, away:null, ascore:null, played:false },
+        ]; => ({ ...m, score: calcScore(m, teamStatuses) }))
 
           .sort((a, b) => b.score - a.score);
 
@@ -1237,44 +1276,7 @@
                 {tab === 'knockout' && (() => {
 
                   // ── KO Match Data — update hscore/ascore + played:true as results come in ──
-                  const KO_MATCHES = [
-                    // R32 (matchId 0-15)
-                    { round: 'r32', matchId: 0,  date:'Jun 28', home:'South Africa', hscore:0,    away:'Canada',         ascore:1,    played:true },
-                    { round: 'r32', matchId: 1,  date:'Jun 29', home:'Brazil',        hscore:null, away:'Japan',          ascore:null, played:false },
-                    { round: 'r32', matchId: 2,  date:'Jun 29', home:'Germany',       hscore:null, away:'Paraguay',       ascore:null, played:false },
-                    { round: 'r32', matchId: 3,  date:'Jun 29', home:'Netherlands',   hscore:null, away:'Morocco',        ascore:null, played:false },
-                    { round: 'r32', matchId: 4,  date:'Jun 30', home:'Ivory Coast',   hscore:null, away:'Norway',         ascore:null, played:false },
-                    { round: 'r32', matchId: 5,  date:'Jun 30', home:'France',        hscore:null, away:'Sweden',         ascore:null, played:false },
-                    { round: 'r32', matchId: 6,  date:'Jun 30', home:'Mexico',        hscore:null, away:'Ecuador',        ascore:null, played:false },
-                    { round: 'r32', matchId: 7,  date:'Jul 1',  home:'England',       hscore:null, away:'DR Congo',       ascore:null, played:false },
-                    { round: 'r32', matchId: 8,  date:'Jul 1',  home:'Belgium',       hscore:null, away:'Senegal',        ascore:null, played:false },
-                    { round: 'r32', matchId: 9,  date:'Jul 1',  home:'USA',           hscore:null, away:'Bosnia & Herz.', ascore:null, played:false },
-                    { round: 'r32', matchId: 10, date:'Jul 2',  home:'Spain',         hscore:null, away:'Austria',        ascore:null, played:false },
-                    { round: 'r32', matchId: 11, date:'Jul 2',  home:'Portugal',      hscore:null, away:'Croatia',        ascore:null, played:false },
-                    { round: 'r32', matchId: 12, date:'Jul 2',  home:'Switzerland',   hscore:null, away:'Algeria',        ascore:null, played:false },
-                    { round: 'r32', matchId: 13, date:'Jul 3',  home:'Australia',     hscore:null, away:'Egypt',          ascore:null, played:false },
-                    { round: 'r32', matchId: 14, date:'Jul 3',  home:'Argentina',     hscore:null, away:'Cabo Verde',     ascore:null, played:false },
-                    { round: 'r32', matchId: 15, date:'Jul 3',  home:'Colombia',      hscore:null, away:'Ghana',          ascore:null, played:false },
-                    // R16 (matchId 0-7) — fill home/away manually if scores not derivable
-                    { round: 'r16', matchId: 0, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'r16', matchId: 1, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'r16', matchId: 2, date:'Jul 6',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'r16', matchId: 3, date:'Jul 6',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'r16', matchId: 4, date:'Jul 7',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'r16', matchId: 5, date:'Jul 7',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'r16', matchId: 6, date:'Jul 8',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'r16', matchId: 7, date:'Jul 8',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    // QF (matchId 0-3)
-                    { round: 'qf', matchId: 0, date:'Jul 11', home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'qf', matchId: 1, date:'Jul 11', home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'qf', matchId: 2, date:'Jul 12', home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'qf', matchId: 3, date:'Jul 12', home:null, hscore:null, away:null, ascore:null, played:false },
-                    // SF (matchId 0-1)
-                    { round: 'sf', matchId: 0, date:'Jul 15', home:null, hscore:null, away:null, ascore:null, played:false },
-                    { round: 'sf', matchId: 1, date:'Jul 15', home:null, hscore:null, away:null, ascore:null, played:false },
-                    // Final
-                    { round: 'f',  matchId: 0, date:'Jul 19', home:null, hscore:null, away:null, ascore:null, played:false },
-                  ];
+
 
                   // Winner helper — returns team name or null
                   const mWin = m => {
