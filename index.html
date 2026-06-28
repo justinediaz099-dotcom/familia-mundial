@@ -18,11 +18,41 @@
 
     <style>
 
-      body { margin: 0; min-height: 100vh; background: #0a0e1a; color: #e8eaf0; font-family: 'DM Sans', sans-serif; }
+      body { margin: 0; min-height: 100vh; background: linear-gradient(160deg, #0a2e0a 0%, #0d3b0d 25%, #0a1a2e 65%, #060d1a 100%); color: #e8eaf0; font-family: 'DM Sans', sans-serif; }
 
       #root { min-height: 100vh; }
 
-    </style>
+    
+        /* ── WORLD CUP BACKGROUND BALL ── */
+        @keyframes ballDrift {
+          0%   { transform: translate(0px, 0px) rotate(0deg); }
+          25%  { transform: translate(18px, -22px) rotate(90deg); }
+          50%  { transform: translate(-12px, -40px) rotate(180deg); }
+          75%  { transform: translate(20px, -18px) rotate(270deg); }
+          100% { transform: translate(0px, 0px) rotate(360deg); }
+        }
+        .bg-ball {
+          position: fixed;
+          bottom: -60px;
+          right: -60px;
+          font-size: 420px;
+          line-height: 1;
+          opacity: 0.045;
+          pointer-events: none;
+          z-index: 0;
+          animation: ballDrift 28s ease-in-out infinite;
+          user-select: none;
+          filter: blur(1px);
+        }
+
+        
+        /* ensure app content sits above bg-ball */
+        #root, .app-shell, .app-container {
+          position: relative;
+          z-index: 1;
+        }
+
+        </style>
 
     <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -43,6 +73,8 @@
 </head>
 
   <body>
+    <div class="bg-ball" aria-hidden="true">⚽</div>
+
 
     <div id="root"></div>
 
