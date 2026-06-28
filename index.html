@@ -1146,22 +1146,22 @@
                 {tab === 'r32schedule' && (() => {
 
                   const r32All = [
-                    { round: 'r32', date: 'Jun 28', home: 'South Africa', hscore: null, away: 'Canada',        ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 29', home: 'Brazil',       hscore: null, away: 'Japan',         ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 29', home: 'Germany',      hscore: null, away: 'Paraguay',      ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 29', home: 'Netherlands',  hscore: null, away: 'Morocco',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 30', home: 'Ivory Coast',  hscore: null, away: 'Norway',        ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 30', home: 'France',       hscore: null, away: 'Sweden',        ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 30', home: 'Mexico',       hscore: null, away: 'Ecuador',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 1',  home: 'England',      hscore: null, away: 'DR Congo',      ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 1',  home: 'Belgium',      hscore: null, away: 'Senegal',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 1',  home: 'USA',          hscore: null, away: 'Bosnia & Herz.', ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 2',  home: 'Spain',        hscore: null, away: 'Austria',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 2',  home: 'Portugal',     hscore: null, away: 'Croatia',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 2',  home: 'Switzerland',  hscore: null, away: 'Algeria',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 3',  home: 'Australia',    hscore: null, away: 'Egypt',         ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 3',  home: 'Argentina',    hscore: null, away: 'Cabo Verde',    ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 3',  home: 'Colombia',     hscore: null, away: 'Ghana',         ascore: null, played: false },
+                    { round: 'r32', date:'Jun 28', home:'South Africa', hscore:0, away:'Canada', ascore:0, played:false, live:true },
+                    { round: 'r32', date:'Jun 29', home:'Brazil', hscore:null, away:'Japan', ascore:null, played:false },
+                    { round: 'r32', date:'Jun 29', home:'Germany', hscore:null, away:'Paraguay', ascore:null, played:false },
+                    { round: 'r32', date:'Jun 29', home:'Netherlands', hscore:null, away:'Morocco', ascore:null, played:false },
+                    { round: 'r32', date:'Jun 30', home:'Ivory Coast', hscore:null, away:'Norway', ascore:null, played:false },
+                    { round: 'r32', date:'Jun 30', home:'France', hscore:null, away:'Sweden', ascore:null, played:false },
+                    { round: 'r32', date:'Jun 30', home:'Mexico', hscore:null, away:'Ecuador', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 1', home:'England', hscore:null, away:'DR Congo', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 1', home:'Belgium', hscore:null, away:'Senegal', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 1', home:'USA', hscore:null, away:'Bosnia & Herz.', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 2', home:'Spain', hscore:null, away:'Austria', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 2', home:'Portugal', hscore:null, away:'Croatia', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 2', home:'Switzerland', hscore:null, away:'Algeria', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 3', home:'Australia', hscore:null, away:'Egypt', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 3', home:'Argentina', hscore:null, away:'Cabo Verde', ascore:null, played:false },
+                    { round: 'r32', date:'Jul 3', home:'Colombia', hscore:null, away:'Ghana', ascore:null, played:false },
                   ];
 
                   const getFlag2  = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
