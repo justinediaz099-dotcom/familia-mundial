@@ -712,12 +712,11 @@
 
                     <div className="lb-grid">
 
-                      {leaderboard.map((m, i) => (
-
-                        {(() => {
+                      {leaderboard.map((m, i) => {
                         const memberBusted = m.teams.length > 0 && m.teams.every(tn => !R32_TEAMS.has(tn));
                         return (
-                      <div key={m.id} className={`lb-card ${i < 3 ? `rank-${i+1}` : ''} ${memberBusted ? 'busted' : ''}`}>
+
+                        <div key={m.id} className={`lb-card ${i < 3 ? `rank-${i+1}` : ''} ${memberBusted ? 'busted' : ''}`}>
 
                           <div className={`lb-rank ${i < 3 ? `rank-${i+1}` : ''}`}>{i + 1}</div>
 
@@ -727,7 +726,7 @@
 
                             <div className="lb-name">
 
-                              {m.name}{memberBusted && <span style={{ marginLeft:6, fontSize:14 }} title="All teams eliminated">💀</span>}
+                              {m.name}{memberBusted && <span style={{ marginLeft:6, fontSize:14 }}>💀</span>}
 
                               {i < 3 && <span className="prize-tag" style={{ background: `${PRIZE_COLORS[i+1]}20`, border: `1px solid ${PRIZE_COLORS[i+1]}50`, color: PRIZE_COLORS[i+1] }}>{PRIZES[i+1]}</span>}
 
@@ -761,8 +760,7 @@
 
                         </div>
 
-                      );
-                      })()}
+                      ); })}
 
                     </div>
 
