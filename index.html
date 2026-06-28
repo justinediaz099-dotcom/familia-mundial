@@ -288,7 +288,7 @@
 
         .team-pill { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2px 9px; font-size: 11px; display: flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.65); }
 
-        .team-pill.eliminated { opacity: 0.3; text-decoration: line-through; }
+        .team-pill.eliminated { opacity: 0.28; font-weight: 400; color: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.05); }
 
         .team-pill.advancing { border-color: rgba(100,255,100,0.3); color: #7fff7f; }
 
@@ -464,6 +464,16 @@
 
 
 
+      // Teams that qualified for R32 — derived from KO_MATCHES r32 entries
+      const R32_TEAMS = new Set([
+        'South Africa','Canada','Brazil','Japan','Germany','Paraguay',
+        'Netherlands','Morocco','Ivory Coast','Norway','France','Sweden',
+        'Mexico','Ecuador','England','DR Congo','Belgium','Senegal',
+        'USA','Bosnia & Herz.','Spain','Austria','Portugal','Croatia',
+        'Switzerland','Algeria','Australia','Egypt','Argentina','Cabo Verde',
+        'Colombia','Ghana'
+      ]);
+
       function getTeamStage(teamName, teamStatuses) {
 
         const s = teamStatuses[teamName] || {};
@@ -473,6 +483,9 @@
         if (s.runnerUp || s.semiFinal || s.quarterFinal || s.roundOf32) return 'advancing';
 
         if (s.eliminated) return 'eliminated';
+
+        // Group stage complete — teams not in R32 are eliminated
+        if (!R32_TEAMS.has(teamName)) return 'eliminated';
 
         return 'active';
 
