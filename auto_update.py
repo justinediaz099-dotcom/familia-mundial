@@ -327,6 +327,13 @@ def run(dry_run=False):
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
     log.append('=== ESPN auto-update v5.1: %s ===' % now)
 
+    # Always pull latest before reading — prevents overwriting manual fixes
+    try:
+        pull = subprocess.run(['git', 'pull', '--rebase'], cwd=REPO_DIR, capture_output=True, text=True)
+        log.append('git pull: ' + (pull.stdout or '').strip() + ' ' + (pull.stderr or '').strip())
+    except Exception as ex:
+        log.append('git pull ERROR: %s' % ex)
+
     try:
         events = fetch_espn()
         games  = parse_espn(events)
