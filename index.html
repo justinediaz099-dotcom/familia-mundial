@@ -540,14 +540,12 @@
         // Group stage complete — teams not in R32 are eliminated
         if (!R32_TEAMS.has(teamName)) return 'eliminated';
 
-        // KO round — check if this team lost a played match (and has no advancing flag)
+        // KO stage — check if team lost a played match
         const hasAdvanced = s.roundOf32 || s.roundOf16 || s.quarterFinal || s.semiFinal || s.runnerUp || s.champion;
         if (!hasAdvanced) {
-          const lostKO = km.some(match => {
-            if (!match.played) return false;
-            const loser = match.hscore > match.ascore ? match.away
-                        : match.ascore > match.hscore ? match.home
-                        : null;
+          const lostKO = km.some(m => {
+            if (!m.played) return false;
+            const loser = m.hscore > m.ascore ? m.away : m.ascore > m.hscore ? m.home : null;
             return loser === teamName;
           });
           if (lostKO) return 'eliminated';
@@ -609,12 +607,9 @@
 
 
 
-        const leaderboard = [...members]
-
-          .map(m
 
         const KO_MATCHES = [
-                    // R32 (matchId 0-15)
+          // R32 (matchId 0-15)
           { round: 'r32', matchId: 0,  date:'Jun 28', home:'South Africa', hscore:0,    away:'Canada',         ascore:1,    played:true },
           { round: 'r32', matchId: 1,  date:'Jun 29', home:'Brazil',        hscore:null, away:'Japan',          ascore:null, played:false },
           { round: 'r32', matchId: 2,  date:'Jun 29', home:'Germany',       hscore:null, away:'Paraguay',       ascore:null, played:false },
@@ -631,7 +626,7 @@
           { round: 'r32', matchId: 13, date:'Jul 3',  home:'Australia',     hscore:null, away:'Egypt',          ascore:null, played:false },
           { round: 'r32', matchId: 14, date:'Jul 3',  home:'Argentina',     hscore:null, away:'Cabo Verde',     ascore:null, played:false },
           { round: 'r32', matchId: 15, date:'Jul 3',  home:'Colombia',      hscore:null, away:'Ghana',          ascore:null, played:false },
-                    // R16 (matchId 0-7) — fill home/away manually if scores not derivable
+          // R16 (matchId 0-7) — fill home/away manually if scores not derivable
           { round: 'r16', matchId: 0, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'r16', matchId: 1, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'r16', matchId: 2, date:'Jul 6',  home:null, hscore:null, away:null, ascore:null, played:false },
@@ -640,17 +635,21 @@
           { round: 'r16', matchId: 5, date:'Jul 7',  home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'r16', matchId: 6, date:'Jul 8',  home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'r16', matchId: 7, date:'Jul 8',  home:null, hscore:null, away:null, ascore:null, played:false },
-                    // QF (matchId 0-3)
+          // QF (matchId 0-3)
           { round: 'qf', matchId: 0, date:'Jul 11', home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'qf', matchId: 1, date:'Jul 11', home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'qf', matchId: 2, date:'Jul 12', home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'qf', matchId: 3, date:'Jul 12', home:null, hscore:null, away:null, ascore:null, played:false },
-                    // SF (matchId 0-1)
+          // SF (matchId 0-1)
           { round: 'sf', matchId: 0, date:'Jul 15', home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'sf', matchId: 1, date:'Jul 15', home:null, hscore:null, away:null, ascore:null, played:false },
-                    // Final
+          // Final
           { round: 'f',  matchId: 0, date:'Jul 19', home:null, hscore:null, away:null, ascore:null, played:false },
-        ]; => ({ ...m, score: calcScore(m, teamStatuses) }))
+        ];
+
+        const leaderboard = [...members]
+
+          .map(m => ({ ...m, score: calcScore(m, teamStatuses) }))
 
           .sort((a, b) => b.score - a.score);
 
@@ -1276,7 +1275,6 @@
                 {tab === 'knockout' && (() => {
 
                   // ── KO Match Data — update hscore/ascore + played:true as results come in ──
-
 
                   // Winner helper — returns team name or null
                   const mWin = m => {
