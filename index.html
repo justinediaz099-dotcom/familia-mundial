@@ -539,6 +539,14 @@
         // Group stage complete — teams not in R32 are eliminated
         if (!R32_TEAMS.has(teamName)) return 'eliminated';
 
+        // KO stage — check if this team lost a played KO match (and didn't advance)
+        const lostKO = KO_MATCHES.some(m => {
+          if (!m.played) return false;
+          const loser = m.hscore > m.ascore ? m.away : m.ascore > m.hscore ? m.home : null;
+          return loser === teamName;
+        });
+        if (lostKO && !s.roundOf32 && !s.r16 && !s.qf && !s.sf) return 'eliminated';
+
         return 'active';
 
       }
