@@ -637,7 +637,7 @@
 
               <div className="tabs">
 
-                {[["leaderboard","🏆 Standings"],["bracket","📅 Schedule"],["knockout","🏅 Bracket"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"],["trash","💬 Trash Talk"]].map(([key,label]) => (
+                {[["leaderboard","🏆 Standings"],["bracket","📅 Schedule"],["r32schedule","⚔️ R32 Schedule"],["knockout","🏅 Bracket"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"],["trash","💬 Trash Talk"]].map(([key,label]) => (
 
                   <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
 
@@ -1063,29 +1063,64 @@
                         })}
 
                       </div>
+                    </>
+
+                  );
+
+                })()}
 
 
-                      {/* ── ROUND OF 32 ── */}
-                      <div className="section-title" style={{ marginTop: 28, marginBottom: 14 }}>⚔️ ROUND OF 32</div>
 
-                      {(() => {
-                        const r32Matches = MATCHES.filter(m => m.round === 'r32');
-                        const r32Dates = [...new Set(r32Matches.map(m => m.date))];
-                        return r32Dates.map(date => {
-                          const dayMatches = r32Matches.filter(m => m.date === date);
+
+
+
+
+                {/* R32 SCHEDULE TAB */}
+
+                {tab === 'r32schedule' && (() => {
+
+                  const r32All = [
+                    { round: 'r32', date: 'Jun 28', home: 'South Africa', hscore: null, away: 'Canada',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 29', home: 'Brazil',       hscore: null, away: 'Japan',         ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 29', home: 'Germany',      hscore: null, away: 'Paraguay',      ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 29', home: 'Netherlands',  hscore: null, away: 'Morocco',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 30', home: 'Ivory Coast',  hscore: null, away: 'Norway',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 30', home: 'France',       hscore: null, away: 'Sweden',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 30', home: 'Mexico',       hscore: null, away: 'Ecuador',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 1',  home: 'England',      hscore: null, away: 'DR Congo',      ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 1',  home: 'Belgium',      hscore: null, away: 'Senegal',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 1',  home: 'USA',          hscore: null, away: 'Bosnia & Herz.', ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 2',  home: 'Spain',        hscore: null, away: 'Austria',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 2',  home: 'Portugal',     hscore: null, away: 'Croatia',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 2',  home: 'Switzerland',  hscore: null, away: 'Algeria',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 3',  home: 'Australia',    hscore: null, away: 'Egypt',         ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 3',  home: 'Argentina',    hscore: null, away: 'Cabo Verde',    ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 3',  home: 'Colombia',     hscore: null, away: 'Ghana',         ascore: null, played: false },
+                  ];
+
+                  const getFlag2  = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
+                  const getOwner2 = name => members.find(m => m.teams.includes(name));
+                  const r32Dates  = [...new Set(r32All.map(m => m.date))];
+
+                  return (
+                    <>
+                      <div className="section-title" style={{ marginBottom: 18 }}>⚔️ ROUND OF 32</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {r32Dates.map(date => {
+                          const dayMatches = r32All.filter(m => m.date === date);
                           return (
-                            <div key={date} style={{ marginBottom: 10 }}>
+                            <div key={date}>
                               <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6, paddingLeft: 2 }}>{date}</div>
                               {dayMatches.map((m, i) => {
-                                const homeOwner = getOwner(m.home);
-                                const awayOwner = getOwner(m.away);
+                                const homeOwner = getOwner2(m.home);
+                                const awayOwner = getOwner2(m.away);
                                 const isWinHome = m.played && m.hscore > m.ascore;
                                 const isWinAway = m.played && m.ascore > m.hscore;
                                 return (
                                   <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: m.live ? '1px solid rgba(220,50,50,0.5)' : '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
                                       <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.home)} {m.home}</div>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag2(m.home)} {m.home}</div>
                                         {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name}</div>}
                                       </div>
                                     </div>
@@ -1099,7 +1134,7 @@
                                     </div>
                                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}>
                                       <div style={{ textAlign: 'left' }}>
-                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.away)} {m.away}</div>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag2(m.away)} {m.away}</div>
                                         {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name}</div>}
                                       </div>
                                     </div>
@@ -1108,17 +1143,12 @@
                               })}
                             </div>
                           );
-                        });
-                      })()}
+                        })}
+                      </div>
                     </>
-
                   );
 
                 })()}
-
-
-
-
 
                 {/* KNOCKOUT BRACKET */}
 
@@ -1127,75 +1157,38 @@
                   // R32 slots — 32 teams, top 2 each group + 8 best 3rd place
 
                   const R32 = [
-
-                    // Left half
-
-                    { id: 'r32-1',  label: '2A', sub: 'Runner-up Group A' },
-
-                    { id: 'r32-2',  label: 'Bosnia & Herz.', sub: 'Runner-up Group B' },
-
-                    { id: 'r32-3',  label: '1E', sub: 'Winner Group E' },
-
-                    { id: 'r32-4',  label: '3ABCDF', sub: 'Best 3rd A/B/C/D/F' },
-
-                    { id: 'r32-5',  label: '1F', sub: 'Winner Group F' },
-
-                    { id: 'r32-6',  label: 'Morocco', sub: 'Runner-up Group C' },
-
-                    { id: 'r32-7',  label: 'Brazil', sub: 'Winner Group C' },
-
-                    { id: 'r32-8',  label: '2F', sub: 'Runner-up Group F' },
-
-                    // Right half
-
-                    { id: 'r32-9',  label: 'France', sub: 'Winner Group I' },
-
-                    { id: 'r32-10', label: '3CDFGH', sub: 'Best 3rd C/D/F/G/H' },
-
-                    { id: 'r32-11', label: '2E', sub: 'Runner-up Group E' },
-
-                    { id: 'r32-12', label: 'Norway', sub: 'Runner-up Group I' },
-
-                    { id: 'r32-13', label: 'Mexico', sub: 'Winner Group A' },
-
-                    { id: 'r32-14', label: '3ABCD', sub: 'Best 3rd A/B/C/D' },
-
-                    { id: 'r32-15', label: '1D', sub: 'Winner Group D' },
-
-                    { id: 'r32-16', label: '2D', sub: 'Runner-up Group D' },
-
-                    { id: 'r32-17', label: 'Switzerland', sub: 'Winner Group B' },
-
-                    { id: 'r32-18', label: '3EFGHIJ', sub: 'Best 3rd E/F/G/H/I/J' },
-
-                    { id: 'r32-19', label: '2G', sub: 'Runner-up Group G' },
-
-                    { id: 'r32-20', label: '2J', sub: 'Runner-up Group J' },
-
-                    { id: 'r32-21', label: '1G', sub: 'Winner Group G' },
-
-                    { id: 'r32-22', label: '3GHIJK', sub: 'Best 3rd G/H/I/J/K' },
-
-                    { id: 'r32-23', label: '2H', sub: 'Runner-up Group H' },
-
-                    { id: 'r32-24', label: 'Portugal', sub: 'Runner-up Group K' },
-
-                    { id: 'r32-25', label: '1H', sub: 'Winner Group H' },
-
-                    { id: 'r32-26', label: '3IJKL', sub: 'Best 3rd I/J/K/L' },
-
-                    { id: 'r32-27', label: '2L', sub: 'Runner-up Group L' },
-
-                    { id: 'r32-28', label: '1J', sub: 'Winner Group J' },
-
-                    { id: 'r32-29', label: 'Colombia', sub: 'Winner Group K' },
-
-                    { id: 'r32-30', label: '3ABCEFG', sub: 'Best 3rd A/B/C/E/F/G' },
-
-                    { id: 'r32-31', label: 'England', sub: 'Winner Group L' },
-
-                    { id: 'r32-32', label: '2L', sub: 'Runner-up Group L' },
-
+                    { id: 'r32-1',  label: 'South Africa', sub: 'Jun 28' },
+                    { id: 'r32-2',  label: 'Canada',        sub: 'Jun 28' },
+                    { id: 'r32-3',  label: 'Brazil',        sub: 'Jun 29' },
+                    { id: 'r32-4',  label: 'Japan',         sub: 'Jun 29' },
+                    { id: 'r32-5',  label: 'Germany',       sub: 'Jun 29' },
+                    { id: 'r32-6',  label: 'Paraguay',      sub: 'Jun 29' },
+                    { id: 'r32-7',  label: 'Netherlands',   sub: 'Jun 29' },
+                    { id: 'r32-8',  label: 'Morocco',       sub: 'Jun 29' },
+                    { id: 'r32-9',  label: 'Ivory Coast',   sub: 'Jun 30' },
+                    { id: 'r32-10', label: 'Norway',        sub: 'Jun 30' },
+                    { id: 'r32-11', label: 'France',        sub: 'Jun 30' },
+                    { id: 'r32-12', label: 'Sweden',        sub: 'Jun 30' },
+                    { id: 'r32-13', label: 'Mexico',        sub: 'Jun 30' },
+                    { id: 'r32-14', label: 'Ecuador',       sub: 'Jun 30' },
+                    { id: 'r32-15', label: 'England',       sub: 'Jul 1'  },
+                    { id: 'r32-16', label: 'DR Congo',      sub: 'Jul 1'  },
+                    { id: 'r32-17', label: 'Belgium',       sub: 'Jul 1'  },
+                    { id: 'r32-18', label: 'Senegal',       sub: 'Jul 1'  },
+                    { id: 'r32-19', label: 'USA',           sub: 'Jul 1'  },
+                    { id: 'r32-20', label: 'Bosnia & Herz.', sub: 'Jul 1' },
+                    { id: 'r32-21', label: 'Spain',         sub: 'Jul 2'  },
+                    { id: 'r32-22', label: 'Austria',       sub: 'Jul 2'  },
+                    { id: 'r32-23', label: 'Portugal',      sub: 'Jul 2'  },
+                    { id: 'r32-24', label: 'Croatia',       sub: 'Jul 2'  },
+                    { id: 'r32-25', label: 'Switzerland',   sub: 'Jul 2'  },
+                    { id: 'r32-26', label: 'Algeria',       sub: 'Jul 2'  },
+                    { id: 'r32-27', label: 'Australia',     sub: 'Jul 3'  },
+                    { id: 'r32-28', label: 'Egypt',         sub: 'Jul 3'  },
+                    { id: 'r32-29', label: 'Argentina',     sub: 'Jul 3'  },
+                    { id: 'r32-30', label: 'Cabo Verde',    sub: 'Jul 3'  },
+                    { id: 'r32-31', label: 'Colombia',      sub: 'Jul 3'  },
+                    { id: 'r32-32', label: 'Ghana',         sub: 'Jul 3'  },
                   ];
 
 
