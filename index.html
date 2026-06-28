@@ -1064,6 +1064,52 @@
 
                       </div>
 
+
+                      {/* ── ROUND OF 32 ── */}
+                      <div className="section-title" style={{ marginTop: 28, marginBottom: 14 }}>⚔️ ROUND OF 32</div>
+
+                      {(() => {
+                        const r32Matches = MATCHES.filter(m => m.round === 'r32');
+                        const r32Dates = [...new Set(r32Matches.map(m => m.date))];
+                        return r32Dates.map(date => {
+                          const dayMatches = r32Matches.filter(m => m.date === date);
+                          return (
+                            <div key={date} style={{ marginBottom: 10 }}>
+                              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6, paddingLeft: 2 }}>{date}</div>
+                              {dayMatches.map((m, i) => {
+                                const homeOwner = getOwner(m.home);
+                                const awayOwner = getOwner(m.away);
+                                const isWinHome = m.played && m.hscore > m.ascore;
+                                const isWinAway = m.played && m.ascore > m.hscore;
+                                return (
+                                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: m.live ? '1px solid rgba(220,50,50,0.5)' : '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
+                                      <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.home)} {m.home}</div>
+                                        {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                    <div style={{ textAlign: 'center', minWidth: 72, flexShrink: 0 }}>
+                                      {m.live
+                                        ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ff6464' }}>{m.hscore} – {m.ascore}</div><div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(220,50,50,0.15)', border: '1px solid rgba(220,50,50,0.3)', borderRadius: 10, padding: '2px 7px' }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'livePulse 1.2s infinite' }} /><span style={{ fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: 1.5 }}>LIVE</span></div></>
+                                        : m.played
+                                          ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: 'rgba(255,255,255,0.9)' }}>{m.hscore} – {m.ascore}</div><div style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', letterSpacing: 1 }}>FT</div></>
+                                          : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>VS</div>
+                                      }
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}>
+                                      <div style={{ textAlign: 'left' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.away)} {m.away}</div>
+                                        {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        });
+                      })()}
                     </>
 
                   );
