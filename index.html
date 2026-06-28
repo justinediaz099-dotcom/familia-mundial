@@ -1079,23 +1079,24 @@
 
                 {tab === 'r32schedule' && (() => {
 
+                  // ── Knockout match data (single source of truth — update here + bracket tab KO_MATCHES) ──
                   const r32All = [
-                    { round: 'r32', date: 'Jun 28', home: 'South Africa', hscore: null, away: 'Canada',        ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 29', home: 'Brazil',       hscore: null, away: 'Japan',         ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 29', home: 'Germany',      hscore: null, away: 'Paraguay',      ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 29', home: 'Netherlands',  hscore: null, away: 'Morocco',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 30', home: 'Ivory Coast',  hscore: null, away: 'Norway',        ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 30', home: 'France',       hscore: null, away: 'Sweden',        ascore: null, played: false },
-                    { round: 'r32', date: 'Jun 30', home: 'Mexico',       hscore: null, away: 'Ecuador',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 1',  home: 'England',      hscore: null, away: 'DR Congo',      ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 1',  home: 'Belgium',      hscore: null, away: 'Senegal',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 1',  home: 'USA',          hscore: null, away: 'Bosnia & Herz.', ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 2',  home: 'Spain',        hscore: null, away: 'Austria',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 2',  home: 'Portugal',     hscore: null, away: 'Croatia',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 2',  home: 'Switzerland',  hscore: null, away: 'Algeria',       ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 3',  home: 'Australia',    hscore: null, away: 'Egypt',         ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 3',  home: 'Argentina',    hscore: null, away: 'Cabo Verde',    ascore: null, played: false },
-                    { round: 'r32', date: 'Jul 3',  home: 'Colombia',     hscore: null, away: 'Ghana',         ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 28', home: 'South Africa', hscore: null, away: 'Canada',         ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 29', home: 'Brazil',        hscore: null, away: 'Japan',          ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 29', home: 'Germany',       hscore: null, away: 'Paraguay',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 29', home: 'Netherlands',   hscore: null, away: 'Morocco',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 30', home: 'Ivory Coast',   hscore: null, away: 'Norway',         ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 30', home: 'France',        hscore: null, away: 'Sweden',         ascore: null, played: false },
+                    { round: 'r32', date: 'Jun 30', home: 'Mexico',        hscore: null, away: 'Ecuador',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 1',  home: 'England',       hscore: null, away: 'DR Congo',       ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 1',  home: 'Belgium',       hscore: null, away: 'Senegal',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 1',  home: 'USA',           hscore: null, away: 'Bosnia & Herz.', ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 2',  home: 'Spain',         hscore: null, away: 'Austria',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 2',  home: 'Portugal',      hscore: null, away: 'Croatia',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 2',  home: 'Switzerland',   hscore: null, away: 'Algeria',        ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 3',  home: 'Australia',     hscore: null, away: 'Egypt',          ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 3',  home: 'Argentina',     hscore: null, away: 'Cabo Verde',     ascore: null, played: false },
+                    { round: 'r32', date: 'Jul 3',  home: 'Colombia',      hscore: null, away: 'Ghana',          ascore: null, played: false },
                   ];
 
                   const getFlag2  = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
@@ -1156,40 +1157,101 @@
 
                   // R32 slots — 32 teams, top 2 each group + 8 best 3rd place
 
-                  const R32 = [
-                    { id: 'r32-1',  label: 'South Africa', sub: 'Jun 28' },
-                    { id: 'r32-2',  label: 'Canada',        sub: 'Jun 28' },
-                    { id: 'r32-3',  label: 'Brazil',        sub: 'Jun 29' },
-                    { id: 'r32-4',  label: 'Japan',         sub: 'Jun 29' },
-                    { id: 'r32-5',  label: 'Germany',       sub: 'Jun 29' },
-                    { id: 'r32-6',  label: 'Paraguay',      sub: 'Jun 29' },
-                    { id: 'r32-7',  label: 'Netherlands',   sub: 'Jun 29' },
-                    { id: 'r32-8',  label: 'Morocco',       sub: 'Jun 29' },
-                    { id: 'r32-9',  label: 'Ivory Coast',   sub: 'Jun 30' },
-                    { id: 'r32-10', label: 'Norway',        sub: 'Jun 30' },
-                    { id: 'r32-11', label: 'France',        sub: 'Jun 30' },
-                    { id: 'r32-12', label: 'Sweden',        sub: 'Jun 30' },
-                    { id: 'r32-13', label: 'Mexico',        sub: 'Jun 30' },
-                    { id: 'r32-14', label: 'Ecuador',       sub: 'Jun 30' },
-                    { id: 'r32-15', label: 'England',       sub: 'Jul 1'  },
-                    { id: 'r32-16', label: 'DR Congo',      sub: 'Jul 1'  },
-                    { id: 'r32-17', label: 'Belgium',       sub: 'Jul 1'  },
-                    { id: 'r32-18', label: 'Senegal',       sub: 'Jul 1'  },
-                    { id: 'r32-19', label: 'USA',           sub: 'Jul 1'  },
-                    { id: 'r32-20', label: 'Bosnia & Herz.', sub: 'Jul 1' },
-                    { id: 'r32-21', label: 'Spain',         sub: 'Jul 2'  },
-                    { id: 'r32-22', label: 'Austria',       sub: 'Jul 2'  },
-                    { id: 'r32-23', label: 'Portugal',      sub: 'Jul 2'  },
-                    { id: 'r32-24', label: 'Croatia',       sub: 'Jul 2'  },
-                    { id: 'r32-25', label: 'Switzerland',   sub: 'Jul 2'  },
-                    { id: 'r32-26', label: 'Algeria',       sub: 'Jul 2'  },
-                    { id: 'r32-27', label: 'Australia',     sub: 'Jul 3'  },
-                    { id: 'r32-28', label: 'Egypt',         sub: 'Jul 3'  },
-                    { id: 'r32-29', label: 'Argentina',     sub: 'Jul 3'  },
-                    { id: 'r32-30', label: 'Cabo Verde',    sub: 'Jul 3'  },
-                    { id: 'r32-31', label: 'Colombia',      sub: 'Jul 3'  },
-                    { id: 'r32-32', label: 'Ghana',         sub: 'Jul 3'  },
+                  // ── Knockout match results (update hscore/ascore + played:true as games finish) ──
+                  const KO_MATCHES = [
+                    // R32
+                    { round: 'r32', matchId: 0,  date: 'Jun 28', home: 'South Africa', hscore: null, away: 'Canada',         ascore: null, played: false },
+                    { round: 'r32', matchId: 1,  date: 'Jun 29', home: 'Brazil',        hscore: null, away: 'Japan',          ascore: null, played: false },
+                    { round: 'r32', matchId: 2,  date: 'Jun 29', home: 'Germany',       hscore: null, away: 'Paraguay',       ascore: null, played: false },
+                    { round: 'r32', matchId: 3,  date: 'Jun 29', home: 'Netherlands',   hscore: null, away: 'Morocco',        ascore: null, played: false },
+                    { round: 'r32', matchId: 4,  date: 'Jun 30', home: 'Ivory Coast',   hscore: null, away: 'Norway',         ascore: null, played: false },
+                    { round: 'r32', matchId: 5,  date: 'Jun 30', home: 'France',        hscore: null, away: 'Sweden',         ascore: null, played: false },
+                    { round: 'r32', matchId: 6,  date: 'Jun 30', home: 'Mexico',        hscore: null, away: 'Ecuador',        ascore: null, played: false },
+                    { round: 'r32', matchId: 7,  date: 'Jul 1',  home: 'England',       hscore: null, away: 'DR Congo',       ascore: null, played: false },
+                    { round: 'r32', matchId: 8,  date: 'Jul 1',  home: 'Belgium',       hscore: null, away: 'Senegal',        ascore: null, played: false },
+                    { round: 'r32', matchId: 9,  date: 'Jul 1',  home: 'USA',           hscore: null, away: 'Bosnia & Herz.', ascore: null, played: false },
+                    { round: 'r32', matchId: 10, date: 'Jul 2',  home: 'Spain',         hscore: null, away: 'Austria',        ascore: null, played: false },
+                    { round: 'r32', matchId: 11, date: 'Jul 2',  home: 'Portugal',      hscore: null, away: 'Croatia',        ascore: null, played: false },
+                    { round: 'r32', matchId: 12, date: 'Jul 2',  home: 'Switzerland',   hscore: null, away: 'Algeria',        ascore: null, played: false },
+                    { round: 'r32', matchId: 13, date: 'Jul 3',  home: 'Australia',     hscore: null, away: 'Egypt',          ascore: null, played: false },
+                    { round: 'r32', matchId: 14, date: 'Jul 3',  home: 'Argentina',     hscore: null, away: 'Cabo Verde',     ascore: null, played: false },
+                    { round: 'r32', matchId: 15, date: 'Jul 3',  home: 'Colombia',      hscore: null, away: 'Ghana',          ascore: null, played: false },
+                    // R16 — home/away filled by winners of R32 pairs (matchId 0-1 → R16 matchId 0, etc.)
+                    { round: 'r16', matchId: 0,  date: 'Jul 5',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'r16', matchId: 1,  date: 'Jul 5',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'r16', matchId: 2,  date: 'Jul 6',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'r16', matchId: 3,  date: 'Jul 6',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'r16', matchId: 4,  date: 'Jul 7',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'r16', matchId: 5,  date: 'Jul 7',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'r16', matchId: 6,  date: 'Jul 8',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'r16', matchId: 7,  date: 'Jul 8',  home: null, hscore: null, away: null, ascore: null, played: false },
+                    // QF
+                    { round: 'qf',  matchId: 0,  date: 'Jul 11', home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'qf',  matchId: 1,  date: 'Jul 11', home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'qf',  matchId: 2,  date: 'Jul 12', home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'qf',  matchId: 3,  date: 'Jul 12', home: null, hscore: null, away: null, ascore: null, played: false },
+                    // SF
+                    { round: 'sf',  matchId: 0,  date: 'Jul 15', home: null, hscore: null, away: null, ascore: null, played: false },
+                    { round: 'sf',  matchId: 1,  date: 'Jul 15', home: null, hscore: null, away: null, ascore: null, played: false },
+                    // Final
+                    { round: 'f',   matchId: 0,  date: 'Jul 19', home: null, hscore: null, away: null, ascore: null, played: false },
                   ];
+
+                  // Derive winner of a match (null = not yet decided / draw)
+                  const matchWinner = m => {
+                    if (!m || !m.played) return null;
+                    if (m.hscore > m.ascore) return m.home;
+                    if (m.ascore > m.hscore) return m.away;
+                    return null; // draw — will show TBD until ET/pens resolved manually
+                  };
+
+                  // Get R32 winner for a given matchId
+                  const r32Winner = id => matchWinner(KO_MATCHES.find(m => m.round === 'r32' && m.matchId === id));
+                  // Get R16 winner
+                  const r16Winner = id => {
+                    const m = KO_MATCHES.find(x => x.round === 'r16' && x.matchId === id);
+                    if (m && m.home && m.away) return matchWinner(m);
+                    // derive from R32 winners
+                    const top = r32Winner(id * 2);
+                    const bot = r32Winner(id * 2 + 1);
+                    if (!top || !bot) return null;
+                    const derived = { ...m, home: top, away: bot };
+                    return matchWinner(derived);
+                  };
+                  const qfWinner = id => {
+                    const m = KO_MATCHES.find(x => x.round === 'qf' && x.matchId === id);
+                    if (m && m.home && m.away) return matchWinner(m);
+                    const top = r16Winner(id * 2);
+                    const bot = r16Winner(id * 2 + 1);
+                    if (!top || !bot) return null;
+                    return matchWinner({ ...m, home: top, away: bot });
+                  };
+                  const sfWinner = id => {
+                    const m = KO_MATCHES.find(x => x.round === 'sf' && x.matchId === id);
+                    if (m && m.home && m.away) return matchWinner(m);
+                    const top = qfWinner(id * 2);
+                    const bot = qfWinner(id * 2 + 1);
+                    if (!top || !bot) return null;
+                    return matchWinner({ ...m, home: top, away: bot });
+                  };
+                  const finalWinner = () => {
+                    const m = KO_MATCHES.find(x => x.round === 'f' && x.matchId === 0);
+                    if (m && m.home && m.away) return matchWinner(m);
+                    const top = sfWinner(0);
+                    const bot = sfWinner(1);
+                    if (!top || !bot) return null;
+                    return matchWinner({ ...m, home: top, away: bot });
+                  };
+
+                  // Build slot label (team name or 'TBD')
+                  const slotLabel = (winner) => winner || 'TBD';
+
+                  // R32 match pairs for the bracket column (16 match cards)
+                  const r32Pairs = KO_MATCHES.filter(m => m.round === 'r32').map(m => ({
+                    topLabel: m.home,    topSub: m.date,
+                    botLabel: m.away,    botSub: m.date,
+                    matchId: m.matchId,
+                  }));
 
 
 
@@ -1229,13 +1291,18 @@
                     const owner = getOwner3(label);
                     const ownerColor = getOwnerColor(label);
                     const isReal = ALL_TEAMS.some(t => t.name === label);
+                    const isTBD = label === 'TBD' || label === null || label === undefined || label.startsWith('W ');
                     return (
                       <div style={{
-                        background: locked
-                          ? (isReal ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.02)')
-                          : 'rgba(255,215,0,0.1)',
-                        border: `1px solid ${locked ? (isReal ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.05)') : 'rgba(255,215,0,0.4)'}`,
-                        borderLeft: isReal ? `3px solid ${ownerColor}` : `3px solid rgba(255,255,255,0.08)`,
+                        background: isTBD
+                          ? 'rgba(255,255,255,0.015)'
+                          : (locked ? 'rgba(255,255,255,0.06)' : 'rgba(255,215,0,0.1)'),
+                        border: isTBD
+                          ? '1px solid rgba(255,255,255,0.04)'
+                          : `1px solid ${locked ? 'rgba(255,255,255,0.14)' : 'rgba(255,215,0,0.4)'}`,
+                        borderLeft: isTBD
+                          ? '3px solid rgba(255,255,255,0.05)'
+                          : (isReal ? `3px solid ${ownerColor}` : '3px solid rgba(255,255,255,0.08)'),
                         borderRadius: 8,
                         padding: '6px 10px',
                         minWidth: 150,
@@ -1243,11 +1310,11 @@
                         transition: 'all 0.2s',
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                          <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{isReal ? flag : '🔒'}</span>
+                          <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0 }}>{isTBD ? '⏳' : (isReal ? flag : '🔒')}</span>
                           <div style={{ overflow: 'hidden' }}>
                             <div style={{
                               fontSize: 12, fontWeight: 700,
-                              color: locked ? (isReal ? '#fff' : 'rgba(255,255,255,0.3)') : '#ffd700',
+                              color: isTBD ? 'rgba(255,255,255,0.2)' : (locked ? (isReal ? '#fff' : 'rgba(255,255,255,0.3)') : '#ffd700'),
                               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                             }}>{label}</div>
                             {isReal && owner && (
@@ -1293,39 +1360,24 @@
 
 
 
-                  // Build R32 match pairs (16 matches)
-
-                  const r32Pairs = [];
-
-                  for (let i = 0; i < R32.length; i += 2) {
-
-                    r32Pairs.push([R32[i], R32[i + 1]]);
-
-                  }
-
-
-
-                  // Placeholder downstream slots
-
-                  const mkSlots = (count, prefix) =>
-
-                    Array.from({ length: count }, (_, i) => ({
-
-                      label: `W ${prefix}-${i + 1}`,
-
-                      sub: `W ${prefix}-${i + 1}`,
-
-                    }));
-
-
-
-                  const r16Slots  = mkSlots(16, 'r32');
-
-                  const qfSlots   = mkSlots(8,  'r16');
-
-                  const sfSlots   = mkSlots(4,  'qf');
-
-                  const fSlots    = mkSlots(2,  'sf');
+                  // Live downstream slots derived from KO_MATCHES winners
+                  const r16Pairs = Array.from({ length: 8 }, (_, i) => ({
+                    topLabel: slotLabel(r32Winner(i * 2)),     topSub: 'W R32',
+                    botLabel: slotLabel(r32Winner(i * 2 + 1)), botSub: 'W R32',
+                  }));
+                  const qfPairs = Array.from({ length: 4 }, (_, i) => ({
+                    topLabel: slotLabel(r16Winner(i * 2)),     topSub: 'W R16',
+                    botLabel: slotLabel(r16Winner(i * 2 + 1)), botSub: 'W R16',
+                  }));
+                  const sfPairs = Array.from({ length: 2 }, (_, i) => ({
+                    topLabel: slotLabel(qfWinner(i * 2)),     topSub: 'W QF',
+                    botLabel: slotLabel(qfWinner(i * 2 + 1)), botSub: 'W QF',
+                  }));
+                  const finalPair = {
+                    topLabel: slotLabel(sfWinner(0)), topSub: 'W SF',
+                    botLabel: slotLabel(sfWinner(1)), botSub: 'W SF',
+                  };
+                  const champion = finalWinner();
 
 
 
@@ -1404,17 +1456,14 @@
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
 
+
                               {r32Pairs.map((pair, i) => (
-
                                 <MatchPair key={i}
-
-                                  topLabel={pair[0].label} topSub={pair[0].sub}
-
-                                  botLabel={pair[1].label} botSub={pair[1].sub}
-
+                                  topLabel={pair.topLabel} topSub={pair.topSub}
+                                  botLabel={pair.botLabel} botSub={pair.botSub}
                                 />
-
                               ))}
+
 
                             </div>
 
@@ -1436,15 +1485,14 @@
 
                               {Array.from({ length: 8 }, (_, i) => (
 
+
+                              {r16Pairs.map((pair, i) => (
                                 <MatchPair key={i}
-
-                                  topLabel={r16Slots[i * 2].label}     topSub={r16Slots[i * 2].sub}
-
-                                  botLabel={r16Slots[i * 2 + 1].label} botSub={r16Slots[i * 2 + 1].sub}
-
+                                  topLabel={pair.topLabel} topSub={pair.topSub}
+                                  botLabel={pair.botLabel} botSub={pair.botSub}
                                 />
-
                               ))}
+
 
                             </div>
 
@@ -1466,15 +1514,14 @@
 
                               {Array.from({ length: 4 }, (_, i) => (
 
+
+                              {qfPairs.map((pair, i) => (
                                 <MatchPair key={i}
-
-                                  topLabel={qfSlots[i * 2].label}     topSub={qfSlots[i * 2].sub}
-
-                                  botLabel={qfSlots[i * 2 + 1].label} botSub={qfSlots[i * 2 + 1].sub}
-
+                                  topLabel={pair.topLabel} topSub={pair.topSub}
+                                  botLabel={pair.botLabel} botSub={pair.botSub}
                                 />
-
                               ))}
+
 
                             </div>
 
@@ -1496,15 +1543,14 @@
 
                               {Array.from({ length: 2 }, (_, i) => (
 
+
+                              {sfPairs.map((pair, i) => (
                                 <MatchPair key={i}
-
-                                  topLabel={sfSlots[i * 2].label}     topSub={sfSlots[i * 2].sub}
-
-                                  botLabel={sfSlots[i * 2 + 1].label} botSub={sfSlots[i * 2 + 1].sub}
-
+                                  topLabel={pair.topLabel} topSub={pair.topSub}
+                                  botLabel={pair.botLabel} botSub={pair.botSub}
                                 />
-
                               ))}
+
 
                             </div>
 
@@ -1524,13 +1570,12 @@
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 600, paddingTop: 0 }}>
 
+
                               <MatchPair
-
-                                topLabel={fSlots[0].label} topSub={fSlots[0].sub}
-
-                                botLabel={fSlots[1].label} botSub={fSlots[1].sub}
-
+                                topLabel={finalPair.topLabel} topSub={finalPair.topSub}
+                                botLabel={finalPair.botLabel} botSub={finalPair.botSub}
                               />
+
 
                             </div>
 
@@ -1551,8 +1596,13 @@
                               borderRadius: 12, padding: '14px 16px',
                               boxShadow: '0 0 20px rgba(255,215,0,0.15)',
                             }}>
-                              <div style={{ fontSize: 28, textAlign: 'center', marginBottom: 6 }}>🏆</div>
-                              <div style={{ fontSize: 13, fontWeight: 800, color: '#ffd700', textAlign: 'center', letterSpacing: 1 }}>TBD</div>
+                              <div style={{ fontSize: 28, textAlign: 'center', marginBottom: 6 }}>{champion ? getFlag3(champion) : '🏆'}</div>
+                              <div style={{ fontSize: 13, fontWeight: 800, color: '#ffd700', textAlign: 'center', letterSpacing: 1 }}>{champion || 'TBD'}</div>
+                              {champion && getOwner3(champion) && (
+                                <div style={{ fontSize: 10, color: getOwnerColor(champion), textAlign: 'center', marginTop: 4, fontWeight: 700 }}>
+                                  {getOwner3(champion).emoji} {getOwner3(champion).name}
+                                </div>
+                              )}
                               <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', textAlign: 'center', marginTop: 4, letterSpacing: 1 }}>WINNER OF THE FINAL</div>
                             </div>
                           </div>
