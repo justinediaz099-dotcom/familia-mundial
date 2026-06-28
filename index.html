@@ -1317,7 +1317,9 @@
                   };
 
                   // SlotCard — flag + team name + owner badge
-                  const SlotCard = ({ label }) => {
+                  // dimmed=true → eliminated team (lost their round), shown faded with ❌
+                  // winner=true → advancing team, shown with subtle green glow
+                  const SlotCard = ({ label, dimmed, winner }) => {
                     const isTBD = !label || label === 'TBD';
                     const isReal = !isTBD && ALL_TEAMS.some(t => t.name === label);
                     const flag = isReal ? getFlag3(label) : '';
@@ -1325,21 +1327,38 @@
                     const ownerColor = isReal ? getOwnerColor(label) : 'rgba(255,255,255,0.15)';
                     return (
                       <div style={{
-                        background: isTBD ? 'rgba(255,255,255,0.015)' : 'rgba(255,255,255,0.06)',
-                        border: isTBD ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(255,255,255,0.14)',
-                        borderLeft: isTBD ? '3px solid rgba(255,255,255,0.05)' : ('3px solid ' + ownerColor),
+                        background: dimmed  ? 'rgba(255,255,255,0.01)'
+                                  : winner  ? 'rgba(100,220,100,0.08)'
+                                  : isTBD   ? 'rgba(255,255,255,0.015)'
+                                  :           'rgba(255,255,255,0.06)',
+                        border: dimmed  ? '1px solid rgba(255,255,255,0.04)'
+                              : winner  ? '1px solid rgba(100,220,100,0.3)'
+                              : isTBD   ? '1px solid rgba(255,255,255,0.04)'
+                              :           '1px solid rgba(255,255,255,0.14)',
+                        borderLeft: dimmed  ? '3px solid rgba(255,50,50,0.25)'
+                                  : winner  ? '3px solid rgba(100,220,100,0.7)'
+                                  : isTBD   ? '3px solid rgba(255,255,255,0.05)'
+                                  :           ('3px solid ' + ownerColor),
                         borderRadius: 8, padding: '6px 10px', minWidth: 150, maxWidth: 165,
+                        opacity: dimmed ? 0.35 : 1,
+                        transition: 'opacity 0.3s',
                       }}>
                         <div style={{ display:'flex', alignItems:'center', gap:7 }}>
-                          <span style={{ fontSize:18, lineHeight:1, flexShrink:0 }}>{isTBD ? '⏳' : flag}</span>
+                          <span style={{ fontSize:18, lineHeight:1, flexShrink:0 }}>
+                            {dimmed ? '❌' : winner ? '✅' : isTBD ? '⏳' : flag}
+                          </span>
                           <div style={{ overflow:'hidden' }}>
                             <div style={{
-                              fontSize:12, fontWeight:700,
-                              color: isTBD ? 'rgba(255,255,255,0.2)' : '#fff',
+                              fontSize:12, fontWeight: dimmed ? 400 : 700,
+                              color: dimmed ? 'rgba(255,255,255,0.35)'
+                                   : winner ? 'rgba(100,255,130,0.95)'
+                                   : isTBD  ? 'rgba(255,255,255,0.2)'
+                                   :          '#fff',
                               whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
+                              textDecoration: dimmed ? 'line-through' : 'none',
                             }}>{isTBD ? 'TBD' : label}</div>
                             {isReal && owner && (
-                              <div style={{ fontSize:9, color:ownerColor, marginTop:1, fontWeight:600 }}>
+                              <div style={{ fontSize:9, color: dimmed ? 'rgba(255,255,255,0.2)' : ownerColor, marginTop:1, fontWeight:600 }}>
                                 {owner.emoji} {owner.name}
                               </div>
                             )}
@@ -1350,18 +1369,25 @@
                   };
 
                   // MatchPair card — two SlotCards with divider
-                  const MatchPair = ({ top, bot }) => (
-                    <div style={{
-                      display:'flex', flexDirection:'column', gap:2,
-                      background: 'rgba(255,255,255,0.025)',
-                      border:'1px solid rgba(255,255,255,0.07)',
-                      borderRadius:10, padding:'5px 5px',
-                    }}>
-                      <SlotCard label={top} />
-                      <div style={{ height:1, background: 'rgba(255,255,255,0.06)', margin:'2px 4px' }} />
-                      <SlotCard label={bot} />
-                    </div>
-                  );
+                  // winnerTeam: name of the team that won this match (dims the loser, highlights winner)
+                  const MatchPair = ({ top, bot, winnerTeam }) => {
+                    const topDimmed  = winnerTeam && top  && top  !== 'TBD' && top  !== winnerTeam;
+                    const botDimmed  = winnerTeam && bot  && bot  !== 'TBD' && bot  !== winnerTeam;
+                    const topWinner  = winnerTeam && top  === winnerTeam;
+                    const botWinner  = winnerTeam && bot  === winnerTeam;
+                    return (
+                      <div style={{
+                        display:'flex', flexDirection:'column', gap:2,
+                        background: 'rgba(255,255,255,0.025)',
+                        border:'1px solid rgba(255,255,255,0.07)',
+                        borderRadius:10, padding:'5px 5px',
+                      }}>
+                        <SlotCard label={top} dimmed={topDimmed} winner={topWinner} />
+                        <div style={{ height:1, background: 'rgba(255,255,255,0.06)', margin:'2px 4px' }} />
+                        <SlotCard label={bot} dimmed={botDimmed} winner={botWinner} />
+                      </div>
+                    );
+                  };
 
                   const ColHeader = ({ label, pts }) => (
                     <div style={{ marginBottom:10, paddingLeft:4 }}>
@@ -1379,11 +1405,23 @@
                   // Build pair arrays
                   const r32Pairs = Array.from({length:16}, (_,i) => {
                     const m = KO_MATCHES.find(x => x.round === 'r32' && x.matchId === i);
-                    return { top: m.home, bot: m.away };
+                    return { top: m.home, bot: m.away, winnerTeam: mWin(m) };
                   });
-                  const r16Pairs = Array.from({length:8}, (_,i) => ({ top: r32W(i*2)||'TBD', bot: r32W(i*2+1)||'TBD' }));
-                  const qfPairs  = Array.from({length:4}, (_,i) => ({ top: r16W(i*2)||'TBD', bot: r16W(i*2+1)||'TBD' }));
-                  const sfPairs  = Array.from({length:2}, (_,i) => ({ top: qfW(i*2)||'TBD',  bot: qfW(i*2+1)||'TBD'  }));
+                  const r16Pairs_built = Array.from({length:8}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'r16' && x.matchId === i);
+                    return { top: r32W(i*2)||'TBD', bot: r32W(i*2+1)||'TBD', winnerTeam: mWin(m) };
+                  });
+                  const qfPairs_built  = Array.from({length:4}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'qf' && x.matchId === i);
+                    return { top: r16W(i*2)||'TBD', bot: r16W(i*2+1)||'TBD', winnerTeam: mWin(m) };
+                  });
+                  const sfPairs_built  = Array.from({length:2}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'sf' && x.matchId === i);
+                    return { top: qfW(i*2)||'TBD',  bot: qfW(i*2+1)||'TBD',  winnerTeam: mWin(m) };
+                  });
+                  // r16Pairs — now built above with winnerTeam
+                  // qfPairs — now built above with winnerTeam
+                  // sfPairs — now built above with winnerTeam
                   const finalPair = { top: sfW(0)||'TBD', bot: sfW(1)||'TBD' };
 
                   return (
@@ -1411,7 +1449,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="ROUND OF 32" pts="+5/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-                              {r32Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {r32Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} winnerTeam={p.winnerTeam} />)}
                             </div>
                           </div>
 
@@ -1421,7 +1459,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="ROUND OF 16" pts="+8/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:31 }}>
-                              {r16Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {r16Pairs_built.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} winnerTeam={p.winnerTeam} />)}
                             </div>
                           </div>
 
@@ -1431,7 +1469,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="QUARTER-FINALS" pts="+10/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:95 }}>
-                              {qfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {qfPairs_built.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} winnerTeam={p.winnerTeam} />)}
                             </div>
                           </div>
 
@@ -1441,7 +1479,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="SEMI-FINALS" pts="+20/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:255 }}>
-                              {sfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {sfPairs_built.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} winnerTeam={p.winnerTeam} />)}
                             </div>
                           </div>
 
@@ -1451,7 +1489,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="FINAL" pts="+35/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', paddingTop:0 }}>
-                              <MatchPair top={finalPair.top} bot={finalPair.bot} />
+                              <MatchPair top={finalPair.top} bot={finalPair.bot} winnerTeam={champion} />
                             </div>
                           </div>
 
