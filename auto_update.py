@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 """
-familia-mundial auto-updater v4.0
+familia-mundial auto-updater v5.0
 Polls ESPN scoreboard, detects score/status changes vs index.html, patches and pushes.
 Handles both group stage (group/md) and knockout round (round) line formats.
 teamStatuses is rebuilt from scratch after every update (never incremented).
+
+v5.0: Auto-advancement flags
+  - When a knockout match flips to played:true with a clear winner (hscore != ascore),
+    automatically sets roundOf32/roundOf16/quarterFinal/semiFinal flag on the winning team
+    in teamStatuses (useState block).
+  - Tied scores (extra time / penalties) → logs a NEEDS_WINNER_CONFIRM warning,
+    does NOT set any flag. Justin manually resolves with "X won on pens".
 """
 
 import json, re, subprocess, urllib.request
@@ -12,6 +19,16 @@ from datetime import datetime, timedelta, timezone
 ESPN_URL = 'https://site.web.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard'
 INDEX    = 'C:/Users/diazjuso/Desktop/familia-mundial/index.html'
 REPO_DIR = 'C:/Users/diazjuso/Desktop/familia-mundial'
+
+# Maps each knockout round to the flag awarded to the winner
+ROUND_FLAG_MAP = {
+    'r32': 'roundOf32',
+    'r16': 'roundOf16',
+    'qf':  'quarterFinal',
+    'sf':  'semiFinal',
+    # Final: winner = champion, loser = runnerUp — handled separately
+    'final': None,
+}
 
 ESPN_NAME_MAP = {
     'Bosnia and Herzegovina': 'Bosnia & Herz.',
@@ -76,7 +93,6 @@ def parse_espn(events):
 # ── Line finders — one for each format ───────────────────────────────────────
 
 def find_group_line(content, home, away):
-    """Matches:  { group: 'X', md: N, date: '...', home: '...', hscore: ..., away: '...', ascore: ..., played: bool },"""
     pattern = re.compile(
         r"(\{ group: '([A-Z])', md: (\d+), date: '([^']+)', home: '" +
         re.escape(home) + r"', hscore: [^,]+, away: '" +
@@ -85,16 +101,14 @@ def find_group_line(content, home, away):
     return pattern.search(content)
 
 def find_knockout_line(content, home, away):
-    """Matches:  { round: 'r32', date: '...', home: '...', hscore: ..., away: '...', ascore: ..., played: bool },"""
     pattern = re.compile(
-        r"(\{ round: '([^']+)', date: '([^']+)', home: '" +
+        r"(\{ round: '([^']+)',(?:\s*matchId: \d+,)? date: '([^']+)', home: '" +
         re.escape(home) + r"', hscore: [^,]+, away: '" +
         re.escape(away) + r"', ascore: [^,]+, played: (?:true|false)(?:, live: true)? \},)"
     )
     return pattern.search(content)
 
 def find_game_line(content, home, away):
-    """Try group format first, then knockout format."""
     m = find_group_line(content, home, away)
     if m:
         return m, 'group'
@@ -121,19 +135,80 @@ def build_knockout_replacement(round_name, date, home, hscore, away, ascore, com
             round_name, date, home, hscore, away, ascore)
     return None
 
+# ── Auto-advancement: set winner's flag in teamStatuses ──────────────────────
+
+def apply_advancement_flag(content, winner, round_name, log):
+    """
+    Sets the appropriate advancement flag on `winner` in the useState block.
+    round_name: 'r32', 'r16', 'qf', 'sf', 'final'
+    Final round: winner gets champion: true, logic handled by caller.
+    Returns updated content.
+    """
+    flag = ROUND_FLAG_MAP.get(round_name)
+    if flag is None:
+        # Final round — handled separately
+        return content
+
+    existing = re.search(r'useState\(\{ (.+?) \}\)', content)
+    if not existing:
+        log.append('WARNING: useState block not found — cannot set %s flag for %s' % (flag, winner))
+        return content
+
+    ts_str = existing.group(1)
+
+    # Check if flag already set for this team
+    team_match = re.search(r'"%s":\s*\{([^}]+)\}' % re.escape(winner), ts_str)
+    if team_match and flag + ': true' in team_match.group(1):
+        log.append('FLAG ALREADY SET: %s %s: true (skipping)' % (winner, flag))
+        return content
+
+    if team_match:
+        # Team exists in useState — append flag to their entry
+        old_entry = team_match.group(0)
+        new_entry = old_entry.rstrip('}').rstrip() + ', %s: true }' % flag
+        ts_str = ts_str[:team_match.start()] + new_entry + ts_str[team_match.end():]
+    else:
+        # Team not yet in useState (0 group wins/draws) — add new entry
+        ts_str = ts_str + ', "%s": { %s: true }' % (winner, flag)
+
+    new_useState = 'useState({ %s })' % ts_str
+    content = re.sub(r'useState\(\{ .+? \}\)', new_useState, content)
+    log.append('AUTO-ADVANCED: %s → %s: true' % (winner, flag))
+    return content
+
+def apply_final_flags(content, champion, runner_up, log):
+    """Sets champion: true on winner and runnerUp: true on loser."""
+    for team, flag in [(champion, 'champion'), (runner_up, 'runnerUp')]:
+        existing = re.search(r'useState\(\{ (.+?) \}\)', content)
+        if not existing:
+            break
+        ts_str = existing.group(1)
+        team_match = re.search(r'"%s":\s*\{([^}]+)\}' % re.escape(team), ts_str)
+        if team_match and flag + ': true' in team_match.group(1):
+            continue
+        if team_match:
+            old_entry = team_match.group(0)
+            new_entry = old_entry.rstrip('}').rstrip() + ', %s: true }' % flag
+            ts_str = ts_str[:team_match.start()] + new_entry + ts_str[team_match.end():]
+        else:
+            ts_str = ts_str + ', "%s": { %s: true }' % (team, flag)
+        new_useState = 'useState({ %s })' % ts_str
+        content = re.sub(r'useState\(\{ .+? \}\)', new_useState, content)
+        log.append('AUTO-ADVANCED: %s → %s: true' % (team, flag))
+    return content
+
 # ── teamStatuses rebuild ──────────────────────────────────────────────────────
 
 def rebuild_team_statuses(content):
     """
     Recompute groupWins/groupDraws from all played:true GROUP STAGE lines.
-    Knockout advancement flags (roundOf32, quarterFinal, etc.) are set manually — never touched here.
+    Knockout advancement flags are preserved from existing useState.
     """
     wins, draws = {}, {}
 
     for line in content.split('\n'):
         if 'played: true' not in line:
             continue
-        # Only count group stage lines (has 'group:' field)
         if "group: '" not in line:
             continue
         m = re.search(r"home: '([^']+)', hscore: ([0-9]+), away: '([^']+)', ascore: ([0-9]+)", line)
@@ -161,35 +236,30 @@ def rebuild_team_statuses(content):
     new_ts_body = ', '.join(entries)
     new_ts = 'useState({ %s })' % new_ts_body
 
-    # Preserve any existing knockout flags (roundOf32, quarterFinal, etc.)
-    # by merging them back in from the current useState block
+    # Preserve knockout flags from existing useState
     existing = re.search(r'useState\(\{ (.+?) \}\)', content)
     if existing:
         existing_str = existing.group(1)
-        # Extract teams that have knockout flags
-        ko_flags = ['roundOf32', 'quarterFinal', 'semiFinal', 'runnerUp', 'champion', 'eliminated']
+        ko_flags = ['roundOf32', 'roundOf16', 'quarterFinal', 'semiFinal', 'runnerUp', 'champion', 'eliminated']
         for team_match in re.finditer(r'"([^"]+)":\s*\{([^}]+)\}', existing_str):
             tname = team_match.group(1)
             tdata = team_match.group(2)
             has_ko = any(f in tdata for f in ko_flags)
             if not has_ko:
                 continue
-            # Merge KO flags into the new entry for this team
             ko_parts = []
             for flag in ko_flags:
                 if flag + ': true' in tdata:
                     ko_parts.append('%s: true' % flag)
             if ko_parts:
-                # Find and update this team's entry in new_ts
                 team_pattern = re.compile(r'"%s": \{ ([^}]*) \}' % re.escape(tname))
                 m2 = team_pattern.search(new_ts)
                 if m2:
                     merged = m2.group(1).rstrip(', ') + ', ' + ', '.join(ko_parts)
                     new_ts = new_ts[:m2.start()] + '"%s": { %s }' % (tname, merged) + new_ts[m2.end():]
                 else:
-                    # Team only has KO flags (0 group wins/draws) — add them
                     insert = ', "%s": { %s }' % (tname, ', '.join(ko_parts))
-                    new_ts = new_ts[:-1] + insert + '}'  # before closing )
+                    new_ts = new_ts[:-1] + insert + '}'
 
     updated = re.sub(r'useState\(\{ .+? \}\)', new_ts, content)
     return updated, wins, draws
@@ -199,7 +269,7 @@ def rebuild_team_statuses(content):
 def run(dry_run=False):
     log = []
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
-    log.append('=== ESPN auto-update v4.0: %s ===' % now)
+    log.append('=== ESPN auto-update v5.0: %s ===' % now)
 
     try:
         events = fetch_espn()
@@ -223,7 +293,6 @@ def run(dry_run=False):
 
         m, fmt = find_game_line(content, home, away)
         if not m:
-            # Try reversed
             m, fmt = find_game_line(content, away, home)
             if m:
                 home, away     = away, home
@@ -257,9 +326,9 @@ def run(dry_run=False):
 
         if not dry_run:
             content = content[:m.start(1)] + new_line + content[m.end(1):]
-            # Also sync r32schedule tab's r32All array (mirror of KO_MATCHES)
+
+            # Sync r32schedule tab mirror
             if fmt == 'knockout':
-                # Build r32schedule line (no matchId field)
                 r32sched_line = re.sub(r',?\s*matchId: \d+', '', new_line)
                 m2, _ = find_game_line(content[content.find("tab === 'r32schedule'"):], home, away)
                 if m2:
@@ -269,10 +338,25 @@ def run(dry_run=False):
                     content = content[:abs_start] + r32sched_line + content[abs_end:]
                     log.append('SYNCED r32schedule: %s vs %s' % (home, away))
 
+            # ── Auto-advancement on completion ────────────────────────────────
+            if fmt == 'knockout' and completed:
+                if hscore != ascore:
+                    # Clear winner — auto-set advancement flag
+                    winner = home if hscore > ascore else away
+                    if round_name == 'final':
+                        loser = away if hscore > ascore else home
+                        content = apply_final_flags(content, winner, loser, log)
+                    else:
+                        content = apply_advancement_flag(content, winner, round_name, log)
+                else:
+                    # Tied at full time — could be pens, wait for manual confirm
+                    log.append('NEEDS_WINNER_CONFIRM: %s %d-%d %s — tied at FT, set winner manually' % (
+                        home, hscore, ascore, away))
+
     if changes and not dry_run:
         content, wins, draws = rebuild_team_statuses(content)
         total = sum(wins.values()) + sum(draws.values())
-        log.append('teamStatuses rebuilt from %d played group-stage games (KO flags preserved).' % total)
+        log.append('teamStatuses rebuilt (KO flags preserved). Group games counted: %d' % total)
 
         open(INDEX, 'w', encoding='utf-8').write(content)
         msg = 'auto: ' + ' | '.join(changes)
