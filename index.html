@@ -259,6 +259,7 @@
         .lb-grid { display: flex; flex-direction: column; gap: 10px; }
 
         .lb-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 15px 20px; display: flex; align-items: center; gap: 14px; transition: all 0.25s; }
+        .lb-card.busted { border-color: rgba(255,50,50,0.2) !important; background: rgba(255,40,40,0.04) !important; }
 
         .lb-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,215,0,0.2); transform: translateX(3px); }
 
@@ -713,7 +714,10 @@
 
                       {leaderboard.map((m, i) => (
 
-                        <div key={m.id} className={`lb-card ${i < 3 ? `rank-${i+1}` : ''}`}>
+                        {(() => {
+                        const memberBusted = m.teams.length > 0 && m.teams.every(tn => !R32_TEAMS.has(tn));
+                        return (
+                      <div key={m.id} className={`lb-card ${i < 3 ? `rank-${i+1}` : ''} ${memberBusted ? 'busted' : ''}`}>
 
                           <div className={`lb-rank ${i < 3 ? `rank-${i+1}` : ''}`}>{i + 1}</div>
 
@@ -723,7 +727,7 @@
 
                             <div className="lb-name">
 
-                              {m.name}
+                              {m.name}{memberBusted && <span style={{ marginLeft:6, fontSize:14 }} title="All teams eliminated">💀</span>}
 
                               {i < 3 && <span className="prize-tag" style={{ background: `${PRIZE_COLORS[i+1]}20`, border: `1px solid ${PRIZE_COLORS[i+1]}50`, color: PRIZE_COLORS[i+1] }}>{PRIZES[i+1]}</span>}
 
@@ -739,7 +743,7 @@
 
                                 const stage = getTeamStage(t, teamStatuses);
 
-                                return <span key={t} className={`team-pill ${stage}`}>{team?.flag} {t}</span>;
+                                return <span key={t} className={`team-pill ${stage}`}>{stage === 'eliminated' && <span style={{ marginRight:3, fontSize:10 }}>❌</span>}{team?.flag} {t}</span>;
 
                               })}
 
@@ -757,7 +761,8 @@
 
                         </div>
 
-                      ))}
+                      );
+                      })()}
 
                     </div>
 
