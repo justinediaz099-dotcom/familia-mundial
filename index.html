@@ -770,7 +770,7 @@
                     <div className="lb-grid">
 
                       {leaderboard.map((m, i) => {
-                        const memberBusted = m.teams.length > 0 && m.teams.every(tn => !R32_TEAMS.has(tn));
+                        const memberBusted = m.teams.length > 0 && m.teams.every(tn => getTeamStage(tn, teamStatuses) === 'eliminated');
                         return (
 
                         <div key={m.id} className={`lb-card ${i < 3 ? `rank-${i+1}` : ''} ${memberBusted ? 'busted' : ''}`}>
@@ -1679,7 +1679,7 @@
                     </div>
 
                     {members.map(m => m.teams.length > 0 && (() => {
-                        const allElim = m.teams.length > 0 && m.teams.every(tn => !R32_TEAMS.has(tn));
+                        const allElim = m.teams.length > 0 && m.teams.every(tn => getTeamStage(tn, teamStatuses) === 'eliminated');
                         return (
                       <div key={m.id} className={`progress-member${allElim ? ' busted' : ''}`}>
 
@@ -1690,7 +1690,7 @@
                           const team = ALL_TEAMS.find(t => t.name === teamName);
 
                           const s = teamStatuses[teamName] || {};
-                          const teamElim = !R32_TEAMS.has(teamName);
+                          const teamElim = getTeamStage(teamName, teamStatuses) === 'eliminated';
 
                           return (
 
