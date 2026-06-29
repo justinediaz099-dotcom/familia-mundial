@@ -1286,10 +1286,16 @@
 
                   const r32W = id => mWin(KO_MATCHES.find(m => m.round === 'r32' && m.matchId === id));
 
+                  // Official FIFA 2026 WC bracket draw — R32 matchId pairs → R16 matchId
+                  // R16-0: W(0) vs W(3), R16-1: W(2) vs W(5), R16-2: W(1) vs W(4), R16-3: W(6) vs W(7)
+                  // R16-4: W(11) vs W(10), R16-5: W(9) vs W(8), R16-6: W(14) vs W(13), R16-7: W(12) vs W(15)
+                  const R16_DRAW = [[0,3],[2,5],[1,4],[6,7],[11,10],[9,8],[14,13],[12,15]];
                   const r16W = id => {
                     const stored = KO_MATCHES.find(m => m.round === 'r16' && m.matchId === id);
                     if (stored && stored.home && stored.away) return mWin(stored);
-                    const a = r32W(id * 2), b = r32W(id * 2 + 1);
+                    const pair = R16_DRAW[id];
+                    if (!pair) return null;
+                    const a = r32W(pair[0]), b = r32W(pair[1]);
                     if (!a || !b) return null;
                     return mWin({ ...stored, home: a, away: b });
                   };
@@ -1418,7 +1424,10 @@
                     const m = KO_MATCHES.find(x => x.round === 'r32' && x.matchId === i);
                     return { top: m.home, bot: m.away, matchData: m };
                   });
-                  const r16Pairs = Array.from({length:8}, (_,i) => ({ top: r32W(i*2)||'TBD', bot: r32W(i*2+1)||'TBD' }));
+                  const r16Pairs = Array.from({length:8}, (_,i) => {
+                    const pair = R16_DRAW[i];
+                    return { top: r32W(pair[0])||'TBD', bot: r32W(pair[1])||'TBD' };
+                  });
                   const qfPairs  = Array.from({length:4}, (_,i) => ({ top: r16W(i*2)||'TBD', bot: r16W(i*2+1)||'TBD' }));
                   const sfPairs  = Array.from({length:2}, (_,i) => ({ top: qfW(i*2)||'TBD',  bot: qfW(i*2+1)||'TBD'  }));
                   const finalPair = { top: sfW(0)||'TBD', bot: sfW(1)||'TBD' };
