@@ -139,6 +139,16 @@ def build_knockout_replacement(round_name, date, home, hscore, away, ascore, com
             round_name, date, home, hscore, away, ascore)
     return None
 
+def build_knockout_replacement_with_id(round_name, match_id, date, home, hscore, away, ascore, completed, live):
+    """Preserve matchId field — required so r32W(id) lookup in bracket tab keeps working."""
+    if completed:
+        return "{ round: '%s', matchId: %s,  date:'%s', home:'%s', hscore:%d,    away:'%s',         ascore:%d,    played:true }," % (
+            round_name, match_id, date, home, hscore, away, ascore)
+    elif live:
+        return "{ round: '%s', matchId: %s,  date:'%s', home:'%s', hscore:%d,    away:'%s',         ascore:%d,    played:false, live:true }," % (
+            round_name, match_id, date, home, hscore, away, ascore)
+    return None
+
 # ── Mirror sync: update ALL KO arrays in one pass ────────────────────────────
 
 def sync_all_ko_mirrors(content, home, away, round_name, date, hscore, ascore, completed, live, log):
@@ -373,7 +383,14 @@ def run(dry_run=False):
         else:
             round_name = m.group(2)
             date       = m.group(3)
-            new_line   = build_knockout_replacement(round_name, date, home, hscore, away, ascore, completed, live)
+            # Check if matched line has a matchId field — preserve it if so
+            import re as _re
+            mid_search = _re.search(r'matchId: (\d+)', m.group(1))
+            if mid_search:
+                new_line = build_knockout_replacement_with_id(
+                    round_name, mid_search.group(1), date, home, hscore, away, ascore, completed, live)
+            else:
+                new_line = build_knockout_replacement(round_name, date, home, hscore, away, ascore, completed, live)
 
         if not new_line:
             log.append('SCHEDULED (skip): %s vs %s' % (home, away))
