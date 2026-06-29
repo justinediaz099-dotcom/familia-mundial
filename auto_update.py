@@ -425,8 +425,25 @@ def run(dry_run=False):
                     else:
                         content = apply_advancement_flag(content, winner, round_name, log)
                 else:
-                    log.append('NEEDS_WINNER_CONFIRM: %s %d-%d %s — tied at FT, set winner manually' % (
-                        home, hscore, ascore, away))
+                    warn_msg = (
+                        '\n' +
+                        '=' * 60 + '\n' +
+                        '  ⚠️  NEEDS_WINNER_CONFIRM  ⚠️\n' +
+                        '  Match: %s %d-%d %s\n' % (home, hscore, ascore, away) +
+                        '  Tied at FT — penalties or ET winner not on ESPN.\n' +
+                        '  ACTION: patch index.html manually with penWinner field.\n' +
+                        '=' * 60
+                    )
+                    log.append(warn_msg)
+                    print(warn_msg)
+                    # Write a persistent flag file so it's easy to spot
+                    import os
+                    flag_path = os.path.join(REPO_DIR, 'PENDING_WINNER.txt')
+                    with open(flag_path, 'a', encoding='utf-8') as wf:
+                        from datetime import datetime as _dt
+                        wf.write('[%s] %s %d-%d %s — set penWinner manually\n' % (
+                            _dt.now().strftime('%Y-%m-%d %H:%M'), home, hscore, ascore, away))
+                    log.append('FLAG FILE written: PENDING_WINNER.txt')
 
     if changes and not dry_run:
         content, wins, draws = rebuild_team_statuses(content)
