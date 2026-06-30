@@ -461,6 +461,11 @@ def run(dry_run=False):
 
     result = '\n'.join(log)
     print(result)
+    # Always write to update_log.txt regardless of how script is invoked
+    import os as _os
+    log_path = _os.path.join(REPO_DIR, 'update_log.txt')
+    with open(log_path, 'a', encoding='utf-8') as _lf:
+        _lf.write(result + '\n')
     return result
 
 if __name__ == '__main__':
