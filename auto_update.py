@@ -339,7 +339,7 @@ def run(dry_run=False):
 
     # Always pull latest before reading — prevents overwriting manual fixes
     try:
-        pull = subprocess.run(['git', 'pull', '--rebase'], cwd=REPO_DIR, capture_output=True, text=True)
+        pull = subprocess.run(['git', 'pull', '--rebase'], cwd=REPO_DIR, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
         log.append('git pull: ' + (pull.stdout or '').strip() + ' ' + (pull.stderr or '').strip())
     except Exception as ex:
         log.append('git pull ERROR: %s' % ex)
@@ -452,9 +452,9 @@ def run(dry_run=False):
 
         open(INDEX, 'w', encoding='utf-8').write(content)
         msg = 'auto: ' + ' | '.join(changes)
-        subprocess.run(['git', 'add', 'index.html'], cwd=REPO_DIR)
-        subprocess.run(['git', 'commit', '-m', msg],  cwd=REPO_DIR)
-        subprocess.run(['git', 'push'],               cwd=REPO_DIR)
+        subprocess.run(['git', 'add', 'index.html'], cwd=REPO_DIR, creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.run(['git', 'commit', '-m', msg],  cwd=REPO_DIR, creationflags=subprocess.CREATE_NO_WINDOW)
+        subprocess.run(['git', 'push'],               cwd=REPO_DIR, creationflags=subprocess.CREATE_NO_WINDOW)
         log.append('PUSHED.')
     elif not changes:
         log.append('Nothing to update.')
