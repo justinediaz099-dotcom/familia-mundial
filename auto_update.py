@@ -341,6 +341,15 @@ def run(dry_run=False):
     try:
         pull = subprocess.run(['git', 'pull', '--rebase'], cwd=REPO_DIR, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
         log.append('git pull: ' + (pull.stdout or '').strip() + ' ' + (pull.stderr or '').strip())
+        if pull.returncode != 0:
+            log.append('git pull FAILED (returncode=%d) - aborting run to avoid conflicting writes.' % pull.returncode)
+            result = '\n'.join(log)
+            print(result)
+            import os as _os
+            log_path = _os.path.join(REPO_DIR, 'update_log.txt')
+            with open(log_path, 'a', encoding='utf-8') as _lf:
+                _lf.write(result + '\n')
+            return result
     except Exception as ex:
         log.append('git pull ERROR: %s' % ex)
 
@@ -452,10 +461,13 @@ def run(dry_run=False):
 
         open(INDEX, 'w', encoding='utf-8').write(content)
         msg = 'auto: ' + ' | '.join(changes)
-        subprocess.run(['git', 'add', 'index.html'], cwd=REPO_DIR, creationflags=subprocess.CREATE_NO_WINDOW)
-        subprocess.run(['git', 'commit', '-m', msg],  cwd=REPO_DIR, creationflags=subprocess.CREATE_NO_WINDOW)
-        subprocess.run(['git', 'push'],               cwd=REPO_DIR, creationflags=subprocess.CREATE_NO_WINDOW)
-        log.append('PUSHED.')
+        add_r = subprocess.run(['git', 'add', 'index.html'], cwd=REPO_DIR, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        commit_r = subprocess.run(['git', 'commit', '-m', msg], cwd=REPO_DIR, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        push_r = subprocess.run(['git', 'push'], cwd=REPO_DIR, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+        if push_r.returncode == 0:
+            log.append('PUSHED.')
+        else:
+            log.append('PUSH FAILED (returncode=%d): %s %s' % (push_r.returncode, (push_r.stdout or '').strip(), (push_r.stderr or '').strip()))
     elif not changes:
         log.append('Nothing to update.')
 
