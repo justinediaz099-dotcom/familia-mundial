@@ -1506,11 +1506,19 @@
                   });
                   const r16Pairs = Array.from({length:8}, (_,i) => {
                     const pair = R16_DRAW[i];
-                    return { top: r32W(pair[0])||'TBD', bot: r32W(pair[1])||'TBD' };
+                    const m = KO_MATCHES.find(x => x.round === 'r16' && x.matchId === i);
+                    return { top: r32W(pair[0])||'TBD', bot: r32W(pair[1])||'TBD', matchData: m };
                   });
-                  const qfPairs  = Array.from({length:4}, (_,i) => ({ top: r16W(i*2)||'TBD', bot: r16W(i*2+1)||'TBD' }));
-                  const sfPairs  = Array.from({length:2}, (_,i) => ({ top: qfW(i*2)||'TBD',  bot: qfW(i*2+1)||'TBD'  }));
-                  const finalPair = { top: sfW(0)||'TBD', bot: sfW(1)||'TBD' };
+                  const qfPairs  = Array.from({length:4}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'qf' && x.matchId === i);
+                    return { top: r16W(i*2)||'TBD', bot: r16W(i*2+1)||'TBD', matchData: m };
+                  });
+                  const sfPairs  = Array.from({length:2}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'sf' && x.matchId === i);
+                    return { top: qfW(i*2)||'TBD', bot: qfW(i*2+1)||'TBD', matchData: m };
+                  });
+                  const finalMatchData = KO_MATCHES.find(x => x.round === 'f' && x.matchId === 0);
+                  const finalPair = { top: sfW(0)||'TBD', bot: sfW(1)||'TBD', matchData: finalMatchData };
 
                   return (
                     <>
@@ -1547,7 +1555,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="ROUND OF 16" pts="+8/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:31 }}>
-                              {r16Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {r16Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
                             </div>
                           </div>
 
@@ -1557,7 +1565,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="QUARTER-FINALS" pts="+10/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:95 }}>
-                              {qfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {qfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
                             </div>
                           </div>
 
@@ -1567,7 +1575,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="SEMI-FINALS" pts="+20/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:255 }}>
-                              {sfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} />)}
+                              {sfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
                             </div>
                           </div>
 
@@ -1577,7 +1585,7 @@
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="FINAL" pts="+35/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', paddingTop:0 }}>
-                              <MatchPair top={finalPair.top} bot={finalPair.bot} />
+                              <MatchPair top={finalPair.top} bot={finalPair.bot} matchData={finalPair.matchData} />
                             </div>
                           </div>
 
