@@ -251,6 +251,31 @@ def apply_advancement_flag(content, winner, round_name, log):
     log.append('AUTO-ADVANCED: %s → %s: true' % (winner, flag))
     return content
 
+# ── Auto-elimination: set loser's eliminated flag in teamStatuses ────────────
+def apply_elimination_flag(content, loser, log):
+    existing = re.search(r'useState\(\{ (.+?) \}\)', content)
+    if not existing:
+        log.append('WARNING: useState block not found — cannot set eliminated flag for %s' % loser)
+        return content
+
+    ts_str = existing.group(1)
+    team_match = re.search(r'"%s":\s*\{([^}]+)\}' % re.escape(loser), ts_str)
+    if team_match and 'eliminated: true' in team_match.group(1):
+        log.append('FLAG ALREADY SET: %s eliminated: true (skipping)' % loser)
+        return content
+
+    if team_match:
+        old_entry = team_match.group(0)
+        new_entry = old_entry.rstrip('}').rstrip() + ', eliminated: true }'
+        ts_str = ts_str[:team_match.start()] + new_entry + ts_str[team_match.end():]
+    else:
+        ts_str = ts_str + ', "%s": { eliminated: true }' % loser
+
+    new_useState = 'useState({ %s })' % ts_str
+    content = re.sub(r'useState\(\{ .+? \}\)', new_useState, content)
+    log.append('AUTO-ELIMINATED: %s → eliminated: true' % loser)
+    return content
+
 def apply_final_flags(content, champion, runner_up, log):
     for team, flag in [(champion, 'champion'), (runner_up, 'runnerUp')]:
         existing = re.search(r'useState\(\{ (.+?) \}\)', content)
@@ -428,11 +453,12 @@ def run(dry_run=False):
             if fmt == 'knockout' and completed:
                 if hscore != ascore:
                     winner = home if hscore > ascore else away
+                    loser  = away if hscore > ascore else home
                     if round_name == 'final':
-                        loser = away if hscore > ascore else home
                         content = apply_final_flags(content, winner, loser, log)
                     else:
                         content = apply_advancement_flag(content, winner, round_name, log)
+                        content = apply_elimination_flag(content, loser, log)
                 else:
                     warn_msg = (
                         '\n' +
