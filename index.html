@@ -573,7 +573,7 @@
 
         const [members, setMembers] = useState(INITIAL_MEMBERS);
 
-        const [teamStatuses, setTeamStatuses] = useState({ "Algeria": { groupWins: 1, groupDraws: 1 }, "Argentina": { groupWins: 3, roundOf32: true }, "Australia": { groupWins: 1, groupDraws: 1, eliminated: true }, "Austria": { groupWins: 1, groupDraws: 1 }, "Belgium": { groupWins: 1, groupDraws: 2, roundOf32: true }, "Bosnia & Herz.": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Cabo Verde": { groupDraws: 3 }, "Canada": { groupWins: 1, groupDraws: 1, roundOf32: true }, "Colombia": { groupWins: 2, groupDraws: 1 }, "Croatia": { groupWins: 2 }, "Curaçao": { groupDraws: 1 }, "Czechia": { groupDraws: 1 }, "DR Congo": { groupWins: 1, groupDraws: 1 }, "Ecuador": { groupWins: 1, groupDraws: 1 }, "Egypt": { groupWins: 1, groupDraws: 2, roundOf32: true }, "England": { groupWins: 2, groupDraws: 1, roundOf32: true }, "France": { groupWins: 3, roundOf32: true }, "Germany": { groupWins: 2, eliminated: true }, "Ghana": { groupWins: 1, groupDraws: 1 }, "Iran": { groupDraws: 3 }, "Ivory Coast": { groupWins: 2 }, "Japan": { groupWins: 1, groupDraws: 2 }, "Mexico": { groupWins: 3, roundOf32: true }, "Morocco": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Netherlands": { groupWins: 2, groupDraws: 1, eliminated: true }, "New Zealand": { groupDraws: 1 }, "Norway": { groupWins: 2, roundOf32: true }, "Paraguay": { groupWins: 1, groupDraws: 1, roundOf32: true }, "Portugal": { groupWins: 1, groupDraws: 2, roundOf32: true }, "Qatar": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 2 }, "Scotland": { groupWins: 1 }, "Senegal": { groupWins: 1 }, "South Africa": { groupWins: 1, groupDraws: 1 }, "South Korea": { groupWins: 1 }, "Spain": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Sweden": { groupWins: 1, groupDraws: 1, eliminated: true }, "Switzerland": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Turkey": { groupWins: 1 }, "USA": { groupWins: 2, roundOf32: true }, "Uruguay": { groupDraws: 2 } });
+        const [teamStatuses, setTeamStatuses] = useState({ "Algeria": { groupWins: 1, groupDraws: 1 }, "Argentina": { groupWins: 3, roundOf32: true }, "Australia": { groupWins: 1, groupDraws: 1, eliminated: true }, "Austria": { groupWins: 1, groupDraws: 1 }, "Belgium": { groupWins: 1, groupDraws: 2, roundOf32: true }, "Bosnia & Herz.": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Cabo Verde": { groupDraws: 3 }, "Canada": { groupWins: 1, groupDraws: 1, roundOf32: true }, "Colombia": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Croatia": { groupWins: 2 }, "Curaçao": { groupDraws: 1 }, "Czechia": { groupDraws: 1 }, "DR Congo": { groupWins: 1, groupDraws: 1 }, "Ecuador": { groupWins: 1, groupDraws: 1 }, "Egypt": { groupWins: 1, groupDraws: 2, roundOf32: true }, "England": { groupWins: 2, groupDraws: 1, roundOf32: true }, "France": { groupWins: 3, roundOf32: true }, "Germany": { groupWins: 2, eliminated: true }, "Ghana": { groupWins: 1, groupDraws: 1, eliminated: true }, "Iran": { groupDraws: 3 }, "Ivory Coast": { groupWins: 2 }, "Japan": { groupWins: 1, groupDraws: 2 }, "Mexico": { groupWins: 3, roundOf32: true }, "Morocco": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Netherlands": { groupWins: 2, groupDraws: 1, eliminated: true }, "New Zealand": { groupDraws: 1 }, "Norway": { groupWins: 2, roundOf32: true }, "Paraguay": { groupWins: 1, groupDraws: 1, roundOf32: true }, "Portugal": { groupWins: 1, groupDraws: 2, roundOf32: true }, "Qatar": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 2 }, "Scotland": { groupWins: 1 }, "Senegal": { groupWins: 1 }, "South Africa": { groupWins: 1, groupDraws: 1 }, "South Korea": { groupWins: 1 }, "Spain": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Sweden": { groupWins: 1, groupDraws: 1, eliminated: true }, "Switzerland": { groupWins: 2, groupDraws: 1, roundOf32: true }, "Turkey": { groupWins: 1 }, "USA": { groupWins: 2, roundOf32: true }, "Uruguay": { groupDraws: 2 } });
 
         const [emojiPicker, setEmojiPicker] = useState(null);
 
@@ -625,7 +625,7 @@
           { round: 'r32', matchId: 12,  date:'Jul 2', home:'Switzerland', hscore:2,    away:'Algeria',         ascore:0,    played:true },
           { round: 'r32', matchId: 13,  date:'Jul 3', home:'Australia', hscore:1,    away:'Egypt',         ascore:1,    played:true, penWinner:'Egypt' },
           { round: 'r32', matchId: 14,  date:'Jul 3', home:'Argentina', hscore:3,    away:'Cabo Verde',         ascore:2,    played:true },
-          { round: 'r32', matchId: 15,  date:'Jul 3', home:'Colombia', hscore:1,    away:'Ghana',         ascore:0,    played:false, live:true },
+          { round: 'r32', matchId: 15,  date:'Jul 3', home:'Colombia', hscore:1,    away:'Ghana',         ascore:0,    played:true },
           // R16 (matchId 0-7) — fill home/away manually if scores not derivable
           { round: 'r16', matchId: 0, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
           { round: 'r16', matchId: 1, date:'Jul 5',  home:null, hscore:null, away:null, ascore:null, played:false },
@@ -1061,7 +1061,7 @@
                     { round: 'r32', date: 'Jul 2', home: 'Switzerland', hscore: 2, away: 'Algeria', ascore: 0, played: true },
                     { round: 'r32', date: 'Jul 3', home: 'Australia', hscore: 1, away: 'Egypt', ascore: 1, played: true, penWinner: 'Egypt' },
                     { round: 'r32', date: 'Jul 3', home: 'Argentina', hscore: 3, away: 'Cabo Verde', ascore: 2, played: true },
-                    { round: 'r32', date: 'Jul 3', home: 'Colombia', hscore: 1, away: 'Ghana', ascore: 0, played: false, live: true },
+                    { round: 'r32', date: 'Jul 3', home: 'Colombia', hscore: 1, away: 'Ghana', ascore: 0, played: true },
                   ];
 
                   const groups = ['A','B','C','D','E','F','G','H','I','J','K','L'];
@@ -1215,7 +1215,7 @@
                     { round: 'r32', date:'Jul 2', home:'Switzerland', hscore:2, away:'Algeria', ascore:0, played:true },
                     { round: 'r32', date:'Jul 3', home:'Australia', hscore:1, away:'Egypt', ascore:1, played:true, penWinner:'Egypt' },
                     { round: 'r32', date:'Jul 3', home:'Argentina', hscore:3, away:'Cabo Verde', ascore:2, played:true },
-                    { round: 'r32', date:'Jul 3', home:'Colombia', hscore:1, away:'Ghana', ascore:0, played:false, live:true },
+                    { round: 'r32', date:'Jul 3', home:'Colombia', hscore:1, away:'Ghana', ascore:0, played:true },
                   ];
 
                   const getFlag2  = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
