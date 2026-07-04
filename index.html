@@ -754,7 +754,7 @@
 
               <div className="tabs">
 
-                {[["leaderboard","🏆 Standings"],["r32schedule","⚔️ R32 Schedule"],["knockout","🏅 Bracket"],["trash","💬 Trash Talk"],["bracket","📅 Schedule"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"]].map(([key,label]) => (
+                {[["leaderboard","🏆 Standings"],["r32schedule","⚔️ R32 Schedule"],["r16schedule","🔥 R16 Schedule"],["knockout","🏅 Bracket"],["trash","💬 Trash Talk"],["bracket","📅 Schedule"],["setup","👥 Players"],["groups","🌍 Groups"],["progress","📊 Progress"]].map(([key,label]) => (
 
                   <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
 
@@ -1265,6 +1265,75 @@
                                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}>
                                       <div style={{ textAlign: 'left' }}>
                                         <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag2(m.away)} {m.away}</div>
+                                        {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+
+                })()}
+
+                {/* R16 SCHEDULE TAB */}
+
+                {tab === 'r16schedule' && (() => {
+
+                  const r16All = [
+                    { round: 'r16', date:'Jul 4', home:'Canada', hscore:0, away:'Morocco', ascore:3, played:true },
+                    { round: 'r16', date:'Jul 4', home:'Paraguay', hscore:0, away:'France', ascore:0, played:false, live:true },
+                    { round: 'r16', date:'Jul 5', home:'Brazil', hscore:null, away:'Norway', ascore:null, played:false },
+                    { round: 'r16', date:'Jul 5', home:'Mexico', hscore:null, away:'England', ascore:null, played:false },
+                    { round: 'r16', date:'Jul 6', home:'Portugal', hscore:null, away:'Spain', ascore:null, played:false },
+                    { round: 'r16', date:'Jul 6', home:'USA', hscore:null, away:'Belgium', ascore:null, played:false },
+                    { round: 'r16', date:'Jul 7', home:'Argentina', hscore:null, away:'Egypt', ascore:null, played:false },
+                    { round: 'r16', date:'Jul 7', home:'Switzerland', hscore:null, away:'Colombia', ascore:null, played:false },
+                  ];
+
+                  const getFlag2b  = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
+                  const getOwner2b = name => members.find(m => m.teams.includes(name));
+                  const r16Dates  = [...new Set(r16All.map(m => m.date))];
+
+                  return (
+                    <>
+                      <div className="section-title" style={{ marginBottom: 18 }}>🔥 ROUND OF 16</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {r16Dates.map(date => {
+                          const dayMatches = r16All.filter(m => m.date === date);
+                          return (
+                            <div key={date}>
+                              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6, paddingLeft: 2 }}>{date}</div>
+                              {dayMatches.map((m, i) => {
+                                const isTBD = !m.home || !m.away;
+                                const homeOwner = !isTBD && getOwner2b(m.home);
+                                const awayOwner = !isTBD && getOwner2b(m.away);
+                                const isPen = !!(m.played && m.penWinner);
+                                const isWinHome = !isTBD && m.played && (m.penWinner ? m.penWinner === m.home : m.hscore > m.ascore);
+                                const isWinAway = !isTBD && m.played && (m.penWinner ? m.penWinner === m.away : m.ascore > m.hscore);
+                                return (
+                                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: m.live ? '1px solid rgba(220,50,50,0.5)' : '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
+                                      <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{isTBD ? 'TBD' : `${getFlag2b(m.home)} ${m.home}`}</div>
+                                        {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                    <div style={{ textAlign: 'center', minWidth: 72, flexShrink: 0 }}>
+                                      {m.live
+                                        ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ff6464' }}>{m.hscore} – {m.ascore}</div><div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(220,50,50,0.15)', border: '1px solid rgba(220,50,50,0.3)', borderRadius: 10, padding: '2px 7px' }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'livePulse 1.2s infinite' }} /><span style={{ fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: 1.5 }}>LIVE</span></div></>
+                                        : m.played
+                                          ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: 'rgba(255,255,255,0.9)' }}>{m.hscore} – {m.ascore}</div><div style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', letterSpacing: 1 }}>FT</div>{isPen && <div style={{ fontSize: 9, fontWeight: 700, color: '#ffd700', letterSpacing: 1, marginTop: 2 }}>PEN</div>}</>
+                                          : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>VS</div>
+                                      }
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}>
+                                      <div style={{ textAlign: 'left' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{isTBD ? 'TBD' : `${getFlag2b(m.away)} ${m.away}`}</div>
                                         {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name}</div>}
                                       </div>
                                     </div>
