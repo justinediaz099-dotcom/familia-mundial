@@ -533,9 +533,9 @@
 
         if (s.champion) return 'champion';
 
-        if (s.runnerUp || s.semiFinal || s.quarterFinal || s.roundOf32 || s.roundOf16) return 'advancing';
-
         if (s.eliminated) return 'eliminated';
+
+        if (s.runnerUp || s.semiFinal || s.quarterFinal || s.roundOf32 || s.roundOf16) return 'advancing';
 
         // Group stage complete — teams not in R32 are eliminated
         if (!R32_TEAMS.has(teamName)) return 'eliminated';
