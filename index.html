@@ -1521,11 +1521,11 @@
                   });
                   const qfPairs  = Array.from({length:4}, (_,i) => {
                     const m = KO_MATCHES.find(x => x.round === 'qf' && x.matchId === i);
-                    return { top: r16W(i*2)||'TBD', bot: r16W(i*2+1)||'TBD', matchData: m };
+                    return { top: m.home||'TBD', bot: m.away||'TBD', matchData: m };
                   });
                   const sfPairs  = Array.from({length:2}, (_,i) => {
                     const m = KO_MATCHES.find(x => x.round === 'sf' && x.matchId === i);
-                    return { top: qfW(i*2)||'TBD', bot: qfW(i*2+1)||'TBD', matchData: m };
+                    return { top: m.home||'TBD', bot: m.away||'TBD', matchData: m };
                   });
                   const tpMatchData = KO_MATCHES.find(x => x.round === 'tp' && x.matchId === 0);
                   const tpLoserA = sfLoser(0) || (tpMatchData && tpMatchData.home) || 'TBD';
