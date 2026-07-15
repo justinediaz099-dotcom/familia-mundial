@@ -852,7 +852,7 @@
 
               <div className="tabs">
 
-                {[["leaderboard","🏆 Standings"],["r16schedule","🔥 R16 Schedule"],["knockout","🏅 Bracket"],["trash","💬 Trash Talk"],["r32schedule","⚔️ R32 Schedule"],["bracket","📅 Schedule"],["setup","👥 Players"]].map(([key,label]) => (
+                {[["leaderboard","🏆 Standings"],["knockout","🏅 Bracket"],["trash","💬 Trash Talk"],["r16schedule","🔥 R16 Schedule"],["r32schedule","⚔️ R32 Schedule"],["bracket","📅 Schedule"],["setup","👥 Players"]].map(([key,label]) => (
 
                   <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
 
@@ -1618,6 +1618,18 @@
                   const finalMatchData = KO_MATCHES.find(x => x.round === 'f' && x.matchId === 0);
                   const finalPair = { top: sfW(0)||'TBD', bot: sfW(1)||'TBD', matchData: finalMatchData };
 
+                  // 3rd place: losers of each SF
+                  const sfLoser = id => {
+                    const m = KO_MATCHES.find(x => x.round === 'sf' && x.matchId === id);
+                    if (!m || !m.played) return 'TBD';
+                    if (m.penWinner) return m.penWinner === m.home ? m.away : m.home;
+                    if (m.hscore > m.ascore) return m.away;
+                    if (m.ascore > m.hscore) return m.home;
+                    return 'TBD';
+                  };
+                  const tpMatchData = KO_MATCHES.find(x => x.round === 'tp' && x.matchId === 0);
+                  const tpPair = { top: sfLoser(0)||'TBD', bot: sfLoser(1)||'TBD', matchData: tpMatchData };
+
                   return (
                     <>
                       <div style={{ marginBottom:14 }}>
@@ -1675,6 +1687,16 @@
                             <ColHeader label="SEMI-FINALS" pts="+20/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', gap:255 }}>
                               {sfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* 3rd Place */}
+                          <div style={{ minWidth:175 }}>
+                            <ColHeader label="3RD PLACE" pts="Jul 18" />
+                            <div style={{ display:'flex', flexDirection:'column', paddingTop:0 }}>
+                              <MatchPair top={tpPair.top} bot={tpPair.bot} matchData={tpPair.matchData} />
                             </div>
                           </div>
 
