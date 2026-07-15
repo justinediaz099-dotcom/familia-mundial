@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Familia Mundial 2026</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <style>
+
+      body { margin: 0; min-height: 100vh; background: #0a0e1a; color: #e8eaf0; font-family: 'DM Sans', sans-serif; }
+
+      #root { min-height: 100vh; }
+
+    
+        /* ── WORLD CUP BACKGROUND BALL ── */
+        @keyframes ballDrift {
+          0%   { transform: translate(0px, 0px) rotate(0deg); }
+          25%  { transform: translate(18px, -22px) rotate(90deg); }
+          50%  { transform: translate(-12px, -40px) rotate(180deg); }
+          75%  { transform: translate(20px, -18px) rotate(270deg); }
+          100% { transform: translate(0px, 0px) rotate(360deg); }
+        }
+        .bg-ball {
+          position: fixed;
+          bottom: -80px;
+          right: -80px;
+          font-size: 380px;
+          line-height: 1;
+          opacity: 0.08;
+          pointer-events: none;
+          z-index: 0;
+          animation: ballDrift 28s ease-in-out infinite;
+          user-select: none;
+          filter: none;
+        }
+
+        
+        /* ensure app content sits above bg-ball */
+        #root, .app-shell, .app-container {
+          position: relative;
+          z-index: 1;
+        }
+
+        
+        /* ── SOCCER PITCH BACKGROUND ── */
+        .pitch-bg {
+          position: fixed;
+          top: 0; left: 0;
+          width: 100vw; height: 100vh;
+          background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201000%20650%22%20preserveAspectRatio%3D%22xMidYMid%20slice%22%3E%0A%20%20%3C%21--%20Field%20surface%20--%3E%0A%20%20%3Crect%20width%3D%221000%22%20height%3D%22650%22%20fill%3D%22%230d3d14%22/%3E%0A%20%20%3C%21--%20Subtle%20stripe%20pattern%20--%3E%0A%20%20%3Crect%20x%3D%220%22%20%20%20width%3D%22100%22%20height%3D%22650%22%20fill%3D%22rgba%280%2C0%2C0%2C0.06%29%22/%3E%0A%20%20%3Crect%20x%3D%22200%22%20width%3D%22100%22%20height%3D%22650%22%20fill%3D%22rgba%280%2C0%2C0%2C0.06%29%22/%3E%0A%20%20%3Crect%20x%3D%22400%22%20width%3D%22100%22%20height%3D%22650%22%20fill%3D%22rgba%280%2C0%2C0%2C0.06%29%22/%3E%0A%20%20%3Crect%20x%3D%22600%22%20width%3D%22100%22%20height%3D%22650%22%20fill%3D%22rgba%280%2C0%2C0%2C0.06%29%22/%3E%0A%20%20%3Crect%20x%3D%22800%22%20width%3D%22100%22%20height%3D%22650%22%20fill%3D%22rgba%280%2C0%2C0%2C0.06%29%22/%3E%0A%20%20%3C%21--%20Outer%20boundary%20--%3E%0A%20%20%3Crect%20x%3D%2240%22%20y%3D%2240%22%20width%3D%22920%22%20height%3D%22570%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.22%29%22%20stroke-width%3D%222.5%22/%3E%0A%20%20%3C%21--%20Halfway%20line%20--%3E%0A%20%20%3Cline%20x1%3D%22500%22%20y1%3D%2240%22%20x2%3D%22500%22%20y2%3D%22610%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.22%29%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Center%20circle%20--%3E%0A%20%20%3Ccircle%20cx%3D%22500%22%20cy%3D%22325%22%20r%3D%2280%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.22%29%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Center%20spot%20--%3E%0A%20%20%3Ccircle%20cx%3D%22500%22%20cy%3D%22325%22%20r%3D%224%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.3%29%22/%3E%0A%20%20%3C%21--%20Left%20penalty%20box%20--%3E%0A%20%20%3Crect%20x%3D%2240%22%20y%3D%22195%22%20width%3D%22150%22%20height%3D%22260%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.18%29%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Left%206-yard%20box%20--%3E%0A%20%20%3Crect%20x%3D%2240%22%20y%3D%22270%22%20width%3D%2255%22%20height%3D%22110%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.15%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Left%20penalty%20spot%20--%3E%0A%20%20%3Ccircle%20cx%3D%22150%22%20cy%3D%22325%22%20r%3D%223.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%0A%20%20%3C%21--%20Left%20penalty%20arc%20--%3E%0A%20%20%3Cpath%20d%3D%22M%20190%20265%20A%2080%2080%200%200%201%20190%20385%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.15%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Right%20penalty%20box%20--%3E%0A%20%20%3Crect%20x%3D%22810%22%20y%3D%22195%22%20width%3D%22150%22%20height%3D%22260%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.18%29%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Right%206-yard%20box%20--%3E%0A%20%20%3Crect%20x%3D%22905%22%20y%3D%22270%22%20width%3D%2255%22%20height%3D%22110%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.15%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Right%20penalty%20spot%20--%3E%0A%20%20%3Ccircle%20cx%3D%22850%22%20cy%3D%22325%22%20r%3D%223.5%22%20fill%3D%22rgba%28255%2C255%2C255%2C0.28%29%22/%3E%0A%20%20%3C%21--%20Right%20penalty%20arc%20--%3E%0A%20%20%3Cpath%20d%3D%22M%20810%20265%20A%2080%2080%200%200%200%20810%20385%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.15%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Corner%20arcs%20--%3E%0A%20%20%3Cpath%20d%3D%22M%2040%2065%20%20A%2018%2018%200%200%201%2065%2040%22%20%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.18%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20935%2040%20A%2018%2018%200%200%201%20960%2065%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.18%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3Cpath%20d%3D%22M%2040%20585%20A%2018%2018%200%200%200%2065%20610%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.18%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3Cpath%20d%3D%22M%20935%20610%20A%2018%2018%200%200%200%20960%20585%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.18%29%22%20stroke-width%3D%221.5%22/%3E%0A%20%20%3C%21--%20Goal%20posts%20left%20--%3E%0A%20%20%3Crect%20x%3D%2218%22%20y%3D%22285%22%20width%3D%2222%22%20height%3D%2280%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.35%29%22%20stroke-width%3D%222%22/%3E%0A%20%20%3C%21--%20Goal%20posts%20right%20--%3E%0A%20%20%3Crect%20x%3D%22960%22%20y%3D%22285%22%20width%3D%2222%22%20height%3D%2280%22%20fill%3D%22none%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.35%29%22%20stroke-width%3D%222%22/%3E%0A%3C/svg%3E");
+          background-size: cover;
+          background-position: center;
+          opacity: 0.32;
+          pointer-events: none;
+          z-index: 0;
+        }
+
+  
+        /* == COUNTDOWN == */
+        .countdown-bar { display:flex; align-items:center; justify-content:center; gap:10px;
+          padding:8px 16px; border-radius:10px; margin-top:8px;
+          background:rgba(255,215,0,0.07); border:1px solid rgba(255,215,0,0.2); }
+        .countdown-unit { text-align:center; }
+        .countdown-num  { font-size:20px; font-weight:800; display:block; color:#fff; line-height:1; }
+        .countdown-lbl  { font-size:9px; color:rgba(255,255,255,0.4); letter-spacing:2px; }
+        .countdown-sep  { font-size:18px; font-weight:800; color:rgba(255,215,0,0.5); margin-bottom:10px; }
+        /* == LIVE BADGE == */
+        @keyframes live-pulse {
+          0%,100% { opacity:1; box-shadow:0 0 0 0 rgba(255,50,50,0.7); }
+          50%      { opacity:0.85; box-shadow:0 0 0 6px rgba(255,50,50,0); }
+        }
+        .live-badge { display:inline-flex; align-items:center; gap:5px;
+          background:rgba(220,30,30,0.18); border:1px solid rgba(255,80,80,0.5);
+          color:#ff5555; font-size:11px; font-weight:700; letter-spacing:1px;
+          padding:3px 9px; border-radius:20px;
+          animation:live-pulse 1.4s ease-in-out infinite; }
+        /* == CONFETTI == */
+        @keyframes confetti-fall {
+          0%   { transform:translateY(-10px) rotate(0deg); opacity:1; }
+          100% { transform:translateY(110vh) rotate(720deg); opacity:0; }
+        }
+        .confetti-piece { position:fixed; top:-10px; width:10px; height:14px;
+          border-radius:2px; opacity:0; pointer-events:none; z-index:9999;
+          animation:confetti-fall linear forwards; }
+      </style>
+
+    <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDrKB5M4T5FVN41HyC9warU3frRBgC7hOs",
+      authDomain: "familia-mundial-2026.firebaseapp.com",
+      databaseURL: "https://familia-mundial-2026-default-rtdb.firebaseio.com",
+      projectId: "familia-mundial-2026",
+      storageBucket: "familia-mundial-2026.firebasestorage.app",
+      messagingSenderId: "403248586493",
+      appId: "1:403248586493:web:f556aca5a0c08915f8a894"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+</head>
+
+  <body>
+    <div class="pitch-bg" aria-hidden="true"></div>
+    <div class="bg-ball" aria-hidden="true">⚽</div>
+
+
+    <div id="root"></div>
+
+
+
+    <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone@7.26.5/babel.min.js"></script>
+
+
+
+    <script type="text/babel">
+
+      const { useState } = React;
+
+
+
+      const ALL_TEAMS = [
+
+        { name: "Mexico", flag: "🇲🇽", group: "A" },
+
+        { name: "South Africa", flag: "🇿🇦", group: "A" },
+
+        { name: "South Korea", flag: "🇰🇷", group: "A" },
+
+        { name: "Czechia", flag: "🇨🇿", group: "A" },
+
+        { name: "Canada", flag: "🇨🇦", group: "B" },
+
+        { name: "Bosnia & Herz.", flag: "🇧🇦", group: "B" },
+
+        { name: "Qatar", flag: "🇶🇦", group: "B" },
+
+        { name: "Switzerland", flag: "🇨🇭", group: "B" },
+
+        { name: "Brazil", flag: "🇧🇷", group: "C" },
+
+        { name: "Morocco", flag: "🇲🇦", group: "C" },
+
+        { name: "Haiti", flag: "🇭🇹", group: "C" },
+
+        { name: "Scotland", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", group: "C" },
+
+        { name: "USA", flag: "🇺🇸", group: "D" },
+
+        { name: "Paraguay", flag: "🇵🇾", group: "D" },
+
+        { name: "Australia", flag: "🇦🇺", group: "D" },
+
+        { name: "Turkey", flag: "🇹🇷", group: "D" },
+
+        { name: "Germany", flag: "🇩🇪", group: "E" },
+
+        { name: "Ivory Coast", flag: "🇨🇮", group: "E" },
+
+        { name: "Curaçao", flag: "🇨🇼", group: "E" },
+
+        { name: "Ecuador", flag: "🇪🇨", group: "E" },
+
+        { name: "Netherlands", flag: "🇳🇱", group: "F" },
+
+        { name: "Japan", flag: "🇯🇵", group: "F" },
+
+        { name: "Sweden", flag: "🇸🇪", group: "F" },
+
+        { name: "Tunisia", flag: "🇹🇳", group: "F" },
+
+        { name: "Belgium", flag: "🇧🇪", group: "G" },
+
+        { name: "Egypt", flag: "🇪🇬", group: "G" },
+
+        { name: "Iran", flag: "🇮🇷", group: "G" },
+
+        { name: "New Zealand", flag: "🇳🇿", group: "G" },
+
+        { name: "Spain", flag: "🇪🇸", group: "H" },
+
+        { name: "Cabo Verde", flag: "🇨🇻", group: "H" },
+
+        { name: "Saudi Arabia", flag: "🇸🇦", group: "H" },
+
+        { name: "Uruguay", flag: "🇺🇾", group: "H" },
+
+        { name: "France", flag: "🇫🇷", group: "I" },
+
+        { name: "Senegal", flag: "🇸🇳", group: "I" },
+
+        { name: "Iraq", flag: "🇮🇶", group: "I" },
+
+        { name: "Norway", flag: "🇳🇴", group: "I" },
+
+        { name: "Argentina", flag: "🇦🇷", group: "J" },
+
+        { name: "Algeria", flag: "🇩🇿", group: "J" },
+
+        { name: "Austria", flag: "🇦🇹", group: "J" },
+
+        { name: "Jordan", flag: "🇯🇴", group: "J" },
+
+        { name: "Portugal", flag: "🇵🇹", group: "K" },
+
+        { name: "DR Congo", flag: "🇨🇩", group: "K" },
+
+        { name: "Uzbekistan", flag: "🇺🇿", group: "K" },
+
+        { name: "Colombia", flag: "🇨🇴", group: "K" },
+
+        { name: "England", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", group: "L" },
+
+        { name: "Croatia", flag: "🇭🇷", group: "L" },
+
+        { name: "Ghana", flag: "🇬🇭", group: "L" },
+
+        { name: "Panama", flag: "🇵🇦", group: "L" },
+
+      ];
+
+
+
+      const INITIAL_MEMBERS = [
+
+        { id: 1,  name: "Socorro",       emoji: "👑", teams: ["Colombia", "Portugal", "Egypt"] },
+
+        { id: 2,  name: "Mayra",         emoji: "🌟", teams: ["Czechia", "Switzerland", "Curaçao"] },
+
+        { id: 3,  name: "Fifiz",         emoji: "🔥", teams: ["South Korea", "Bosnia & Herz.", "Morocco"] },
+
+        { id: 4,  name: "Crystal",       emoji: "💎", teams: ["Iraq", "Australia", "Algeria"] },
+
+        { id: 5,  name: "Carmen",        emoji: "🌈", teams: ["Haiti", "Japan", "Belgium"] },
+
+        { id: 6,  name: "Evelyn",        emoji: "🦅", teams: ["DR Congo", "England", "Argentina"] },
+
+        { id: 7,  name: "Yvette",        emoji: "🍀", teams: ["Mexico", "South Africa", "Ecuador"] },
+
+        { id: 8,  name: "Chilo (Tio)",   emoji: "🚀", teams: ["Ivory Coast", "Uzbekistan", "Canada"] },
+
+        { id: 9,  name: "Ivy",           emoji: "🦋", teams: ["Jordan", "Senegal", "Cabo Verde"] },
+
+        { id: 10, name: "Jose",          emoji: "⚽", teams: ["France", "Iran", "Germany"] },
+
+        { id: 11, name: "Grampa",        emoji: "🏅", teams: ["Scotland", "New Zealand", "Saudi Arabia"] },
+
+        { id: 12, name: "Chapetes",      emoji: "⚡", teams: ["Norway", "Spain", "Netherlands"] },
+
+        { id: 13, name: "Pedro",         emoji: "🐯", teams: ["Croatia", "Ghana", "Qatar"] },
+
+        { id: 14, name: "Checha",        emoji: "💪", teams: ["Austria", "Sweden", "Uruguay"] },
+
+        { id: 15, name: "Justin",        emoji: "🎯", teams: ["Panama", "Paraguay", "Brazil"] },
+
+        { id: 16, name: "Andrew",        emoji: "🦊", teams: ["USA", "Turkey", "Tunisia"] },
+
+      ];
+
+
+
+      const EMOJIS = ["👑","⚡","🔥","🌟","💎","🚀","🦁","🐯","🦅","🏆","💪","🎯","🌈","🍀","🦊","🌺","🏅","🎪","🎸","🌊"];
+
+      const POINTS = { groupStageWin: 3, groupStageDraw: 1, roundOf32: 5, roundOf16: 8, quarterFinal: 10, semiFinal: 20, runnerUp: 35, champion: 50 };
+
+      const PRIZES = { 1: "$100", 2: "$40", 3: "$20" };
+
+      const PRIZE_COLORS = { 1: "#ffd700", 2: "#c0c0c0", 3: "#cd7f32" };
+
+
+
+      const styles = `
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { margin: 0; min-height: 100vh; background: #0a0e1a; color: #e8eaf0; font-family: 'DM Sans', sans-serif; }
+
+        .app { min-height: 100vh; }
+
+        .header { position: relative; padding: 22px 28px 18px; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: space-between; overflow: hidden; }
+
+        .header::before { content: ''; position: absolute; top: -60px; left: -60px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,215,0,0.08) 0%, transparent 70%); pointer-events: none; }
+
+        .header-title { font-family: 'Bebas Neue', cursive; font-size: clamp(20px, 4vw, 34px); letter-spacing: 2px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 50%, #ff4500 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; }
+
+        .header-sub { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 3px; text-transform: uppercase; margin-top: 3px; }
+
+        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+        .header-badge { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #0a0e1a; font-family: 'Bebas Neue', cursive; font-size: 13px; letter-spacing: 1px; padding: 5px 12px; border-radius: 20px; }
+
+        .prize-badges { display: flex; gap: 6px; }
+
+        .prize-badge { font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 10px; letter-spacing: 0.5px; }
+
+        .tabs { display: flex; gap: 2px; padding: 14px 28px 0; border-bottom: 1px solid rgba(255,255,255,0.06); overflow-x: auto; }
+
+        .tab { padding: 9px 16px; border-radius: 8px 8px 0 0; background: transparent; border: none; color: rgba(255,255,255,0.4); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.5px; transition: all 0.2s; white-space: nowrap; }
+
+        .tab:hover { color: rgba(255,255,255,0.7); }
+
+        .tab.active { background: rgba(255,215,0,0.1); color: #ffd700; border-bottom: 2px solid #ffd700; }
+
+        .content { padding: 24px 28px; max-width: 1200px; margin: 0 auto; }
+
+        .prize-banner { display: flex; gap: 10px; margin-bottom: 20px; }
+
+        .prize-card { flex: 1; border-radius: 12px; padding: 14px 16px; text-align: center; border: 1px solid; }
+
+        .prize-card-place { font-family: 'Bebas Neue', cursive; font-size: 22px; letter-spacing: 1px; }
+
+        .prize-card-amount { font-size: 20px; font-weight: 700; margin-top: 2px; }
+
+        .prize-card-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.6; margin-top: 2px; }
+
+        .lb-grid { display: flex; flex-direction: column; gap: 10px; }
+
+        .lb-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 15px 20px; display: flex; align-items: center; gap: 14px; transition: all 0.25s; }
+        .lb-card.busted { border-color: rgba(255,50,50,0.2) !important; background: rgba(255,40,40,0.04) !important; }
+
+        .lb-card:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,215,0,0.2); transform: translateX(3px); }
+
+        .lb-card.rank-1 { border-color: rgba(255,215,0,0.35); background: rgba(255,215,0,0.05); }
+
+        .lb-card.rank-2 { border-color: rgba(192,192,192,0.25); }
+
+        .lb-card.rank-3 { border-color: rgba(205,127,50,0.25); }
+
+        .lb-rank { font-family: 'Bebas Neue', cursive; font-size: 26px; width: 32px; text-align: center; flex-shrink: 0; color: rgba(255,255,255,0.2); }
+
+        .lb-rank.rank-1 { color: #ffd700; }
+
+        .lb-rank.rank-2 { color: #c0c0c0; }
+
+        .lb-rank.rank-3 { color: #cd7f32; }
+
+        .lb-emoji { font-size: 26px; flex-shrink: 0; }
+
+        .lb-info { flex: 1; min-width: 0; }
+
+        .lb-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px; }
+
+        .prize-tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 8px; letter-spacing: 0.5px; }
+
+        .team-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+
+        .team-pill { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 2px 9px; font-size: 11px; display: flex; align-items: center; gap: 4px; color: rgba(255,255,255,0.65); }
+
+        .team-pill.eliminated { opacity: 0.28; font-weight: 400; color: rgba(255,255,255,0.35); border-color: rgba(255,255,255,0.05); }
+
+        .team-pill.advancing { border-color: rgba(100,255,100,0.3); color: #7fff7f; }
+
+        .team-pill.champion { border-color: rgba(255,215,0,0.5); color: #ffd700; background: rgba(255,215,0,0.1); }
+
+        .lb-score { font-family: 'Bebas Neue', cursive; font-size: 30px; color: #ffd700; flex-shrink: 0; }
+
+        .lb-pts { font-size: 9px; color: rgba(255,255,255,0.3); letter-spacing: 1px; text-transform: uppercase; text-align: right; }
+
+        .pts-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+
+        .pts-chip { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 9px; font-size: 11px; color: rgba(255,255,255,0.5); }
+
+        .pts-chip span { color: #ffd700; font-weight: 600; }
+
+        .setup-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; }
+
+        .member-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; }
+
+        .member-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+
+        .member-emoji-btn { font-size: 22px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 5px 9px; cursor: pointer; transition: background 0.2s; }
+
+        .member-emoji-btn:hover { background: rgba(255,255,255,0.12); }
+
+        .member-name-input { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 11px; color: #e8eaf0; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; outline: none; transition: border-color 0.2s; }
+
+        .member-name-input:focus { border-color: rgba(255,215,0,0.4); }
+
+        .member-team-count { font-size: 10px; color: rgba(255,255,255,0.35); margin-bottom: 8px; letter-spacing: 0.5px; }
+
+        .team-select-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; max-height: 190px; overflow-y: auto; }
+
+        .team-select-grid::-webkit-scrollbar { width: 3px; }
+
+        .team-select-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+        .team-btn { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 4px 7px; color: rgba(255,255,255,0.6); font-family: 'DM Sans', sans-serif; font-size: 10px; cursor: pointer; transition: all 0.15s; text-align: left; display: flex; align-items: center; gap: 4px; }
+
+        .team-btn:hover:not(:disabled) { background: rgba(255,255,255,0.09); color: #e8eaf0; }
+
+        .team-btn.selected { background: rgba(255,215,0,0.12); border-color: rgba(255,215,0,0.35); color: #ffd700; }
+
+        .team-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+        .delete-member { background: rgba(255,60,60,0.1); border: 1px solid rgba(255,60,60,0.2); border-radius: 6px; color: rgba(255,100,100,0.7); padding: 4px 7px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+
+        .delete-member:hover { background: rgba(255,60,60,0.2); color: #ff6464; }
+
+        .add-member-btn { background: rgba(255,215,0,0.07); border: 1px dashed rgba(255,215,0,0.25); border-radius: 14px; padding: 18px; color: rgba(255,215,0,0.5); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; width: 100%; text-align: center; }
+
+        .add-member-btn:hover { background: rgba(255,215,0,0.12); color: #ffd700; }
+
+        .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+
+        .group-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; }
+
+        .group-label { font-family: 'Bebas Neue', cursive; font-size: 18px; color: #ffd700; letter-spacing: 1px; margin-bottom: 8px; border-bottom: 1px solid rgba(255,215,0,0.12); padding-bottom: 6px; }
+
+        .group-team { display: flex; align-items: center; gap: 7px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 12px; }
+
+        .group-team:last-child { border-bottom: none; }
+
+        .group-team-owner { margin-left: auto; font-size: 9px; background: rgba(255,255,255,0.08); border-radius: 10px; padding: 2px 6px; color: rgba(255,255,255,0.5); white-space: nowrap; }
+
+        .progress-member { margin-bottom: 18px; }
+
+        .progress-member-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: rgba(255,255,255,0.7); }
+
+        .progress-team-row { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 9px; padding: 10px 14px; margin-bottom: 6px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+      .progress-team-row.elim { opacity: 0.28; filter: grayscale(0.6); }
+      .progress-member.busted .progress-member-title { color: rgba(255,80,80,0.7); }
+      .progress-member.busted { background: rgba(255,50,50,0.04); border: 1px solid rgba(255,50,50,0.12); border-radius: 10px; padding: 10px 12px; }
+
+        .stage-btn { padding: 3px 9px; border-radius: 5px; font-size: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+
+        .counter-btn { padding: 3px 8px; border-radius: 5px; font-size: 10px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+
+        .trash-section { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+
+        @media (max-width: 600px) { .trash-section { grid-template-columns: 1fr; } }
+
+        .trash-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; }
+
+        .trash-title { font-family: 'Bebas Neue', cursive; font-size: 16px; color: #ffd700; letter-spacing: 1px; margin-bottom: 12px; }
+
+        .trash-input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+
+        .trash-select { flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 7px 10px; color: #e8eaf0; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; }
+
+        .trash-select option { background: #1a2030; }
+
+        .trash-text-input { flex: 2; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; padding: 7px 10px; color: #e8eaf0; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; }
+
+        .trash-text-input:focus, .trash-select:focus { border-color: rgba(255,215,0,0.3); }
+
+        .trash-send-btn { background: linear-gradient(135deg, #ffd700, #ff8c00); border: none; border-radius: 7px; padding: 7px 14px; color: #0a0e1a; font-weight: 700; font-size: 12px; cursor: pointer; }
+
+        .trash-messages { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+
+        .trash-messages::-webkit-scrollbar { width: 3px; }
+
+        .trash-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+
+        .trash-msg { background: rgba(255,255,255,0.04); border-radius: 8px; padding: 8px 11px; font-size: 12px; }
+
+        .trash-msg-author { font-weight: 600; color: #ffd700; font-size: 11px; margin-bottom: 3px; }
+
+        .trash-msg-text { color: rgba(255,255,255,0.75); line-height: 1.5; }
+
+        .trash-msg-time { font-size: 9px; color: rgba(255,255,255,0.25); margin-top: 3px; }
+
+        .trash-empty { font-size: 12px; color: rgba(255,255,255,0.25); text-align: center; padding: 20px 0; }
+
+        .section-title { font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: 2px; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+
+        .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+
+        @media (max-width: 600px) {
+
+          .header { padding: 16px; }
+
+          .tabs { padding: 10px 16px 0; }
+
+          .content { padding: 16px; }
+
+          .setup-grid { grid-template-columns: 1fr; }
+
+          .groups-grid { grid-template-columns: 1fr 1fr; }
+
+          .prize-banner { gap: 6px; }
+
+          .prize-card-amount { font-size: 16px; }
+
+        }
+
+        @keyframes livePulse {
+
+          0%, 100% { opacity: 1; transform: scale(1); }
+
+          50% { opacity: 0.3; transform: scale(0.7); }
+
+        }
+
+      `;
+
+
+
+      function calcScore(member, teamStatuses) {
+
+        let pts = 0;
+
+        member.teams.forEach(teamName => {
+
+          const s = teamStatuses[teamName] || {};
+
+          pts += (s.groupWins || 0) * POINTS.groupStageWin;
+
+          pts += (s.groupDraws || 0) * POINTS.groupStageDraw;
+
+          if (s.roundOf32) pts += POINTS.roundOf32;
+        if (s.roundOf16) pts += POINTS.roundOf16;
+
+          if (s.quarterFinal) pts += POINTS.quarterFinal;
+
+          if (s.semiFinal) pts += POINTS.semiFinal;
+
+          if (s.runnerUp) pts += POINTS.runnerUp;
+
+          if (s.champion) pts += POINTS.champion;
+
+        });
+
+        return pts;
+
+      }
+
+
+
+      // Teams that qualified for R32 — derived from KO_MATCHES r32 entries
+      const R32_TEAMS = new Set([
+        'South Africa','Canada','Brazil','Japan','Germany','Paraguay',
+        'Netherlands','Morocco','Ivory Coast','Norway','France','Sweden',
+        'Mexico','Ecuador','England','DR Congo','Belgium','Senegal',
+        'USA','Bosnia & Herz.','Spain','Austria','Portugal','Croatia',
+        'Switzerland','Algeria','Australia','Egypt','Argentina','Cabo Verde',
+        'Colombia','Ghana'
+      ]);
+
+      function getTeamStage(teamName, teamStatuses, koMatches) {
+
+        const s = teamStatuses[teamName] || {};
+        const km = koMatches || [];
+
+        if (s.champion) return 'champion';
+
+        if (s.eliminated) return 'eliminated';
+
+        if (s.runnerUp || s.semiFinal || s.quarterFinal || s.roundOf32 || s.roundOf16) return 'advancing';
+
+        // Group stage complete — teams not in R32 are eliminated
+        if (!R32_TEAMS.has(teamName)) return 'eliminated';
+
+        // KO stage — check if team lost a played match
+        const hasAdvanced = s.roundOf32 || s.roundOf16 || s.quarterFinal || s.semiFinal || s.runnerUp || s.champion;
+        if (!hasAdvanced) {
+          const lostKO = km.some(m => {
+            if (!m.played) return false;
+            const loser = m.hscore > m.ascore ? m.away : m.ascore > m.hscore ? m.home : null;
+            return loser === teamName;
+          });
+          if (lostKO) return 'eliminated';
+        }
+
+        return 'active';
+
+      }
+
+
+
+      function fmt(d) {
+
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      }
+
+
+
+
+      // ── MATCH SCHEDULE (UTC) ── JS months are 0-indexed (6 = July)
+      var MATCH_SCHEDULE = [
+        { label: 'SF2: England vs Argentina', utc: Date.UTC(2026,6,15,19,0,0), duration: 115 },
+        { label: '3rd Place: France vs TBD',  utc: Date.UTC(2026,6,18,22,0,0), duration: 115 },
+        { label: 'THE FINAL',                 utc: Date.UTC(2026,6,19,21,0,0), duration: 115 },
+      ];
+      function getNextMatch() {
+        var now = Date.now();
+        for (var i = 0; i < MATCH_SCHEDULE.length; i++) {
+          var m = MATCH_SCHEDULE[i];
+          if (now < m.utc + m.duration * 60000) return m;
+        }
+        return null;
+      }
+      function getLiveMatch() {
+        var now = Date.now();
+        for (var i = 0; i < MATCH_SCHEDULE.length; i++) {
+          var m = MATCH_SCHEDULE[i];
+          if (now >= m.utc - 5*60000 && now <= m.utc + m.duration*60000) return m;
+        }
+        return null;
+      }
+
+      function CountdownBar() {
+        var _s = React.useState(0); var setTick = _s[1];
+        React.useEffect(function() {
+          var id = setInterval(function() { setTick(function(n) { return n+1; }); }, 1000);
+          return function() { clearInterval(id); };
+        }, []);
+
+        var live = getLiveMatch();
+        if (live) {
+          return React.createElement('div', { style:{ display:'flex', alignItems:'center', gap:8, marginTop:8 } },
+            React.createElement('span', { className:'live-badge' }, '● LIVE NOW'),
+            React.createElement('span', { style:{ fontSize:13, color:'#fff', fontWeight:700 } }, live.label)
+          );
+        }
+        var next = getNextMatch();
+        if (!next) {
+          return React.createElement('div', { style:{ marginTop:8, fontSize:12, color:'#ffd700', fontWeight:700 } },
+            '0001F3C6 World Cup 2026 Complete!');
+        }
+        var diff = Math.max(0, next.utc - Date.now());
+        var days  = Math.floor(diff / 86400000);
+        var hours = Math.floor((diff % 86400000) / 3600000);
+        var mins  = Math.floor((diff % 3600000) / 60000);
+        var secs  = Math.floor((diff % 60000) / 1000);
+        var pad   = function(n) { return n < 10 ? '0'+n : ''+n; };
+        var lbl   = next.label === 'THE FINAL' ? '0001F3C6 THE FINAL — Jul 19' : '⚽ ' + next.label;
+        var els = [React.createElement('span', { key:'lbl', style:{ fontSize:11, color:'rgba(255,255,255,0.5)', letterSpacing:1 } }, lbl)];
+        if (days > 0) {
+          els.push(React.createElement('span', { key:'d', className:'countdown-unit' },
+            React.createElement('span', { className:'countdown-num' }, days),
+            React.createElement('span', { className:'countdown-lbl' }, 'DAYS')));
+          els.push(React.createElement('span', { key:'dc', className:'countdown-sep' }, ':'));
+        }
+        els.push(React.createElement('span', { key:'h', className:'countdown-unit' },
+          React.createElement('span', { className:'countdown-num' }, pad(hours)),
+          React.createElement('span', { className:'countdown-lbl' }, 'HRS')));
+        els.push(React.createElement('span', { key:'hc', className:'countdown-sep' }, ':'));
+        els.push(React.createElement('span', { key:'m', className:'countdown-unit' },
+          React.createElement('span', { className:'countdown-num' }, pad(mins)),
+          React.createElement('span', { className:'countdown-lbl' }, 'MIN')));
+        els.push(React.createElement('span', { key:'mc', className:'countdown-sep' }, ':'));
+        els.push(React.createElement('span', { key:'s', className:'countdown-unit' },
+          React.createElement('span', { className:'countdown-num' }, pad(secs)),
+          React.createElement('span', { className:'countdown-lbl' }, 'SEC')));
+        return React.createElement('div', { className:'countdown-bar' }, els);
+      }
+
+      function App() {
+
+        const [tab, setTab] = useState('leaderboard');
+
+        const [bracketGroup, setBracketGroup] = useState('A');
+
+        const [members, setMembers] = useState(INITIAL_MEMBERS);
+
+        const [teamStatuses, setTeamStatuses] = useState({ "Algeria": { groupWins: 1, groupDraws: 1 }, "Argentina": { groupWins: 3, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Australia": { groupWins: 1, groupDraws: 1, eliminated: true }, "Austria": { groupWins: 1, groupDraws: 1 }, "Belgium": { groupWins: 1, groupDraws: 2, roundOf32: true, roundOf16: true, quarterFinal: true, eliminated: true }, "Bosnia & Herz.": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 2, groupDraws: 1, roundOf32: true, eliminated: true }, "Cabo Verde": { groupDraws: 3 }, "Canada": { groupWins: 1, groupDraws: 1, roundOf32: true, eliminated: true }, "Colombia": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, eliminated: true }, "Croatia": { groupWins: 2 }, "Curaçao": { groupDraws: 1 }, "Czechia": { groupDraws: 1 }, "DR Congo": { groupWins: 1, groupDraws: 1 }, "Ecuador": { groupWins: 1, groupDraws: 1 }, "Egypt": { groupWins: 1, groupDraws: 2, roundOf32: true, roundOf16: true, eliminated: true }, "England": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "France": { groupWins: 3, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Germany": { groupWins: 2, eliminated: true }, "Ghana": { groupWins: 1, groupDraws: 1, eliminated: true }, "Iran": { groupDraws: 3 }, "Ivory Coast": { groupWins: 2 }, "Japan": { groupWins: 1, groupDraws: 2 }, "Mexico": { groupWins: 3, roundOf32: true, eliminated: true }, "Morocco": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, eliminated: true }, "Netherlands": { groupWins: 2, groupDraws: 1, eliminated: true }, "New Zealand": { groupDraws: 1 }, "Norway": { groupWins: 2, roundOf32: true, roundOf16: true, eliminated: true }, "Paraguay": { groupWins: 1, groupDraws: 1, roundOf32: true, eliminated: true }, "Portugal": { groupWins: 1, groupDraws: 2, roundOf32: true, eliminated: true }, "Qatar": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 2 }, "Scotland": { groupWins: 1 }, "Senegal": { groupWins: 1 }, "South Africa": { groupWins: 1, groupDraws: 1 }, "South Korea": { groupWins: 1 }, "Spain": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Sweden": { groupWins: 1, groupDraws: 1, eliminated: true }, "Switzerland": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, quarterFinal: true, eliminated: true }, "Turkey": { groupWins: 1 }, "USA": { groupWins: 2, roundOf32: true, roundOf16: true, eliminated: true }, "Uruguay": { groupDraws: 2 } });
+
+        const [emojiPicker, setEmojiPicker] = useState(null);
+
+        const [trashMessages, setTrashMessages] = React.useState([]);
+
+        // Firebase: listen for trash talk messages in real-time
+        React.useEffect(() => {
+          const ref = db.ref('trashTalk');
+          ref.on('value', snapshot => {
+            const data = snapshot.val();
+            if (data) {
+              const msgs = Object.entries(data).map(([id, val]) => ({
+                id,
+                author: val.author,
+                text: val.text,
+                time: new Date(val.time)
+              }));
+              msgs.sort((a, b) => new Date(a.time) - new Date(b.time));
+              setTrashMessages(msgs);
+            } else {
+              setTrashMessages([]);
+            }
+          });
+          return () => ref.off();
+        }, []);
+
+
+        const [trashAuthor, setTrashAuthor] = React.useState('');
+
+        const [trashText, setTrashText] = React.useState('');
+
+
+
+
+        const KO_MATCHES = [
+          // R32 (matchId 0-15)
+          { round: 'r32', matchId: 0,  date:'Jun 28', home:'South Africa', hscore:0,    away:'Canada',         ascore:1,    played:true },
+          { round: 'r32', matchId: 1,  date:'Jun 29', home:'Brazil', hscore:2,    away:'Japan',         ascore:1,    played:true },
+          { round: 'r32', matchId: 2,  date:'Jun 29', home:'Germany', hscore:1,    away:'Paraguay',         ascore:1,    played:true, penWinner:'Paraguay' },
+          { round: 'r32', matchId: 3,  date:'Jun 29', home:'Netherlands', hscore:1,    away:'Morocco',         ascore:1,    played:true, penWinner:'Morocco' },
+          { round: 'r32', matchId: 4,  date:'Jun 30', home:'Ivory Coast', hscore:1,    away:'Norway',         ascore:2,    played:true },
+          { round: 'r32', matchId: 5,  date:'Jun 30', home:'France', hscore:3,    away:'Sweden',         ascore:0,    played:true },
+          { round: 'r32', matchId: 6,  date:'Jun 30', home:'Mexico', hscore:2,    away:'Ecuador',         ascore:0,    played:true },
+          { round: 'r32', matchId: 7,  date:'Jul 1', home:'England', hscore:2,    away:'DR Congo',         ascore:1,    played:true },
+          { round: 'r32', matchId: 8,  date:'Jul 1', home:'Belgium', hscore:3,    away:'Senegal',         ascore:2,    played:true },
+          { round: 'r32', matchId: 9,  date:'Jul 1', home:'USA', hscore:2,    away:'Bosnia & Herz.',         ascore:0,    played:true },
+          { round: 'r32', matchId: 10,  date:'Jul 2', home:'Spain', hscore:3,    away:'Austria',         ascore:0,    played:true },
+          { round: 'r32', matchId: 11,  date:'Jul 2', home:'Portugal', hscore:2,    away:'Croatia',         ascore:1,    played:true },
+          { round: 'r32', matchId: 12,  date:'Jul 2', home:'Switzerland', hscore:2,    away:'Algeria',         ascore:0,    played:true },
+          { round: 'r32', matchId: 13,  date:'Jul 3', home:'Australia', hscore:1,    away:'Egypt',         ascore:1,    played:true, penWinner:'Egypt' },
+          { round: 'r32', matchId: 14,  date:'Jul 3', home:'Argentina', hscore:3,    away:'Cabo Verde',         ascore:2,    played:true },
+          { round: 'r32', matchId: 15,  date:'Jul 3', home:'Colombia', hscore:1,    away:'Ghana',         ascore:0,    played:true },
+          // R16 (matchId 0-7)
+          { round: 'r16', matchId: 0, date:'Jul 4',  home:'Canada', hscore:0, away:'Morocco', ascore:3, played:true },
+          { round: 'r16', matchId: 1,  date:'Jul 4', home:'Paraguay', hscore:0,    away:'France',         ascore:1,    played:true },
+          { round: 'r16', matchId: 2, date:'Jul 5',  home:'Brazil', hscore:1, away:'Norway', ascore:2, played:true },
+          { round: 'r16', matchId: 3,  date:'Jul 5', home:'Mexico', hscore:2,    away:'England',         ascore:3,    played:true },
+          { round: 'r16', matchId: 4,  date:'Jul 6', home:'Portugal', hscore:0,    away:'Spain',         ascore:1,    played:true },
+          { round: 'r16', matchId: 5, date:'Jul 6',  home:'USA', hscore:1,    away:'Belgium', ascore:4,    played:true },
+          { round: 'r16', matchId: 6, date:'Jul 7',  home:'Argentina', hscore:3,    away:'Egypt', ascore:2,    played:true },
+          { round: 'r16', matchId: 7, date:'Jul 7',  home:'Switzerland', hscore:0,    away:'Colombia', ascore:0,    played:true, penWinner:'Switzerland' },
+          // QF (matchId 0-3)
+          { round: 'qf', matchId: 0, date:'Jul 11', home:'France', hscore:2, away:'Morocco', ascore:0, played:true },
+          { round: 'qf', matchId: 1, date:'Jul 11', home:'Norway', hscore:1, away:'England', ascore:2, played:true },
+          { round: 'qf', matchId: 2, date:'Jul 10', home:'Spain', hscore:2, away:'Belgium', ascore:1, played:true },
+          { round: 'qf', matchId: 3, date:'Jul 11', home:'Argentina', hscore:3, away:'Switzerland', ascore:1, played:true },
+          // SF (matchId 0-1)
+          { round: 'sf', matchId: 0, date:'Jul 14', home:'France', hscore:null, away:'Spain', ascore:null, played:false },
+          { round: 'sf', matchId: 1, date:'Jul 15', home:'England', hscore:null, away:'Argentina', ascore:null, played:false },
+          // Final
+          { round: 'f',  matchId: 0, date:'Jul 19', home:null, hscore:null, away:null, ascore:null, played:false },
+        ];
+
+        const leaderboard = [...members]
+
+          .map(m => ({ ...m, score: calcScore(m, teamStatuses) }))
+
+          .sort((a, b) => b.score - a.score);
+
+
+
+        const assignedTeams = members.flatMap(m => m.teams);
+
+
+
+        const updateMember = (id, patch) => setMembers(prev => prev.map(m => (m.id === id ? { ...m, ...patch } : m)));
+
+        const addMember = () => {
+
+          const id = Date.now();
+
+          setMembers(prev => [...prev, { id, name: `Player ${prev.length + 1}`, emoji: EMOJIS[prev.length % EMOJIS.length], teams: [] }]);
+
+        };
+
+        const deleteMember = id => setMembers(prev => prev.filter(m => m.id !== id));
+
+        const toggleTeam = (memberId, teamName) => {
+
+          setMembers(prev => prev.map(m => {
+
+            if (m.id !== memberId) return m;
+
+            const has = m.teams.includes(teamName);
+
+            if (!has && m.teams.length >= 3) return m;
+
+            return { ...m, teams: has ? m.teams.filter(t => t !== teamName) : [...m.teams, teamName] };
+
+          }));
+
+        };
+
+        const toggleStatus = (teamName, field) => {
+
+          setTeamStatuses(prev => {
+
+            const cur = prev[teamName] || {};
+
+            return { ...prev, [teamName]: { ...cur, [field]: !cur[field] } };
+
+          });
+
+        };
+
+
+
+        const sendTrash = () => {
+          if (!trashAuthor || !trashText.trim()) return;
+          db.ref('trashTalk').push({
+            author: trashAuthor,
+            text: trashText.trim(),
+            time: new Date().toISOString()
+          });
+          setTrashText('');
+
+        };
+
+
+
+        return (
+
+          <>
+
+            <style>{styles}</style>
+
+            <div className="app" onClick={() => emojiPicker && setEmojiPicker(null)}>
+
+              <div className="header">
+
+                <div>
+
+                  <div className="header-title">⚽ Familia Mundial 2026</div>
+
+                  <div className="header-sub">Family Competition · $10 Buy-in</div>
+
+                </div>
+
+                <div className="header-right">
+
+                  <div className="header-badge">USA · MEX · CAN</div>
+
+                  <div className="prize-badges">
+
+                    {[["🥇","$100","#ffd700","rgba(255,215,0,0.15)"],["🥈","$40","#c0c0c0","rgba(192,192,192,0.1)"],["🥉","$20","#cd7f32","rgba(205,127,50,0.1)"]].map(([icon, amt, col, bg]) => (
+
+                      <div key={amt} className="prize-badge" style={{ background: bg, border: `1px solid ${col}40`, color: col }}>{icon} {amt}</div>
+
+                    ))}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+
+              <div className="tabs">
+
+                {[["leaderboard","🏆 Standings"],["r16schedule","🔥 R16 Schedule"],["knockout","🏅 Bracket"],["trash","💬 Trash Talk"],["r32schedule","⚔️ R32 Schedule"],["bracket","📅 Schedule"],["setup","👥 Players"]].map(([key,label]) => (
+
+                  <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
+
+                ))}
+
+              </div>
+
+
+
+              <div className="content">
+
+
+
+                {/* LEADERBOARD */}
+
+                {tab === 'leaderboard' && (
+
+                  <>
+
+                    <div className="prize-banner">
+
+                      {[[1,"🥇","#ffd700","rgba(255,215,0,0.08)","rgba(255,215,0,0.3)"],[2,"🥈","#c0c0c0","rgba(192,192,192,0.05)","rgba(192,192,192,0.2)"],[3,"🥉","#cd7f32","rgba(205,127,50,0.05)","rgba(205,127,50,0.2)"]].map(([place,icon,col,bg,border]) => (
+
+                        <div key={place} className="prize-card" style={{ background: bg, borderColor: border }}>
+
+                          <div className="prize-card-place" style={{ color: col }}>{icon} {place === 1 ? '1st' : place === 2 ? '2nd' : '3rd'}</div>
+
+                          <div className="prize-card-amount" style={{ color: col }}>{PRIZES[place]}</div>
+
+                          <div className="prize-card-label" style={{ color: col }}>{leaderboard[place - 1] ? leaderboard[place - 1].name : 'TBD'}</div>
+
+                        </div>
+
+                      ))}
+
+                    </div>
+
+                    <div className="pts-legend">
+
+                      <div className="pts-chip">Win <span>+3</span></div>
+
+                      <div className="pts-chip">Draw <span>+1</span></div>
+
+                      <div className="pts-chip">R32 <span>+5</span></div>
+                  <div className="pts-chip">R16 <span>+8</span></div>
+
+                      <div className="pts-chip">QF <span>+10</span></div>
+
+                      <div className="pts-chip">SF <span>+20</span></div>
+
+                      <div className="pts-chip">Runner-up <span>+35</span></div>
+
+                      <div className="pts-chip">🏆 Champion <span>+50</span></div>
+
+                    </div>
+
+                    <div className="lb-grid">
+
+                      {leaderboard.map((m, i) => {
+                        const memberBusted = m.teams.length > 0 && m.teams.every(tn => getTeamStage(tn, teamStatuses, KO_MATCHES) === 'eliminated');
+                        return (
+
+                        <div key={m.id} className={`lb-card ${i < 3 ? `rank-${i+1}` : ''} ${memberBusted ? 'busted' : ''}`}>
+
+                          <div className={`lb-rank ${i < 3 ? `rank-${i+1}` : ''}`}>{i + 1}</div>
+
+                          <div className="lb-emoji">{m.emoji}</div>
+
+                          <div className="lb-info">
+
+                            <div className="lb-name">
+
+                              {m.name}{memberBusted && <span style={{ marginLeft:6, fontSize:14 }}>💀</span>}
+
+                              {i < 3 && <span className="prize-tag" style={{ background: `${PRIZE_COLORS[i+1]}20`, border: `1px solid ${PRIZE_COLORS[i+1]}50`, color: PRIZE_COLORS[i+1] }}>{PRIZES[i+1]}</span>}
+
+                            </div>
+
+                            <div className="team-pills">
+
+                              {m.teams.length === 0 && <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)' }}>No teams</span>}
+
+                              {m.teams.map(t => {
+
+                                const team = ALL_TEAMS.find(x => x.name === t);
+
+                                const stage = getTeamStage(t, teamStatuses, KO_MATCHES);
+
+                                return <span key={t} className={`team-pill ${stage}`}>{stage === 'eliminated' && <span style={{ marginRight:3, fontSize:10 }}>❌</span>}{team?.flag} {t}</span>;
+
+                              })}
+
+                            </div>
+
+                          </div>
+
+                          <div style={{ textAlign: 'right' }}>
+
+                            <div className="lb-score">{m.score}</div>
+
+                            <div className="lb-pts">pts</div>
+
+                          </div>
+
+                        </div>
+
+                      ); })}
+
+                    </div>
+
+                  </>
+
+                )}
+
+                {/* SCHEDULE */}
+
+                {tab === 'bracket' && (() => {
+
+                  const MATCHES = [
+
+                    // GROUP A
+
+                    { group: 'A', md: 1, date: 'Jun 11', home: 'Mexico', hscore: 2, away: 'South Africa', ascore: 0, played: true },
+
+                    { group: 'A', md: 1, date: 'Jun 11', home: 'South Korea', hscore: 2, away: 'Czechia', ascore: 1, played: true },
+
+                    { group: 'A', md: 2, date: 'Jun 18', home: 'Czechia', hscore: 1, away: 'South Africa', ascore: 1, played: true },
+
+                    { group: 'A', md: 2, date: 'Jun 18', home: 'Mexico', hscore: 1, away: 'South Korea', ascore: 0, played: true },
+
+                    { group: 'A', md: 3, date: 'Jun 24', home: 'Czechia', hscore: 0, away: 'Mexico', ascore: 3, played: true },
+
+                    { group: 'A', md: 3, date: 'Jun 24', home: 'South Africa', hscore: 1, away: 'South Korea', ascore: 0, played: true },
+
+                    // GROUP B
+
+                    { group: 'B', md: 1, date: 'Jun 12', home: 'Canada', hscore: 1, away: 'Bosnia & Herz.', ascore: 1, played: true },
+
+                    { group: 'B', md: 1, date: 'Jun 13', home: 'Qatar', hscore: 1, away: 'Switzerland', ascore: 1, played: true },
+
+                    { group: 'B', md: 2, date: 'Jun 18', home: 'Canada', hscore: 6, away: 'Qatar', ascore: 0, played: true },
+
+                    { group: 'B', md: 2, date: 'Jun 18', home: 'Switzerland', hscore: 4, away: 'Bosnia & Herz.', ascore: 1, played: true },
+
+                    { group: 'B', md: 3, date: 'Jun 24', home: 'Switzerland', hscore: 2, away: 'Canada', ascore: 1, played: true },
+
+                    { group: 'B', md: 3, date: 'Jun 24', home: 'Bosnia & Herz.', hscore: 3, away: 'Qatar', ascore: 1, played: true },
+
+                    // GROUP C
+
+                    { group: 'C', md: 1, date: 'Jun 12', home: 'Brazil', hscore: 1, away: 'Morocco', ascore: 1, played: true },
+
+                    { group: 'C', md: 1, date: 'Jun 13', home: 'Haiti', hscore: 0, away: 'Scotland', ascore: 1, played: true },
+
+                    { group: 'C', md: 2, date: 'Jun 19', home: 'Morocco', hscore: 1, away: 'Scotland', ascore: 0, played: true },
+
+                    { group: 'C', md: 2, date: 'Jun 19', home: 'Brazil', hscore: 3, away: 'Haiti', ascore: 0, played: true },
+
+                    { group: 'C', md: 3, date: 'Jun 24', home: 'Scotland', hscore: 0, away: 'Brazil', ascore: 3, played: true },
+
+                    { group: 'C', md: 3, date: 'Jun 24', home: 'Morocco', hscore: 4, away: 'Haiti', ascore: 2, played: true },
+
+                    // GROUP D
+
+                    { group: 'D', md: 1, date: 'Jun 13', home: 'USA', hscore: 4, away: 'Paraguay', ascore: 1, played: true },
+
+                    { group: 'D', md: 1, date: 'Jun 13', home: 'Australia', hscore: 2, away: 'Turkey', ascore: 0, played: true },
+
+                    { group: 'D', md: 2, date: 'Jun 19', home: 'Paraguay', hscore: 1, away: 'Turkey', ascore: 0, played: true },
+
+                    { group: 'D', md: 2, date: 'Jun 19', home: 'Australia', hscore: 0, away: 'USA', ascore: 2, played: true },
+
+                    { group: 'D', md: 3, date: 'Jun 25', home: 'Turkey', hscore: 3, away: 'USA', ascore: 2, played: true },
+
+                    { group: 'D', md: 3, date: 'Jun 25', home: 'Paraguay', hscore: 0, away: 'Australia', ascore: 0, played: true },
+
+                    // GROUP E
+
+                    { group: 'E', md: 1, date: 'Jun 14', home: 'Curaçao', hscore: 1, away: 'Germany', ascore: 7, played: true },
+
+                    { group: 'E', md: 1, date: 'Jun 14', home: 'Ivory Coast', hscore: 1, away: 'Ecuador', ascore: 0, played: true },
+
+                    { group: 'E', md: 2, date: 'Jun 20', home: 'Ivory Coast', hscore: 1, away: 'Germany', ascore: 2, played: true },
+
+                    { group: 'E', md: 2, date: 'Jun 20', home: 'Ecuador', hscore: 0, away: 'Curaçao', ascore: 0, played: true },
+
+                    { group: 'E', md: 3, date: 'Jun 25', home: 'Curaçao', hscore: 0, away: 'Ivory Coast', ascore: 2, played: true },
+
+                    { group: 'E', md: 3, date: 'Jun 25', home: 'Ecuador', hscore: 2, away: 'Germany', ascore: 1, played: true },
+
+                    // GROUP F
+
+                    { group: 'F', md: 1, date: 'Jun 14', home: 'Netherlands', hscore: 2, away: 'Japan', ascore: 2, played: true },
+
+                    { group: 'F', md: 1, date: 'Jun 15', home: 'Sweden', hscore: 5, away: 'Tunisia', ascore: 1, played: true },
+
+                    { group: 'F', md: 2, date: 'Jun 20', home: 'Netherlands', hscore: 5, away: 'Sweden', ascore: 1, played: true },
+
+                    { group: 'F', md: 2, date: 'Jun 20', home: 'Tunisia', hscore: 0, away: 'Japan', ascore: 4, played: true },
+
+                    { group: 'F', md: 3, date: 'Jun 25', home: 'Tunisia', hscore: 1, away: 'Netherlands', ascore: 3, played: true },
+
+                    { group: 'F', md: 3, date: 'Jun 25', home: 'Japan', hscore: 1, away: 'Sweden', ascore: 1, played: true },
+
+                    // GROUP G
+
+                    { group: 'G', md: 1, date: 'Jun 15', home: 'Belgium', hscore: 1, away: 'Egypt', ascore: 1, played: true },
+
+                    { group: 'G', md: 1, date: 'Jun 15', home: 'Iran', hscore: 2, away: 'New Zealand', ascore: 2, played: true },
+
+                    { group: 'G', md: 2, date: 'Jun 21', home: 'Belgium', hscore: 0, away: 'Iran', ascore: 0, played: true },
+
+                    { group: 'G', md: 2, date: 'Jun 21', home: 'New Zealand', hscore: 1, away: 'Egypt', ascore: 3, played: true },
+
+                    { group: 'G', md: 3, date: 'Jun 26', home: 'New Zealand', hscore: 1, away: 'Belgium', ascore: 5, played: true },
+
+                    { group: 'G', md: 3, date: 'Jun 26', home: 'Egypt', hscore: 1, away: 'Iran', ascore: 1, played: true },
+
+                    // GROUP H
+
+                    { group: 'H', md: 1, date: 'Jun 15', home: 'Spain', hscore: 0, away: 'Cabo Verde', ascore: 0, played: true },
+
+                    { group: 'H', md: 1, date: 'Jun 15', home: 'Saudi Arabia', hscore: 1, away: 'Uruguay', ascore: 1, played: true },
+
+                    { group: 'H', md: 2, date: 'Jun 21', home: 'Spain', hscore: 4, away: 'Saudi Arabia', ascore: 0, played: true },
+
+                    { group: 'H', md: 2, date: 'Jun 21', home: 'Uruguay', hscore: 2, away: 'Cabo Verde', ascore: 2, played: true },
+
+                    { group: 'H', md: 3, date: 'Jun 26', home: 'Cabo Verde', hscore: 0, away: 'Saudi Arabia', ascore: 0, played: true },
+
+                    { group: 'H', md: 3, date: 'Jun 26', home: 'Uruguay', hscore: 0, away: 'Spain', ascore: 1, played: true },
+
+                    // GROUP I
+
+                    { group: 'I', md: 1, date: 'Jun 16', home: 'France', hscore: 3, away: 'Senegal', ascore: 1, played: true },
+
+                    { group: 'I', md: 1, date: 'Jun 16', home: 'Iraq', hscore: 1, away: 'Norway', ascore: 4, played: true },
+
+                    { group: 'I', md: 2, date: 'Jun 22', home: 'France', hscore: 3, away: 'Iraq', ascore: 0, played: true },
+
+                    { group: 'I', md: 2, date: 'Jun 22', home: 'Norway', hscore: 3, away: 'Senegal', ascore: 1, played: true },
+
+                    { group: 'I', md: 3, date: 'Jun 26', home: 'Norway', hscore: 1, away: 'France', ascore: 4, played: true },
+
+                    { group: 'I', md: 3, date: 'Jun 26', home: 'Senegal', hscore: 5, away: 'Iraq', ascore: 0, played: true },
+
+                    // GROUP J
+
+                    { group: 'J', md: 1, date: 'Jun 16', home: 'Argentina', hscore: 3, away: 'Algeria', ascore: 0, played: true },
+
+                    { group: 'J', md: 1, date: 'Jun 16', home: 'Austria', hscore: 3, away: 'Jordan', ascore: 1, played: true },
+
+                    { group: 'J', md: 2, date: 'Jun 22', home: 'Argentina', hscore: 2, away: 'Austria', ascore: 0, played: true },
+
+                    { group: 'J', md: 2, date: 'Jun 22', home: 'Jordan', hscore: 1, away: 'Algeria', ascore: 2, played: true },
+
+                    { group: 'J', md: 3, date: 'Jun 27', home: 'Algeria', hscore: 3, away: 'Austria', ascore: 3, played: true },
+
+                    { group: 'J', md: 3, date: 'Jun 27', home: 'Jordan', hscore: 1, away: 'Argentina', ascore: 3, played: true },
+
+                    // GROUP K
+
+                    { group: 'K', md: 1, date: 'Jun 17', home: 'Portugal', hscore: 1, away: 'DR Congo', ascore: 1, played: true },
+
+                    { group: 'K', md: 1, date: 'Jun 17', home: 'Uzbekistan', hscore: 1, away: 'Colombia', ascore: 3, played: true },
+
+                    { group: 'K', md: 2, date: 'Jun 23', home: 'Portugal', hscore: 5, away: 'Uzbekistan', ascore: 0, played: true },
+
+                    { group: 'K', md: 2, date: 'Jun 23', home: 'Colombia', hscore: 1, away: 'DR Congo', ascore: 0, played: true },
+
+                    { group: 'K', md: 3, date: 'Jun 27', home: 'Colombia', hscore: 0, away: 'Portugal', ascore: 0, played: true },
+
+                    { group: 'K', md: 3, date: 'Jun 27', home: 'DR Congo', hscore: 3, away: 'Uzbekistan', ascore: 1, played: true },
+
+                    // GROUP L
+
+                    { group: 'L', md: 1, date: 'Jun 17', home: 'England', hscore: 4, away: 'Croatia', ascore: 2, played: true },
+
+                    { group: 'L', md: 1, date: 'Jun 17', home: 'Ghana', hscore: 1, away: 'Panama', ascore: 0, played: true },
+
+                    { group: 'L', md: 2, date: 'Jun 23', home: 'England', hscore: 0, away: 'Ghana', ascore: 0, played: true },
+
+                    { group: 'L', md: 2, date: 'Jun 23', home: 'Panama', hscore: 0, away: 'Croatia', ascore: 1, played: true },
+
+                    { group: 'L', md: 3, date: 'Jun 27', home: 'Panama', hscore: 0, away: 'England', ascore: 2, played: true },
+
+                    { group: 'L', md: 3, date: 'Jun 27', home: 'Croatia', hscore: 2, away: 'Ghana', ascore: 1, played: true },
+
+
+
+                    // ── Round of 32 ──────────────────────────────────────
+                    { round: 'r32', date: 'Jun 28', home: 'South Africa', hscore: 0, away: 'Canada', ascore: 1, played: true },
+                    { round: 'r32', date: 'Jun 29', home: 'Brazil', hscore: 2, away: 'Japan', ascore: 1, played: true },
+                    { round: 'r32', date: 'Jun 29', home: 'Germany', hscore: 1, away: 'Paraguay', ascore: 1, played: true, penWinner: 'Paraguay' },
+                    { round: 'r32', date: 'Jun 29', home: 'Netherlands', hscore: 1, away: 'Morocco', ascore: 1, played: true, penWinner: 'Morocco' },
+                    { round: 'r32', date: 'Jun 30', home: 'Ivory Coast', hscore: 1, away: 'Norway', ascore: 2, played: true },
+                    { round: 'r32', date: 'Jun 30', home: 'France', hscore: 3, away: 'Sweden', ascore: 0, played: true },
+                    { round: 'r32', date: 'Jun 30', home: 'Mexico', hscore: 2, away: 'Ecuador', ascore: 0, played: true },
+                    { round: 'r32', date: 'Jul 1', home: 'England', hscore: 2, away: 'DR Congo', ascore: 1, played: true },
+                    { round: 'r32', date: 'Jul 1', home: 'Belgium', hscore: 3, away: 'Senegal', ascore: 2, played: true },
+                    { round: 'r32', date: 'Jul 1', home: 'USA', hscore: 2, away: 'Bosnia & Herz.', ascore: 0, played: true },
+                    { round: 'r32', date: 'Jul 2', home: 'Spain', hscore: 3, away: 'Austria', ascore: 0, played: true },
+                    { round: 'r32', date: 'Jul 2', home: 'Portugal', hscore: 2, away: 'Croatia', ascore: 1, played: true },
+                    { round: 'r32', date: 'Jul 2', home: 'Switzerland', hscore: 2, away: 'Algeria', ascore: 0, played: true },
+                    { round: 'r32', date: 'Jul 3', home: 'Australia', hscore: 1, away: 'Egypt', ascore: 1, played: true, penWinner: 'Egypt' },
+                    { round: 'r32', date: 'Jul 3', home: 'Argentina', hscore: 3, away: 'Cabo Verde', ascore: 2, played: true },
+                    { round: 'r32', date: 'Jul 3', home: 'Colombia', hscore: 1, away: 'Ghana', ascore: 0, played: true },
+                    // ── Round of 16 ──────────────────────────────────────
+                    { round: 'r16', date: 'Jul 4', home: 'Canada', hscore: 0, away: 'Morocco', ascore: 3, played: true },
+                    { round: 'r16', date: 'Jul 4', home: 'Paraguay', hscore: 0, away: 'France', ascore: 1, played: true },
+                    { round: 'r16', date: 'Jul 5', home: 'Brazil', hscore: 1, away: 'Norway', ascore: 2, played: true },
+                    { round: 'r16', date: 'Jul 5', home: 'Mexico', hscore: 2, away: 'England', ascore: 3, played: true },
+                    { round: 'r16', date: 'Jul 6', home: 'Portugal', hscore: 0, away: 'Spain', ascore: 1, played: true },
+                    { round: 'r16', date: 'Jul 6', home: 'USA', hscore: 1, away: 'Belgium', ascore: 4, played: true },
+                    { round: 'r16', date: 'Jul 7', home: 'Argentina', hscore: 3, away: 'Egypt', ascore: 2, played: true },
+                    { round: 'r16', date: 'Jul 7', home: 'Switzerland', hscore: 0, away: 'Colombia', ascore: 0, played: true, penWinner: 'Switzerland' },
+                  ];
+
+                  const groups = ['A','B','C','D','E','F','G','H','I','J','K','L'];
+
+                  const groupMatches = MATCHES.filter(m => m.group === bracketGroup);
+
+                  const getFlag = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
+
+                  const getOwner = name => members.find(m => m.teams.includes(name));
+
+                  return (
+
+                    <>
+
+                      <div className="section-title" style={{ marginBottom: 14 }}>📅 GROUP STAGE SCHEDULE</div>
+
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 20 }}>
+
+                        {groups.map(g => (
+
+                          <button key={g} onClick={() => setBracketGroup(g)} style={{ padding: '5px 13px', borderRadius: 7, border: bracketGroup === g ? '1px solid rgba(255,215,0,0.6)' : '1px solid rgba(255,255,255,0.1)', background: bracketGroup === g ? 'rgba(255,215,0,0.12)' : 'rgba(255,255,255,0.04)', color: bracketGroup === g ? '#ffd700' : 'rgba(255,255,255,0.5)', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 12, fontWeight: 600 }}>Group {g}</button>
+
+                        ))}
+
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+                        {[1,2,3].map(md => {
+
+                          const mdMatches = groupMatches.filter(m => m.md === md);
+
+                          if (!mdMatches.length) return null;
+
+                          return (
+
+                            <div key={md}>
+
+                              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6 }}>Matchday {md}</div>
+
+                              {mdMatches.map((m, i) => {
+
+                                const homeOwner = getOwner(m.home);
+
+                                const awayOwner = getOwner(m.away);
+
+                                const isWinHome = m.played && m.hscore > m.ascore;
+
+                                const isWinAway = m.played && m.ascore > m.hscore;
+
+                                return (
+
+                                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: m.live ? '1px solid rgba(220,0,0,0.35)' : '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '12px 18px', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 10 }}>
+
+                                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', minWidth: 44 }}>{m.date}</div>
+
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
+
+                                      <div style={{ textAlign: 'right' }}>
+
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.home)} {m.home}</div>
+
+                                        {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name.split(' ')[0]}</div>}
+
+                                      </div>
+
+                                    </div>
+
+                                    <div style={{ textAlign: 'center', minWidth: 72, flexShrink: 0 }}>
+
+                                      {m.live
+
+                                        ? <>
+
+                                            <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#fff' }}>{m.hscore} : {m.ascore}</div>
+
+                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(220,0,0,0.85)', borderRadius: 4, padding: '2px 7px', marginTop: 3 }}>
+
+                                              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'livePulse 1s ease-in-out infinite' }} />
+
+                                              <span style={{ fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: 1.5 }}>LIVE</span>
+
+                                            </div>
+
+                                          </>
+
+                                        : m.played
+
+                                          ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ffd700' }}>{m.hscore} : {m.ascore}</div><div style={{ fontSize: 9, color: 'rgba(100,255,100,0.6)', letterSpacing: 1 }}>FT</div></>
+
+                                          : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>VS</div>
+
+                                      }
+
+                                    </div>
+
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 6 }}>
+
+                                      <div style={{ textAlign: 'left' }}>
+
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag(m.away)} {m.away}</div>
+
+                                        {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name.split(' ')[0]}</div>}
+
+                                      </div>
+
+                                    </div>
+
+                                  </div>
+
+                                );
+
+                              })}
+
+                            </div>
+
+                          );
+
+                        })}
+
+                      </div>
+                    </>
+
+                  );
+
+                })()}
+
+
+
+
+
+
+
+                {/* R32 SCHEDULE TAB */}
+
+                {tab === 'r32schedule' && (() => {
+
+                  const r32All = [
+                    { round: 'r32', date:'Jun 28', home:'South Africa', hscore:0, away:'Canada', ascore:1, played:true },
+                    { round: 'r32', date:'Jun 29', home:'Brazil', hscore:2, away:'Japan', ascore:1, played:true },
+                    { round: 'r32', date:'Jun 29', home:'Germany', hscore:1, away:'Paraguay', ascore:1, played:true, penWinner:'Paraguay' },
+                    { round: 'r32', date:'Jun 29', home:'Netherlands', hscore:1, away:'Morocco', ascore:1, played:true, penWinner:'Morocco' },
+                    { round: 'r32', date:'Jun 30', home:'Ivory Coast', hscore:1, away:'Norway', ascore:2, played:true },
+                    { round: 'r32', date:'Jun 30', home:'France', hscore:3, away:'Sweden', ascore:0, played:true },
+                    { round: 'r32', date:'Jun 30', home:'Mexico', hscore:2, away:'Ecuador', ascore:0, played:true },
+                    { round: 'r32', date:'Jul 1', home:'England', hscore:2, away:'DR Congo', ascore:1, played:true },
+                    { round: 'r32', date:'Jul 1', home:'Belgium', hscore:3, away:'Senegal', ascore:2, played:true },
+                    { round: 'r32', date:'Jul 1', home:'USA', hscore:2, away:'Bosnia & Herz.', ascore:0, played:true },
+                    { round: 'r32', date:'Jul 2', home:'Spain', hscore:3, away:'Austria', ascore:0, played:true },
+                    { round: 'r32', date:'Jul 2', home:'Portugal', hscore:2, away:'Croatia', ascore:1, played:true },
+                    { round: 'r32', date:'Jul 2', home:'Switzerland', hscore:2, away:'Algeria', ascore:0, played:true },
+                    { round: 'r32', date:'Jul 3', home:'Australia', hscore:1, away:'Egypt', ascore:1, played:true, penWinner:'Egypt' },
+                    { round: 'r32', date:'Jul 3', home:'Argentina', hscore:3, away:'Cabo Verde', ascore:2, played:true },
+                    { round: 'r32', date:'Jul 3', home:'Colombia', hscore:1, away:'Ghana', ascore:0, played:true },
+                  ];
+
+                  const getFlag2  = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
+                  const getOwner2 = name => members.find(m => m.teams.includes(name));
+                  const r32Dates  = [...new Set(r32All.map(m => m.date))];
+
+                  return (
+                    <>
+                      <div className="section-title" style={{ marginBottom: 18 }}>⚔️ ROUND OF 32</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {r32Dates.map(date => {
+                          const dayMatches = r32All.filter(m => m.date === date);
+                          return (
+                            <div key={date}>
+                              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6, paddingLeft: 2 }}>{date}</div>
+                              {dayMatches.map((m, i) => {
+                                const homeOwner = getOwner2(m.home);
+                                const awayOwner = getOwner2(m.away);
+                                const isPen = !!(m.played && m.penWinner);
+                                const isWinHome = m.played && (m.penWinner ? m.penWinner === m.home : m.hscore > m.ascore);
+                                const isWinAway = m.played && (m.penWinner ? m.penWinner === m.away : m.ascore > m.hscore);
+                                return (
+                                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: m.live ? '1px solid rgba(220,50,50,0.5)' : '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
+                                      <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag2(m.home)} {m.home}</div>
+                                        {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                    <div style={{ textAlign: 'center', minWidth: 72, flexShrink: 0 }}>
+                                      {m.live
+                                        ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ff6464' }}>{m.hscore} – {m.ascore}</div><div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(220,50,50,0.15)', border: '1px solid rgba(220,50,50,0.3)', borderRadius: 10, padding: '2px 7px' }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'livePulse 1.2s infinite' }} /><span style={{ fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: 1.5 }}>LIVE</span></div></>
+                                        : m.played
+                                          ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: 'rgba(255,255,255,0.9)' }}>{m.hscore} – {m.ascore}</div><div style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', letterSpacing: 1 }}>FT</div>{isPen && <div style={{ fontSize: 9, fontWeight: 700, color: '#ffd700', letterSpacing: 1, marginTop: 2 }}>PEN</div>}</>
+                                          : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>VS</div>
+                                      }
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}>
+                                      <div style={{ textAlign: 'left' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{getFlag2(m.away)} {m.away}</div>
+                                        {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+
+                })()}
+
+                {/* R16 SCHEDULE TAB */}
+
+                {tab === 'r16schedule' && (() => {
+
+                  const r16All = [
+                    { round: 'r16', date:'Jul 4', home:'Canada', hscore:0, away:'Morocco', ascore:3, played:true },
+                    { round: 'r16', date:'Jul 4', home:'Paraguay', hscore:0, away:'France', ascore:1, played:true },
+                    { round: 'r16', date:'Jul 5', home:'Brazil', hscore:1, away:'Norway', ascore:2, played:true },
+                    { round: 'r16', date:'Jul 5', home:'Mexico', hscore:2, away:'England', ascore:3, played:true },
+                    { round: 'r16', date:'Jul 6', home:'Portugal', hscore:0, away:'Spain', ascore:1, played:true },
+                    { round: 'r16', date:'Jul 6', home:'USA', hscore:1, away:'Belgium', ascore:4, played:true },
+                    { round: 'r16', date:'Jul 7', home:'Argentina', hscore:3, away:'Egypt', ascore:2, played:true },
+                    { round: 'r16', date:'Jul 7', home:'Switzerland', hscore:0, away:'Colombia', ascore:0, played:true, penWinner:'Switzerland' },
+                  ];
+
+                  const getFlag2b  = name => ALL_TEAMS.find(t => t.name === name)?.flag || '';
+                  const getOwner2b = name => members.find(m => m.teams.includes(name));
+                  const r16Dates  = [...new Set(r16All.map(m => m.date))];
+
+                  return (
+                    <>
+                      <div className="section-title" style={{ marginBottom: 18 }}>🔥 ROUND OF 16</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {r16Dates.map(date => {
+                          const dayMatches = r16All.filter(m => m.date === date);
+                          return (
+                            <div key={date}>
+                              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: 2, textTransform: 'uppercase', marginBottom: 6, paddingLeft: 2 }}>{date}</div>
+                              {dayMatches.map((m, i) => {
+                                const isTBD = !m.home || !m.away;
+                                const homeOwner = !isTBD && getOwner2b(m.home);
+                                const awayOwner = !isTBD && getOwner2b(m.away);
+                                const isPen = !!(m.played && m.penWinner);
+                                const isWinHome = !isTBD && m.played && (m.penWinner ? m.penWinner === m.home : m.hscore > m.ascore);
+                                const isWinAway = !isTBD && m.played && (m.penWinner ? m.penWinner === m.away : m.ascore > m.hscore);
+                                return (
+                                  <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: m.live ? '1px solid rgba(220,50,50,0.5)' : '1px solid rgba(255,255,255,0.06)', borderRadius: 10, padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 8 }}>
+                                      <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinHome ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{isTBD ? 'TBD' : `${getFlag2b(m.home)} ${m.home}`}</div>
+                                        {homeOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{homeOwner.emoji} {homeOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                    <div style={{ textAlign: 'center', minWidth: 72, flexShrink: 0 }}>
+                                      {m.live
+                                        ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: '#ff6464' }}>{m.hscore} – {m.ascore}</div><div style={{ display: 'inline-flex', alignItems: 'center', gap: 4, background: 'rgba(220,50,50,0.15)', border: '1px solid rgba(220,50,50,0.3)', borderRadius: 10, padding: '2px 7px' }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: '#fff', display: 'inline-block', animation: 'livePulse 1.2s infinite' }} /><span style={{ fontSize: 9, fontWeight: 700, color: '#fff', letterSpacing: 1.5 }}>LIVE</span></div></>
+                                        : m.played
+                                          ? <><div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 22, letterSpacing: 3, color: 'rgba(255,255,255,0.9)' }}>{m.hscore} – {m.ascore}</div><div style={{ fontSize: 9, color: 'rgba(255,255,255,0.25)', letterSpacing: 1 }}>FT</div>{isPen && <div style={{ fontSize: 9, fontWeight: 700, color: '#ffd700', letterSpacing: 1, marginTop: 2 }}>PEN</div>}</>
+                                          : <div style={{ fontFamily: "'Bebas Neue', cursive", fontSize: 16, color: 'rgba(255,255,255,0.2)', letterSpacing: 2 }}>VS</div>
+                                      }
+                                    </div>
+                                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 8 }}>
+                                      <div style={{ textAlign: 'left' }}>
+                                        <div style={{ fontSize: 13, fontWeight: 600, color: isWinAway ? '#ffd700' : 'rgba(255,255,255,0.85)' }}>{isTBD ? 'TBD' : `${getFlag2b(m.away)} ${m.away}`}</div>
+                                        {awayOwner && <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{awayOwner.emoji} {awayOwner.name}</div>}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  );
+
+                })()}
+
+                {/* KNOCKOUT BRACKET */}
+
+                {tab === 'knockout' && (() => {
+
+                  // ── KO Match Data — update hscore/ascore + played:true as results come in ──
+
+                  // Winner helper — returns team name or null
+                  const mWin = m => {
+                    if (!m || !m.played || m.hscore === null || m.ascore === null) return null;
+                    if (m.penWinner) return m.penWinner; // penalties / ET winner
+                    if (m.hscore > m.ascore) return m.home;
+                    if (m.ascore > m.hscore) return m.away;
+                    return null; // draw — manually set winner for ET/pens
+                  };
+
+                  const r32W = id => mWin(KO_MATCHES.find(m => m.round === 'r32' && m.matchId === id));
+
+                  // Official FIFA 2026 WC bracket draw — R32 matchId pairs → R16 matchId
+                  // R16-0: W(0) vs W(3), R16-1: W(2) vs W(5), R16-2: W(1) vs W(4), R16-3: W(6) vs W(7)
+                  // R16-4: W(11) vs W(10), R16-5: W(9) vs W(8), R16-6: W(14) vs W(13), R16-7: W(12) vs W(15)
+                  const R16_DRAW = [[0,3],[2,5],[1,4],[6,7],[11,10],[9,8],[14,13],[12,15]];
+                  const r16W = id => {
+                    const stored = KO_MATCHES.find(m => m.round === 'r16' && m.matchId === id);
+                    if (stored && stored.home && stored.away) return mWin(stored);
+                    const pair = R16_DRAW[id];
+                    if (!pair) return null;
+                    const a = r32W(pair[0]), b = r32W(pair[1]);
+                    if (!a || !b) return null;
+                    return mWin({ ...stored, home: a, away: b });
+                  };
+
+                  const qfW = id => {
+                    const stored = KO_MATCHES.find(m => m.round === 'qf' && m.matchId === id);
+                    if (stored && stored.home && stored.away) return mWin(stored);
+                    const a = r16W(id * 2), b = r16W(id * 2 + 1);
+                    if (!a || !b) return null;
+                    return mWin({ ...stored, home: a, away: b });
+                  };
+
+                  const sfW = id => {
+                    const stored = KO_MATCHES.find(m => m.round === 'sf' && m.matchId === id);
+                    if (stored && stored.home && stored.away) return mWin(stored);
+                    const a = qfW(id * 2), b = qfW(id * 2 + 1);
+                    if (!a || !b) return null;
+                    return mWin({ ...stored, home: a, away: b });
+                  };
+
+                  const finalW = () => {
+                    const stored = KO_MATCHES.find(m => m.round === 'f' && m.matchId === 0);
+                    if (stored && stored.home && stored.away) return mWin(stored);
+                    const a = sfW(0), b = sfW(1);
+                    if (!a || !b) return null;
+                    return mWin({ ...stored, home: a, away: b });
+                  };
+
+                  const champion = finalW();
+
+                  // Slot helpers
+                  const getFlag3 = name => (name && name !== 'TBD') ? (ALL_TEAMS.find(t => t.name === name)?.flag || '') : '';
+                  const getOwner3 = name => name ? members.find(m => m.teams.includes(name)) : null;
+                  const ownerColors = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff9f43','#a29bfe','#fd79a8','#00cec9','#e17055','#74b9ff','#55efc4','#fdcb6e','#e84393','#0984e3','#00b894','#b2bec3'];
+                  const getOwnerColor = name => {
+                    const owner = getOwner3(name);
+                    if (!owner) return 'rgba(255,255,255,0.15)';
+                    return ownerColors[members.findIndex(m => m.id === owner.id) % ownerColors.length];
+                  };
+
+                  // SlotCard — flag + team name + owner badge + elim/winner state
+                  const SlotCard = ({ label, isWinner, isElim }) => {
+                    const isTBD = !label || label === 'TBD';
+                    const isReal = !isTBD && ALL_TEAMS.some(t => t.name === label);
+                    const flag = isReal ? getFlag3(label) : '';
+                    const owner = isReal ? getOwner3(label) : null;
+                    const ownerColor = isReal ? getOwnerColor(label) : 'rgba(255,255,255,0.15)';
+                    const borderColor = isWinner
+                      ? 'rgba(100,220,100,0.8)'
+                      : isTBD ? 'rgba(255,255,255,0.05)' : ownerColor;
+                    return (
+                      <div style={{
+                        background: isWinner
+                          ? 'rgba(100,220,100,0.08)'
+                          : isTBD ? 'rgba(255,255,255,0.015)' : 'rgba(255,255,255,0.06)',
+                        border: isWinner
+                          ? '1px solid rgba(100,220,100,0.4)'
+                          : isTBD ? '1px solid rgba(255,255,255,0.04)' : '1px solid rgba(255,255,255,0.14)',
+                        borderLeft: '3px solid ' + borderColor,
+                        borderRadius: 8, padding: '6px 10px', minWidth: 150, maxWidth: 165,
+                        opacity: isElim ? 0.35 : 1,
+                        boxShadow: isWinner ? '0 0 8px rgba(100,220,100,0.3)' : 'none',
+                      }}>
+                        <div style={{ display:'flex', alignItems:'center', gap:7 }}>
+                          <span style={{ fontSize:18, lineHeight:1, flexShrink:0 }}>
+                            {isWinner ? '✅' : isElim ? '❌' : isTBD ? '⏳' : flag}
+                          </span>
+                          <div style={{ overflow:'hidden' }}>
+                            <div style={{
+                              fontSize:12, fontWeight:700,
+                              color: isWinner ? 'rgba(100,220,100,0.95)' : isTBD ? 'rgba(255,255,255,0.2)' : '#fff',
+                              whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis',
+                              textDecoration: isElim ? 'line-through' : 'none',
+                            }}>{isTBD ? 'TBD' : label}</div>
+                            {isReal && owner && (
+                              <div style={{ fontSize:9, color:ownerColor, marginTop:1, fontWeight:600 }}>
+                                {owner.emoji} {owner.name}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  };
+
+                  // MatchPair card — two SlotCards with divider + winner/elim awareness
+                  const MatchPair = ({ top, bot, matchData }) => {
+                    // matchData is the KO_MATCHES entry for this pair (optional — only for played r32 matches)
+                    const played = matchData && matchData.played && matchData.hscore !== null && matchData.ascore !== null;
+                    const winnerTeam = played
+                      ? (matchData.penWinner || (matchData.hscore > matchData.ascore ? matchData.home : matchData.ascore > matchData.hscore ? matchData.away : null))
+                      : null;
+                    const topWin = winnerTeam === top;
+                    const botWin = winnerTeam === bot;
+                    const topElim = played && !topWin && !!winnerTeam && top !== 'TBD';
+                    const botElim = played && !botWin && !!winnerTeam && bot !== 'TBD';
+                    return (
+                      <div style={{
+                        display:'flex', flexDirection:'column', gap:2,
+                        background: 'rgba(255,255,255,0.025)',
+                        border:'1px solid rgba(255,255,255,0.07)',
+                        borderRadius:10, padding:'5px 5px',
+                      }}>
+                        <SlotCard label={top} isWinner={topWin} isElim={topElim} />
+                        <div style={{ height:1, background: 'rgba(255,255,255,0.06)', margin:'2px 4px' }} />
+                        <SlotCard label={bot} isWinner={botWin} isElim={botElim} />
+                      </div>
+                    );
+                  };
+
+                  const ColHeader = ({ label, pts }) => (
+                    <div style={{ marginBottom:10, paddingLeft:4 }}>
+                      <div style={{ fontSize:10, fontWeight:700, color:'rgba(255,255,255,0.5)', letterSpacing:2, textTransform:'uppercase' }}>{label}</div>
+                      <div style={{ fontSize:11, color:'#ffd700', fontWeight:700, letterSpacing:1, marginTop:2 }}>{pts}</div>
+                    </div>
+                  );
+
+                  const Connector = () => (
+                    <div style={{ display:'flex', alignItems:'center', alignSelf:'stretch' }}>
+                      <div style={{ width:18, height:2, background: 'rgba(255,255,255,0.1)' }} />
+                    </div>
+                  );
+
+                  // Build pair arrays
+                  const r32Pairs = Array.from({length:16}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'r32' && x.matchId === i);
+                    return { top: m.home, bot: m.away, matchData: m };
+                  });
+                  const r16Pairs = Array.from({length:8}, (_,i) => {
+                    const pair = R16_DRAW[i];
+                    const m = KO_MATCHES.find(x => x.round === 'r16' && x.matchId === i);
+                    return { top: r32W(pair[0])||'TBD', bot: r32W(pair[1])||'TBD', matchData: m };
+                  });
+                  const qfPairs  = Array.from({length:4}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'qf' && x.matchId === i);
+                    return { top: m.home||'TBD', bot: m.away||'TBD', matchData: m };
+                  });
+                  const sfPairs  = Array.from({length:2}, (_,i) => {
+                    const m = KO_MATCHES.find(x => x.round === 'sf' && x.matchId === i);
+                    return { top: m.home||'TBD', bot: m.away||'TBD', matchData: m };
+                  });
+                  const finalMatchData = KO_MATCHES.find(x => x.round === 'f' && x.matchId === 0);
+                  const finalPair = { top: sfW(0)||'TBD', bot: sfW(1)||'TBD', matchData: finalMatchData };
+
+                  return (
+                    <>
+                      <div style={{ marginBottom:14 }}>
+                        <div className="section-title">🏅 KNOCKOUT BRACKET</div>
+                        <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', marginTop:4 }}>
+                          Winners auto-advance round by round · Update scores in KO_MATCHES to populate
+                        </div>
+                      </div>
+
+                      <div style={{ background: 'rgba(100,220,100,0.06)', border:'1px solid rgba(100,220,100,0.2)', borderRadius:10, padding:'10px 16px', marginBottom:18, display:'flex', alignItems:'center', gap:12 }}>
+                        <span style={{ fontSize:18 }}>✅</span>
+                        <div>
+                          <div style={{ fontSize:12, fontWeight:600, color:'rgba(100,220,100,0.9)' }}>SEMI-FINALS UNDERWAY — FINAL Jul 19</div>
+                          <div style={{ fontSize:11, color:'rgba(255,255,255,0.4)', marginTop:2 }}>SF1: Spain 2–0 France ✅ · SF2: England vs Argentina today · Final Jul 19</div>
+                          <CountdownBar />
+                        </div>
+                        <div style={{ marginLeft:'auto', fontSize:10, color:'rgba(255,255,255,0.25)' }}>16 / 16 R32 FINAL</div>
+                      </div>
+
+                      <div style={{ overflowX:'auto', paddingBottom:16 }}>
+                        <div style={{ display:'flex', gap:0, minWidth:960 }}>
+
+                          {/* R32 */}
+                          <div style={{ minWidth:175 }}>
+                            <ColHeader label="ROUND OF 32" pts="+5/TEAM" />
+                            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                              {r32Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* R16 */}
+                          <div style={{ minWidth:175 }}>
+                            <ColHeader label="ROUND OF 16" pts="+8/TEAM" />
+                            <div style={{ display:'flex', flexDirection:'column', gap:31 }}>
+                              {r16Pairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* QF */}
+                          <div style={{ minWidth:175 }}>
+                            <ColHeader label="QUARTER-FINALS" pts="+10/TEAM" />
+                            <div style={{ display:'flex', flexDirection:'column', gap:95 }}>
+                              {qfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* SF */}
+                          <div style={{ minWidth:175 }}>
+                            <ColHeader label="SEMI-FINALS" pts="+20/TEAM" />
+                            <div style={{ display:'flex', flexDirection:'column', gap:255 }}>
+                              {sfPairs.map((p,i) => <MatchPair key={i} top={p.top} bot={p.bot} matchData={p.matchData} />)}
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* Final */}
+                          <div style={{ minWidth:175 }}>
+                            <ColHeader label="FINAL" pts="+35/TEAM" />
+                            <div style={{ display:'flex', flexDirection:'column', paddingTop:0 }}>
+                              <MatchPair top={finalPair.top} bot={finalPair.bot} matchData={finalPair.matchData} />
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                          {/* Champion */}
+                          <div style={{ minWidth:175, display:'flex', flexDirection:'column', justifyContent:'flex-start', paddingTop:30 }}>
+                            <ColHeader label="CHAMPION" pts="+50/TEAM" />
+                            <div style={{
+                              background: champion ? 'linear-gradient(135deg,rgba(255,215,0,0.18),rgba(255,165,0,0.10))' : 'rgba(255,255,255,0.03)',
+                              border: champion ? '2px solid rgba(255,215,0,0.55)' : '1px solid rgba(255,255,255,0.08)',
+                              borderRadius:12, padding:'14px 16px',
+                              boxShadow: champion ? '0 0 24px rgba(255,215,0,0.18)' : 'none',
+                            }}>
+                              <div style={{ fontSize:28, textAlign:'center', marginBottom:6 }}>
+                                {champion ? getFlag3(champion) : '🏆'}
+                              </div>
+                              <div style={{ fontSize:13, fontWeight:800, color:'#ffd700', textAlign:'center', letterSpacing:1 }}>
+                                {champion || 'TBD'}
+                              </div>
+                              {champion && getOwner3(champion) && (
+                                <div style={{ fontSize:10, color:getOwnerColor(champion), textAlign:'center', marginTop:4, fontWeight:700 }}>
+                                  {getOwner3(champion).emoji} {getOwner3(champion).name}
+                                </div>
+                              )}
+                              <div style={{ fontSize:9, color:'rgba(255,255,255,0.3)', textAlign:'center', marginTop:4, letterSpacing:1 }}>
+                                WINNER OF THE FINAL
+                              </div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    </>
+                  );
+
+                })()}
+
+
+
+                {tab === 'setup' && (
+
+                  <>
+
+                    <div className="row"><div className="section-title">MANAGE PLAYERS</div></div>
+
+                    <div className="setup-grid">
+
+                      {members.map(m => (
+
+                        <div key={m.id} className="member-card">
+
+                          <div className="member-header">
+
+                            <div style={{ position: 'relative' }}>
+
+                              <button className="member-emoji-btn" onClick={e => { e.stopPropagation(); setEmojiPicker(emojiPicker === m.id ? null : m.id); }}>{m.emoji}</button>
+
+                              {emojiPicker === m.id && (
+
+                                <div onClick={e => e.stopPropagation()} style={{ position: 'absolute', top: '40px', left: 0, zIndex: 100, background: '#1a2030', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '10px', padding: '8px', display: 'flex', flexWrap: 'wrap', gap: '5px', width: '150px' }}>
+
+                                  {EMOJIS.map(e => (
+
+                                    <button key={e} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '17px', padding: '2px' }} onClick={() => { updateMember(m.id, { emoji: e }); setEmojiPicker(null); }}>{e}</button>
+
+                                  ))}
+
+                                </div>
+
+                              )}
+
+                            </div>
+
+                            <input className="member-name-input" value={m.name} onChange={e => updateMember(m.id, { name: e.target.value })} />
+
+                            <button className="delete-member" onClick={() => deleteMember(m.id)}>✕</button>
+
+                          </div>
+
+                          <div className="member-team-count">{m.teams.length}/3 teams selected</div>
+
+                          <div className="team-select-grid">
+
+                            {ALL_TEAMS.map(t => {
+
+                              const owned = m.teams.includes(t.name);
+
+                              const takenByOther = !owned && assignedTeams.includes(t.name);
+
+                              return (
+
+                                <button key={t.name} className={`team-btn ${owned ? 'selected' : ''}`} disabled={takenByOther || (!owned && m.teams.length >= 3)} onClick={() => toggleTeam(m.id, t.name)}>
+
+                                  {t.flag} {t.name}
+
+                                </button>
+
+                              );
+
+                            })}
+
+                          </div>
+
+                        </div>
+
+                      ))}
+
+                      <button className="add-member-btn" onClick={addMember}>+ Add Player</button>
+
+                    </div>
+
+                  </>
+
+                )}
+
+
+
+                {/* GROUPS */}
+
+                {tab === 'groups' && (
+
+                  <>
+
+                    <div className="section-title" style={{ marginBottom: 14 }}>ALL 12 GROUPS</div>
+
+                    <div className="groups-grid">
+
+                      {'ABCDEFGHIJKL'.split('').map(g => (
+
+                        <div key={g} className="group-card">
+
+                          <div className="group-label">Group {g}</div>
+
+                          {ALL_TEAMS.filter(t => t.group === g).map(t => {
+
+                            const owner = members.find(m => m.teams.includes(t.name));
+
+                            return (
+
+                              <div key={t.name} className="group-team">
+
+                                <span>{t.flag}</span>
+
+                                <span>{t.name}</span>
+
+                                {owner && <span className="group-team-owner">{owner.emoji} {owner.name.split(' ')[0]}</span>}
+
+                              </div>
+
+                            );
+
+                          })}
+
+                        </div>
+
+                      ))}
+
+                    </div>
+
+                  </>
+
+                )}
+
+
+
+                {/* PROGRESS */}
+
+                {tab === 'progress' && (
+
+                  <>
+
+                    <div className="row">
+
+                      <div className="section-title">TEAM PROGRESS</div>
+
+                      <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>Update as matches happen</span>
+
+                    </div>
+
+                    {members.map(m => m.teams.length > 0 && (() => {
+                        const allElim = m.teams.length > 0 && m.teams.every(tn => getTeamStage(tn, teamStatuses, KO_MATCHES) === 'eliminated');
+                        return (
+                      <div key={m.id} className={`progress-member${allElim ? ' busted' : ''}`}>
+
+                        <div className="progress-member-title">{m.emoji} {m.name}{allElim && <span style={{ marginLeft:7, fontSize:16 }} title="All teams eliminated">💀</span>}</div>
+
+                        {m.teams.map(teamName => {
+
+                          const team = ALL_TEAMS.find(t => t.name === teamName);
+
+                          const s = teamStatuses[teamName] || {};
+                          const teamElim = getTeamStage(teamName, teamStatuses, KO_MATCHES) === 'eliminated';
+
+                          return (
+
+                            <div key={teamName} className={`progress-team-row${teamElim ? ' elim' : ''}`}>
+
+                              <span style={{ minWidth: 110, fontSize: 12 }}>{teamElim && <span style={{ marginRight:4, fontSize:11 }}>❌</span>}{team?.flag} {teamName}</span>
+
+                              <button className="counter-btn" onClick={() => setTeamStatuses(prev => ({ ...prev, [teamName]: { ...(prev[teamName] || {}), groupWins: ((prev[teamName]?.groupWins || 0) + 1) % 4 } }))} style={{ background: 'rgba(100,200,100,0.1)', border: '1px solid rgba(100,200,100,0.2)', color: 'rgba(100,255,100,0.8)' }}>W:{s.groupWins || 0}</button>
+
+                              <button className="counter-btn" onClick={() => setTeamStatuses(prev => ({ ...prev, [teamName]: { ...(prev[teamName] || {}), groupDraws: ((prev[teamName]?.groupDraws || 0) + 1) % 4 } }))} style={{ background: 'rgba(200,200,80,0.1)', border: '1px solid rgba(200,200,80,0.2)', color: 'rgba(240,240,100,0.8)' }}>D:{s.groupDraws || 0}</button>
+
+                              {[['eliminated','❌ Out'],['roundOf32','R32'],['quarterFinal','QF'],['semiFinal','SF'],['runnerUp','🥈'],['champion','🏆']].map(([field,label]) => (
+
+                                <button key={field} className="stage-btn" onClick={() => toggleStatus(teamName, field)} style={{ background: s[field] ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.05)', border: s[field] ? '1px solid rgba(255,215,0,0.4)' : '1px solid rgba(255,255,255,0.1)', color: s[field] ? '#ffd700' : 'rgba(255,255,255,0.45)' }}>{label}</button>
+
+                              ))}
+
+                            </div>
+
+                          );
+
+                        })}
+
+                      </div>
+                        );
+                      })()
+                    )}
+
+                    {members.every(m => m.teams.length === 0) && (
+
+                      <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.25)', padding: '40px 0' }}>Assign teams in the Players tab first!</div>
+
+                    )}
+
+                  </>
+
+                )}
+
+
+
+                {/* TRASH TALK */}
+
+                {tab === 'trash' && (
+
+                  <>
+
+                    <div className="section-title">💬 TRASH TALK BOARD</div>
+
+                    <div className="trash-section">
+
+                      <div className="trash-card">
+
+                        <div className="trash-title">DROP YOUR HEAT 🔥</div>
+
+                        <div className="trash-input-row">
+
+                          <select className="trash-select" value={trashAuthor} onChange={e => setTrashAuthor(e.target.value)}>
+
+                            <option value="">Who are you?</option>
+
+                            {members.map(m => <option key={m.id} value={`${m.name} ${m.emoji}`}>{m.emoji} {m.name}</option>)}
+
+                          </select>
+
+                        </div>
+
+                        <div className="trash-input-row">
+
+                          <input
+
+                            className="trash-text-input"
+
+                            placeholder="Type your trash talk..."
+
+                            value={trashText}
+
+                            onChange={e => setTrashText(e.target.value)}
+
+                            onKeyDown={e => e.key === 'Enter' && sendTrash()}
+
+                            style={{ flex: 1 }}
+
+                          />
+
+                          <button className="trash-send-btn" onClick={sendTrash}>Send 🔥</button>
+
+                        </div>
+
+                      </div>
+
+                      <div className="trash-card">
+
+                        <div className="trash-title">THE FEED 📣</div>
+
+                        <div className="trash-messages">
+
+                          {trashMessages.length === 0
+
+                            ? <div className="trash-empty">No trash talk yet... someone start it!</div>
+
+                            : [...trashMessages].reverse().map(msg => (
+
+                              <div key={msg.id} className="trash-msg">
+
+                                <div className="trash-msg-author">{msg.author}</div>
+
+                                <div className="trash-msg-text">{msg.text}</div>
+
+                                <div className="trash-msg-time">{fmt(msg.time)}</div>
+
+                              </div>
+
+                            ))
+
+                          }
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </>
+
+                )}
+
+
+
+              </div>
+
+            </div>
+
+          </>
+
+        );
+
+      }
+
+
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+    </script>
+
+  
+  <script>
+    // ── CONFETTI ────────────────────────────────────────────────────────────
+    var _confettiFired = false;
+    function launchConfetti() {
+      if (_confettiFired) return;
+      _confettiFired = true;
+      var colors = ['#ffd700','#ff4444','#44ff88','#4488ff','#ff44ff','#ffaa00','#00ffcc'];
+      for (var i = 0; i < 90; i++) {
+        (function(idx) {
+          setTimeout(function() {
+            var el = document.createElement('div');
+            el.className = 'confetti-piece';
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.background = colors[Math.floor(Math.random() * colors.length)];
+            el.style.animationDuration = (2.2 + Math.random() * 2.4) + 's';
+            el.style.width  = (8 + Math.random() * 8) + 'px';
+            el.style.height = (10 + Math.random() * 10) + 'px';
+            el.style.opacity = '1';
+            document.body.appendChild(el);
+            setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 5000);
+          }, idx * 35);
+        })(i);
+      }
+    }
+
+    // Watch champion card for a real team name
+    var _prevChamp = '';
+    setInterval(function() {
+      var divs = document.querySelectorAll('div');
+      for (var i = 0; i < divs.length; i++) {
+        if (divs[i].textContent.trim() === 'WINNER OF THE FINAL') {
+          var card = divs[i].closest('div');
+          if (card) {
+            var nameEls = card.querySelectorAll('div');
+            for (var j = 0; j < nameEls.length; j++) {
+              var t = nameEls[j].textContent.trim();
+              if (t && t !== 'TBD' && t !== 'WINNER OF THE FINAL' && t.length > 1 && t.length < 30) {
+                if (t !== _prevChamp) { _prevChamp = t; launchConfetti(); }
+              }
+            }
+          }
+        }
+      }
+    }, 2000);
+
+    // ── BROWSER NOTIFICATIONS ───────────────────────────────────────────────
+    var _notifFired = {};
+    function checkLiveNotification() {
+      if (typeof getLiveMatch === 'undefined') return;
+      var live = getLiveMatch();
+      if (!live || _notifFired[live.label]) return;
+      _notifFired[live.label] = true;
+      if (!('Notification' in window)) return;
+      function sendNotif() {
+        new Notification('⚽ ' + live.label + ' is LIVE!', {
+          body: "Check the Familia Mundial bracket — it's happening NOW!",
+          icon: 'https://cdn.jsdelivr.net/npm/twemoji@14/assets/72x72/26bd.png'
+        });
+      }
+      if (Notification.permission === 'granted') { sendNotif(); }
+      else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(function(p) { if (p === 'granted') sendNotif(); });
+      }
+    }
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        checkLiveNotification();
+        setInterval(checkLiveNotification, 60000);
+      }, 1500);
+    });
+  </script>
+</body>
+
+</html>
+
