@@ -66,7 +66,41 @@
           z-index: 0;
         }
 
-        </style>
+  
+        /* ── CONFETTI ── */
+        @keyframes confetti-fall {
+          0%   { transform: translateY(-10px) rotate(0deg);   opacity: 1; }
+          100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+        .confetti-piece {
+          position: fixed; top: -10px; width: 10px; height: 14px;
+          border-radius: 2px; opacity: 0; pointer-events: none; z-index: 9999;
+          animation: confetti-fall linear forwards;
+        }
+        /* ── LIVE BADGE ── */
+        @keyframes live-pulse {
+          0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,50,50,0.7); }
+          50%       { opacity: 0.85; box-shadow: 0 0 0 6px rgba(255,50,50,0); }
+        }
+        .live-badge {
+          display: inline-flex; align-items: center; gap: 5px;
+          background: rgba(220,30,30,0.18); border: 1px solid rgba(255,80,80,0.5);
+          color: #ff5555; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+          padding: 3px 9px; border-radius: 20px;
+          animation: live-pulse 1.4s ease-in-out infinite;
+        }
+        /* ── COUNTDOWN ── */
+        .countdown-bar {
+          display: flex; align-items: center; justify-content: center; gap: 12px;
+          padding: 7px 16px; border-radius: 10px; margin-bottom: 10px;
+          background: rgba(255,215,0,0.07); border: 1px solid rgba(255,215,0,0.2);
+          font-size: 13px; font-weight: 700; color: #ffd700; letter-spacing: 0.5px;
+        }
+        .countdown-unit { text-align: center; }
+        .countdown-num  { font-size: 22px; font-weight: 800; display: block; color: #fff; }
+        .countdown-lbl  { font-size: 9px; color: rgba(255,255,255,0.4); letter-spacing: 2px; }
+        .countdown-sep  { font-size: 20px; font-weight: 800; color: rgba(255,215,0,0.5); margin-bottom: 8px; }
+      </style>
 
     <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -1947,7 +1981,180 @@
 
     </script>
 
-  </body>
+  
+  <script>
+    // ── MATCH SCHEDULE (UTC kickoffs) ──────────────────────────────────────
+    var MATCH_SCHEDULE = [
+      { label: 'SF2: England vs Argentina', utc: Date.UTC(2026,6,15,22,0,0),  duration: 115 },
+      { label: '3rd Place: France vs TBD',  utc: Date.UTC(2026,6,18,22,0,0),  duration: 115 },
+      { label: 'THE FINAL',                 utc: Date.UTC(2026,6,19,21,0,0),  duration: 115 },
+    ];
+
+    // ── FIND NEXT UNPLAYED MATCH ──────────────────────────────────────────
+    function getNextMatch() {
+      var now = Date.now();
+      for (var i = 0; i < MATCH_SCHEDULE.length; i++) {
+        var m = MATCH_SCHEDULE[i];
+        var end = m.utc + m.duration * 60000;
+        if (now < end) return m;
+      }
+      return null;
+    }
+
+    function getLiveMatch() {
+      var now = Date.now();
+      for (var i = 0; i < MATCH_SCHEDULE.length; i++) {
+        var m = MATCH_SCHEDULE[i];
+        var preWindow = m.utc - 5 * 60000;   // 5 min before
+        var postWindow = m.utc + m.duration * 60000;
+        if (now >= preWindow && now <= postWindow) return m;
+      }
+      return null;
+    }
+
+    // ── COUNTDOWN TICKER ────────────────────────────────────────────────────
+    function updateCountdown() {
+      var bar = document.getElementById('countdown-bar');
+      if (!bar) return;
+      var next = getNextMatch();
+      var now = Date.now();
+
+      if (!next) {
+        bar.innerHTML = '<span style="font-size:14px">🏆 World Cup 2026 Complete!</span>';
+        return;
+      }
+
+      var live = getLiveMatch();
+      if (live) {
+        bar.innerHTML = '<span class="live-badge"><span style="font-size:9px">●</span> LIVE NOW</span>'
+          + '<span style="font-size:13px; color:#fff; font-weight:700">' + live.label + '</span>';
+        return;
+      }
+
+      var diff = next.utc - now;
+      if (diff <= 0) { updateCountdown(); return; }
+
+      var days  = Math.floor(diff / 86400000);
+      var hours = Math.floor((diff % 86400000) / 3600000);
+      var mins  = Math.floor((diff % 3600000)  / 60000);
+      var secs  = Math.floor((diff % 60000)    / 1000);
+
+      var label = next.label === 'THE FINAL' ? '🏆 THE FINAL — Jul 19' : '⚽ ' + next.label;
+
+      bar.innerHTML =
+        '<span style="font-size:12px; color:rgba(255,255,255,0.5); letter-spacing:1px">' + label + '</span>' +
+        (days > 0 ? '<span class="countdown-unit"><span class="countdown-num">' + days + '</span><span class="countdown-lbl">DAYS</span></span><span class="countdown-sep">:</span>' : '') +
+        '<span class="countdown-unit"><span class="countdown-num">' + String(hours).padStart(2,'0') + '</span><span class="countdown-lbl">HRS</span></span>' +
+        '<span class="countdown-sep">:</span>' +
+        '<span class="countdown-unit"><span class="countdown-num">' + String(mins).padStart(2,'0') + '</span><span class="countdown-lbl">MIN</span></span>' +
+        '<span class="countdown-sep">:</span>' +
+        '<span class="countdown-unit"><span class="countdown-num">' + String(secs).padStart(2,'0') + '</span><span class="countdown-lbl">SEC</span></span>';
+    }
+
+    // ── BROWSER NOTIFICATION ────────────────────────────────────────────────
+    var _notifFired = {};
+    function checkLiveNotification() {
+      var live = getLiveMatch();
+      if (!live) return;
+      if (_notifFired[live.label]) return;
+      _notifFired[live.label] = true;
+      if (!('Notification' in window)) return;
+      if (Notification.permission === 'granted') {
+        new Notification('⚽ ' + live.label + ' is LIVE!', {
+          body: 'Check the Familia Mundial bracket — it's happening NOW!',
+          icon: 'https://cdn.jsdelivr.net/npm/twemoji@14/assets/72x72/26bd.png'
+        });
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(function(p) {
+          if (p === 'granted') {
+            new Notification('⚽ ' + live.label + ' is LIVE!', {
+              body: 'Check the Familia Mundial bracket — it's happening NOW!',
+              icon: 'https://cdn.jsdelivr.net/npm/twemoji@14/assets/72x72/26bd.png'
+            });
+          }
+        });
+      }
+    }
+
+    // ── CONFETTI ────────────────────────────────────────────────────────────
+    var _confettiFired = false;
+    function launchConfetti() {
+      if (_confettiFired) return;
+      _confettiFired = true;
+      var colors = ['#ffd700','#ff4444','#44ff88','#4488ff','#ff44ff','#ffaa00','#00ffcc'];
+      for (var i = 0; i < 90; i++) {
+        (function(idx) {
+          setTimeout(function() {
+            var el = document.createElement('div');
+            el.className = 'confetti-piece';
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.background = colors[Math.floor(Math.random() * colors.length)];
+            el.style.animationDuration = (2.2 + Math.random() * 2.4) + 's';
+            el.style.animationDelay = '0s';
+            el.style.width  = (8 + Math.random() * 8) + 'px';
+            el.style.height = (10 + Math.random() * 10) + 'px';
+            el.style.opacity = '1';
+            document.body.appendChild(el);
+            setTimeout(function() { el.remove(); }, 5000);
+          }, idx * 35);
+        })(i);
+      }
+    }
+
+    // Watch for champion div becoming populated
+    function watchChampion() {
+      var prev = '';
+      setInterval(function() {
+        var champ = document.querySelector('[data-champion]');
+        if (!champ) {
+          // fallback: look for the gold champion card text
+          var cards = document.querySelectorAll('div');
+          for (var i = 0; i < cards.length; i++) {
+            var txt = cards[i].textContent;
+            if (txt && txt.includes('WINNER OF THE FINAL') && cards[i].children.length > 0) {
+              var nameEl = cards[i].querySelector('div[style*="ffd700"]');
+              if (nameEl && nameEl.textContent !== 'TBD' && nameEl.textContent !== prev) {
+                prev = nameEl.textContent;
+                if (prev && prev.length > 0) launchConfetti();
+              }
+            }
+          }
+        }
+      }, 2000);
+    }
+
+    // ── INJECT COUNTDOWN BAR INTO BRACKET HEADER ────────────────────────────
+    function injectCountdownBar() {
+      // Find the bracket status banner (the green box) and inject above it
+      var allDivs = document.querySelectorAll('div');
+      for (var i = 0; i < allDivs.length; i++) {
+        if (allDivs[i].textContent && allDivs[i].textContent.trim().indexOf('SEMI-FINALS UNDERWAY') === 0) {
+          var parent = allDivs[i].closest('div[style]');
+          if (parent && !document.getElementById('countdown-bar')) {
+            var bar = document.createElement('div');
+            bar.id = 'countdown-bar';
+            bar.className = 'countdown-bar';
+            bar.innerHTML = '...';
+            parent.parentNode.insertBefore(bar, parent);
+          }
+          break;
+        }
+      }
+    }
+
+    // ── BOOT ────────────────────────────────────────────────────────────────
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        injectCountdownBar();
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        checkLiveNotification();
+        setInterval(checkLiveNotification, 60000);
+        watchChampion();
+      }, 800);
+    });
+  </script>
+</body>
 
 </html>
 
