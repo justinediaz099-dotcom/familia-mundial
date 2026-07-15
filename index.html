@@ -756,7 +756,7 @@
 
               <div className="tabs">
 
-                {[["leaderboard","🏆 Standings"],["r16schedule","🔥 R16 Schedule"],["knockout","🏅 Bracket"],["trash","💬 Trash Talk"],["r32schedule","⚔️ R32 Schedule"],["bracket","📅 Schedule"],["setup","👥 Players"]].map(([key,label]) => (
+                {[["leaderboard","🏆 Standings"],["knockout","🏅 Bracket"],["trash","💬 Trash Talk"],["r32schedule","⚔️ R32 Schedule"],["r16schedule","🔥 R16 Schedule"],["bracket","📅 Schedule"],["setup","👥 Players"]].map(([key,label]) => (
 
                   <button key={key} className={`tab ${tab === key ? 'active' : ''}`} onClick={() => setTab(key)}>{label}</button>
 
