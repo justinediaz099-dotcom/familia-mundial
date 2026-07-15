@@ -633,7 +633,7 @@
         var next = getNextMatch();
         if (!next) {
           return React.createElement('div', { style:{ marginTop:8, fontSize:12, color:'#ffd700', fontWeight:700 } },
-            '0001F3C6 World Cup 2026 Complete!');
+            '🏆 World Cup 2026 Complete!');
         }
         var diff = Math.max(0, next.utc - Date.now());
         var days  = Math.floor(diff / 86400000);
@@ -641,7 +641,7 @@
         var mins  = Math.floor((diff % 3600000) / 60000);
         var secs  = Math.floor((diff % 60000) / 1000);
         var pad   = function(n) { return n < 10 ? '0'+n : ''+n; };
-        var lbl   = next.label === 'THE FINAL' ? '0001F3C6 THE FINAL — Jul 19' : '⚽ ' + next.label;
+        var lbl   = next.label === 'THE FINAL' ? '🏆 THE FINAL — Jul 19' : '⚽ ' + next.label;
         var els = [React.createElement('span', { key:'lbl', style:{ fontSize:11, color:'rgba(255,255,255,0.5)', letterSpacing:1 } }, lbl)];
         if (days > 0) {
           els.push(React.createElement('span', { key:'d', className:'countdown-unit' },
