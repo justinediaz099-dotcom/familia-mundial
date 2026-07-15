@@ -251,7 +251,7 @@
 
       const EMOJIS = ["👑","⚡","🔥","🌟","💎","🚀","🦁","🐯","🦅","🏆","💪","🎯","🌈","🍀","🦊","🌺","🏅","🎪","🎸","🌊"];
 
-      const POINTS = { groupStageWin: 3, groupStageDraw: 1, roundOf32: 5, roundOf16: 8, quarterFinal: 10, semiFinal: 20, runnerUp: 35, champion: 50 };
+      const POINTS = { groupStageWin: 3, groupStageDraw: 1, roundOf32: 5, roundOf16: 8, quarterFinal: 10, semiFinal: 20, thirdPlace: 30, runnerUp: 35, champion: 50 };
 
       const PRIZES = { 1: "$100", 2: "$40", 3: "$20" };
 
@@ -503,6 +503,7 @@
           if (s.quarterFinal) pts += POINTS.quarterFinal;
 
           if (s.semiFinal) pts += POINTS.semiFinal;
+        if (s.thirdPlace) pts += POINTS.thirdPlace;
 
           if (s.runnerUp) pts += POINTS.runnerUp;
 
@@ -573,7 +574,7 @@
 
         const [members, setMembers] = useState(INITIAL_MEMBERS);
 
-        const [teamStatuses, setTeamStatuses] = useState({ "Algeria": { groupWins: 1, groupDraws: 1 }, "Argentina": { groupWins: 3, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Australia": { groupWins: 1, groupDraws: 1, eliminated: true }, "Austria": { groupWins: 1, groupDraws: 1 }, "Belgium": { groupWins: 1, groupDraws: 2, roundOf32: true, roundOf16: true, eliminated: true }, "Bosnia & Herz.": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 2, groupDraws: 1, roundOf32: true, eliminated: true }, "Cabo Verde": { groupDraws: 3 }, "Canada": { groupWins: 1, groupDraws: 1, roundOf32: true, eliminated: true }, "Colombia": { groupWins: 2, groupDraws: 1, roundOf32: true, eliminated: true }, "Croatia": { groupWins: 2 }, "Curaçao": { groupDraws: 1 }, "Czechia": { groupDraws: 1 }, "DR Congo": { groupWins: 1, groupDraws: 1 }, "Ecuador": { groupWins: 1, groupDraws: 1 }, "Egypt": { groupWins: 1, groupDraws: 2, roundOf32: true, eliminated: true }, "England": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "France": { groupWins: 3, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Germany": { groupWins: 2, eliminated: true }, "Ghana": { groupWins: 1, groupDraws: 1, eliminated: true }, "Iran": { groupDraws: 3 }, "Ivory Coast": { groupWins: 2 }, "Japan": { groupWins: 1, groupDraws: 2 }, "Mexico": { groupWins: 3, roundOf32: true, eliminated: true }, "Morocco": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, eliminated: true }, "Netherlands": { groupWins: 2, groupDraws: 1, eliminated: true }, "New Zealand": { groupDraws: 1 }, "Norway": { groupWins: 2, roundOf32: true, roundOf16: true, eliminated: true }, "Paraguay": { groupWins: 1, groupDraws: 1, roundOf32: true, eliminated: true }, "Portugal": { groupWins: 1, groupDraws: 2, roundOf32: true, eliminated: true }, "Qatar": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 2 }, "Scotland": { groupWins: 1 }, "Senegal": { groupWins: 1 }, "South Africa": { groupWins: 1, groupDraws: 1 }, "South Korea": { groupWins: 1 }, "Spain": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Sweden": { groupWins: 1, groupDraws: 1, eliminated: true }, "Switzerland": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, eliminated: true }, "Turkey": { groupWins: 1 }, "USA": { groupWins: 2, roundOf32: true, eliminated: true }, "Uruguay": { groupDraws: 2 } });
+        const [teamStatuses, setTeamStatuses] = useState({ "Algeria": { groupWins: 1, groupDraws: 1 }, "Argentina": { groupWins: 3, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Australia": { groupWins: 1, groupDraws: 1, eliminated: true }, "Austria": { groupWins: 1, groupDraws: 1 }, "Belgium": { groupWins: 1, groupDraws: 2, roundOf32: true, roundOf16: true, eliminated: true }, "Bosnia & Herz.": { groupWins: 1, groupDraws: 1 }, "Brazil": { groupWins: 2, groupDraws: 1, roundOf32: true, eliminated: true }, "Cabo Verde": { groupDraws: 3 }, "Canada": { groupWins: 1, groupDraws: 1, roundOf32: true, eliminated: true }, "Colombia": { groupWins: 2, groupDraws: 1, roundOf32: true, eliminated: true }, "Croatia": { groupWins: 2 }, "Curaçao": { groupDraws: 1 }, "Czechia": { groupDraws: 1 }, "DR Congo": { groupWins: 1, groupDraws: 1 }, "Ecuador": { groupWins: 1, groupDraws: 1 }, "Egypt": { groupWins: 1, groupDraws: 2, roundOf32: true, eliminated: true }, "England": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "France": { groupWins: 3, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true, thirdPlace: true }, "Germany": { groupWins: 2, eliminated: true }, "Ghana": { groupWins: 1, groupDraws: 1, eliminated: true }, "Iran": { groupDraws: 3 }, "Ivory Coast": { groupWins: 2 }, "Japan": { groupWins: 1, groupDraws: 2 }, "Mexico": { groupWins: 3, roundOf32: true, eliminated: true }, "Morocco": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, eliminated: true }, "Netherlands": { groupWins: 2, groupDraws: 1, eliminated: true }, "New Zealand": { groupDraws: 1 }, "Norway": { groupWins: 2, roundOf32: true, roundOf16: true, eliminated: true }, "Paraguay": { groupWins: 1, groupDraws: 1, roundOf32: true, eliminated: true }, "Portugal": { groupWins: 1, groupDraws: 2, roundOf32: true, eliminated: true }, "Qatar": { groupDraws: 1 }, "Saudi Arabia": { groupDraws: 2 }, "Scotland": { groupWins: 1 }, "Senegal": { groupWins: 1 }, "South Africa": { groupWins: 1, groupDraws: 1 }, "South Korea": { groupWins: 1 }, "Spain": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, quarterFinal: true, semiFinal: true }, "Sweden": { groupWins: 1, groupDraws: 1, eliminated: true }, "Switzerland": { groupWins: 2, groupDraws: 1, roundOf32: true, roundOf16: true, eliminated: true }, "Turkey": { groupWins: 1 }, "USA": { groupWins: 2, roundOf32: true, eliminated: true }, "Uruguay": { groupDraws: 2 } });
 
         const [emojiPicker, setEmojiPicker] = useState(null);
 
@@ -641,8 +642,9 @@
           { round: 'qf', matchId: 2, date:'Jul 10', home:'Spain', hscore:2, away:'Belgium', ascore:1, played:true },
           { round: 'qf', matchId: 3, date:'Jul 11', home:'Argentina', hscore:3, away:'Switzerland', ascore:1, played:true },
           // SF (matchId 0-1)
-          { round: 'sf', matchId: 0, date:'Jul 14', home:'France', hscore:null, away:'Spain', ascore:null, played:false },
+          { round: 'sf', matchId: 0, date:'Jul 14', home:'France', hscore:0,    away:'Spain', ascore:2,    played:true },
           { round: 'sf', matchId: 1, date:'Jul 15', home:'England', hscore:null, away:'Argentina', ascore:null, played:false },
+          { round: 'tp', matchId: 0, date:'Jul 18', home:'France', hscore:null, away:'TBD', ascore:null, played:false },
           // Final
           { round: 'f',  matchId: 0, date:'Jul 19', home:null, hscore:null, away:null, ascore:null, played:false },
         ];
@@ -1396,6 +1398,14 @@
                     return mWin({ ...stored, home: a, away: b });
                   };
 
+                  const sfLoser = id => {
+                    const stored = KO_MATCHES.find(m => m.round === 'sf' && m.matchId === id);
+                    if (!stored || !stored.played || stored.hscore === null) return null;
+                    const winner = stored.penWinner || (stored.hscore > stored.ascore ? stored.home : stored.ascore > stored.hscore ? stored.away : null);
+                    if (!winner) return null;
+                    return winner === stored.home ? stored.away : stored.home;
+                  };
+
                   const finalW = () => {
                     const stored = KO_MATCHES.find(m => m.round === 'f' && m.matchId === 0);
                     if (stored && stored.home && stored.away) return mWin(stored);
@@ -1517,7 +1527,11 @@
                     const m = KO_MATCHES.find(x => x.round === 'sf' && x.matchId === i);
                     return { top: qfW(i*2)||'TBD', bot: qfW(i*2+1)||'TBD', matchData: m };
                   });
-                  const finalMatchData = KO_MATCHES.find(x => x.round === 'f' && x.matchId === 0);
+                  const tpMatchData = KO_MATCHES.find(x => x.round === 'tp' && x.matchId === 0);
+                  const tpLoserA = sfLoser(0) || (tpMatchData && tpMatchData.home) || 'TBD';
+                  const tpLoserB = sfLoser(1) || (tpMatchData && tpMatchData.away) || 'TBD';
+                  const tpPair = { top: tpLoserA, bot: tpLoserB, matchData: tpMatchData };
+                                    const finalMatchData = KO_MATCHES.find(x => x.round === 'f' && x.matchId === 0);
                   const finalPair = { top: sfW(0)||'TBD', bot: sfW(1)||'TBD', matchData: finalMatchData };
 
                   return (
@@ -1581,7 +1595,17 @@
 
                           <Connector />
 
-                          {/* Final */}
+                          {/* 3rd Place */}
+                          <div style={{ minWidth:175 }}>
+                            <ColHeader label="3RD PLACE" pts="Jul 18" />
+                            <div style={{ display:'flex', flexDirection:'column', paddingTop:0 }}>
+                              <MatchPair top={tpPair.top} bot={tpPair.bot} matchData={tpPair.matchData} />
+                            </div>
+                          </div>
+
+                          <Connector />
+
+                                                    {/* Final */}
                           <div style={{ minWidth:175 }}>
                             <ColHeader label="FINAL" pts="+35/TEAM" />
                             <div style={{ display:'flex', flexDirection:'column', paddingTop:0 }}>
@@ -1790,7 +1814,7 @@
 
                               <button className="counter-btn" onClick={() => setTeamStatuses(prev => ({ ...prev, [teamName]: { ...(prev[teamName] || {}), groupDraws: ((prev[teamName]?.groupDraws || 0) + 1) % 4 } }))} style={{ background: 'rgba(200,200,80,0.1)', border: '1px solid rgba(200,200,80,0.2)', color: 'rgba(240,240,100,0.8)' }}>D:{s.groupDraws || 0}</button>
 
-                              {[['eliminated','❌ Out'],['roundOf32','R32'],['quarterFinal','QF'],['semiFinal','SF'],['runnerUp','🥈'],['champion','🏆']].map(([field,label]) => (
+                              {[['eliminated','❌ Out'],['roundOf32','R32'],['quarterFinal','QF'],['semiFinal','SF'],['thirdPlace','🥉'],['runnerUp','🥈'],['champion','🏆']].map(([field,label]) => (
 
                                 <button key={field} className="stage-btn" onClick={() => toggleStatus(teamName, field)} style={{ background: s[field] ? 'rgba(255,215,0,0.18)' : 'rgba(255,255,255,0.05)', border: s[field] ? '1px solid rgba(255,215,0,0.4)' : '1px solid rgba(255,255,255,0.1)', color: s[field] ? '#ffd700' : 'rgba(255,255,255,0.45)' }}>{label}</button>
 
